@@ -10,6 +10,7 @@
   "author": "acacode",
   "license": "MIT",
   "devDependencies": {
+    "@types/lodash": "^4.14.121",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
     "babel-eslint": "8.2.1",
