@@ -1,0 +1,15 @@
+{
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended",
+		"tslint-config-standard"
+	],
+	"rules":{
+		"trailing-comma":true,
+		"typedef": [
+			true,
+			"call-signature",
+			"property-declaration"
+		]
+	}
+}

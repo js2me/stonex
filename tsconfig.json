@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+      "allowJs": true,
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": ".",
+      "forceConsistentCasingInFileNames": true,
+      "lib": [
+        "es6",
+        "es2017",
+        "dom"
+      ],
+      "module": "esnext",
+      "moduleResolution": "node",
+      "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
+      "noUnusedLocals": true,
+      "outDir": "dist",
+      "rootDir": "lib",
+      "sourceMap": true,
+      "strictNullChecks": true,
+      "suppressImplicitAnyIndexErrors": true,
+      "target": "es6",
+      "typeRoots": [
+        "node_modules/@types"
+      ]
+    },
+    "exclude": [
+      "dist",
+      "dist",
+      "node_modules"
+    ]
+}
