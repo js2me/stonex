@@ -11,6 +11,8 @@
 			"call-signature",
 			"property-declaration"
 		],
-		"interface-name": false
+		"interface-name": false,
+		"object-literal-key-quotes": false,
+		"no-shadowed-variable": false
 	}
 }
