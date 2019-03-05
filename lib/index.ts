@@ -31,7 +31,7 @@ export class StonexModule<State> {
   public __STONEXMODULE__ = true
 
   public readonly initialState: State
-  protected state: State
+  protected readonly state: State
 
   protected globalState: object
 
@@ -42,6 +42,7 @@ export class StonexModule<State> {
   }
 
   private updateState (newState: Partial<State>): void {
+    // ts-lint ignore 2540
     this.state = merge({}, newState) as State
   }
 
