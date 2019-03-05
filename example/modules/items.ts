@@ -16,7 +16,7 @@ declare interface State {
 }
 
 class ItemsModule extends StonexModule<State> {
-  protected initialState = {
+  public initialState = {
     byId: {},
     byIdInitialized: false,
     fullById: {},
