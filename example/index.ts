@@ -5,4 +5,7 @@ const store = createStore({
   items: ItemsModule
 })
 
+console.log(store)
+
+
 export default store

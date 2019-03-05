@@ -13,6 +13,7 @@
 		],
 		"interface-name": false,
 		"object-literal-key-quotes": false,
-		"no-shadowed-variable": false
+		"no-shadowed-variable": false,
+		"strict-type-predicates": false
 	}
 }

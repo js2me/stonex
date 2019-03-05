@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "tslint 'lib/**/*.ts'",
-    "build": "tsc --pretty"
+    "build": "tsc -p .",
+    "exec": "ts-node example.ts",
+    "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example.ts"
   },
   "author": "acacode",
   "license": "MIT",
@@ -25,12 +27,15 @@
     "babel-preset-env": "1.7.0",
     "babel-preset-es2015": "6.24.1",
     "babel-runtime": "6.26.0",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.2",
     "tslint": "5.13.0",
     "tslint-config-standard": "^8.0.1",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "3.3.3333"
   },
   "dependencies": {
-    "lodash-es": "^4.17.11"
+    "lodash-es": "^4.17.11",
+    "stonex": "^0.0.1-alpha"
   }
 }
