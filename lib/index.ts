@@ -1,10 +1,11 @@
-import { filter, merge, reduce, uniq } from 'lodash'
+import { cloneDeep, filter, merge, reduce, uniq  } from 'lodash'
 
 // project name : stonex
 
-export declare interface StonexModulesMap {
-  [key: string]: InstanceType<any>
+export declare interface TypedMap<T> {
+  [key: string]: InstanceType<T | any>
 }
+export declare interface StonexModulesMap extends TypedMap<any> {}
 
 export function pickAllMethodsFromPrototype (module: () => void): string[] {
   const propNames: string[] = Object.getOwnPropertyNames(module.prototype)
@@ -19,7 +20,7 @@ export function pickAllMethodsFromInstance (module: object): string[] {
   }, [])
 }
 
-export function createStore (modules: StonexModulesMap) {
+export function createStore (modules: StonexModulesMap): StonexModulesMap {
   const keys = Object.keys(modules)
   for (const moduleName of keys) {
     const module = new (modules[moduleName])() as StonexModule<any>
@@ -40,25 +41,51 @@ export function createStore (modules: StonexModulesMap) {
   return modules
 }
 
+export declare interface StonexModuleConfiguration {
+  useAsyncUpdateState: boolean
+}
+
 export class StonexModule<State> {
   public __STONEXMODULE__ = true
 
   public readonly initialState: State
   public state: State
+  public useAsyncUpdateState: boolean = false
 
   protected globalState: object
 
-  constructor () {
+  private stateUpdateTimer: any = null
+  private newChanges: any[] = []
+
+  constructor (configuration: StonexModuleConfiguration = {} as StonexModuleConfiguration) {
+    this.useAsyncUpdateState = configuration.useAsyncUpdateState
     this.updateState(this.initialState)
   }
 
-  public setState(newState: Partial<State>): void {
-    this.updateState(newState)
-  }
+  public setState = (newState: Partial<State>): State | Promise<State> =>
+    this.useAsyncUpdateState ? this.asyncUpdateState(newState) : this.updateState(newState)
 
-  private updateState (newState: Partial<State>): void {
+  private updateState (newState: Partial<State>): State {
     // ts-lint ignore 2540
     this.state = merge({}, newState) as State
+    return this.state
+  }
+
+  private asyncUpdateState (newState: Partial<State>): Promise<State> {
+    return new Promise((resolve) => {
+      if (this.stateUpdateTimer) {
+        clearTimeout(this.stateUpdateTimer)
+      }
+      this.newChanges.push(cloneDeep(newState))
+      this.stateUpdateTimer = setTimeout(() => {
+        const newState = {}
+        this.newChanges.forEach((changes) => {
+          merge(newState, changes)
+        })
+        this.newChanges = []
+        resolve(this.updateState(newState))
+      })
+    })
   }
 
 }

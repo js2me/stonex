@@ -22,6 +22,10 @@ class ItemsModule extends StonexModule<State> {
     fullById: {},
   }
 
+  constructor () {
+    super({ useAsyncUpdateState: true })
+  }
+
   public async getItems (): Promise<Map<Item>> {
     if (!this.state.byIdInitialized) {
       const { data: items } = await Promise

@@ -13,3 +13,7 @@ store.items.setFullItem({ id: 'test3' })
 store.items.setFullItem({ id: 'test4' })
 
 console.log('items state', store.items.getState())
+
+setTimeout(()=>{
+  console.log('asd', store.items.getState())
+})
