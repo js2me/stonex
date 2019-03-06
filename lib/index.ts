@@ -26,7 +26,8 @@ export function createStore (modules: StonexModulesMap): StonexModulesMap {
     const module = new (modules[moduleName])() as StonexModule<any>
 
     if (!module.__STONEXMODULE__) {
-      throw Error(`${moduleName} is not a Stonex Module`)
+      throw Error(`${moduleName} is not a Stonex Module` + '\r\n'+ 
+        'To solve this you should create class which will be extended from StonexModule class')
     }
     const methods = uniq([
       ...pickAllMethodsFromPrototype(modules[moduleName]),
