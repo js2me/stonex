@@ -1,5 +1,5 @@
-import { uniq  } from 'lodash'
-import { pickAllMethodsFromInstance } from './helpers/store_helpers'
+import { uniq } from 'lodash'
+import { getAllMethodsFromModule } from './helpers/store_helpers'
 
 const noop = () => {}
 
@@ -55,7 +55,7 @@ class StonexEngine {
 
     return {
       actions: uniq([
-        ...pickAllMethodsFromInstance(moduleInstance)
+        ...getAllMethodsFromModule(moduleInstance)
       ]).reduce((result, method: string) => {
         result[method] = moduleInstance[method].bind(moduleInstance)
         return result

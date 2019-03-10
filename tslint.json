@@ -15,6 +15,7 @@
 		"object-literal-key-quotes": false,
 		"no-shadowed-variable": false,
 		"strict-type-predicates": false,
-		"no-console": false
+		"no-console": false,
+		"max-classes-per-file": false
 	}
 }
