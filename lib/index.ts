@@ -16,5 +16,4 @@ export class StonexModule<State> {
 
   public setState = noop
   public getState = noop
-
 }
