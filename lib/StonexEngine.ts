@@ -36,7 +36,7 @@ class StonexEngine {
     Module: any,
     moduleName: string,
     engineContext: StonexEngine):
-  { actions: object, state: any } {
+  { [key: string]: Function, state: any } {
     const moduleInstance = new Module()
     if (!moduleInstance.__STONEXMODULE__) {
       console.error(`${name} is not a Stonex Module` + '\r\n' +
@@ -53,7 +53,7 @@ class StonexEngine {
     })
 
     return {
-      actions: getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
+      ...getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
         result[method] = moduleInstance[method].bind(moduleInstance)
         return result
       }, {}),

@@ -9,10 +9,11 @@ export function createStore (
 }
 
 const noop = (...args: any[]) => {}
+
 export class StonexModule<State> {
   public __STONEXMODULE__ = true
 
-  public state: State
+  public readonly state: State
 
   public setState = noop
   public getState = noop

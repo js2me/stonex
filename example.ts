@@ -10,13 +10,12 @@ export class Books extends StonexModule<any> {
 
 export class Items extends StonexModule<any> {
   public state = {
-    isLoading: false,
     data: [],
+    isLoading: false,
   }
 
   public getList = async () => {
     this.setState({ isLoading: true })
-
     const data = await Promise.resolve({ data: [1,2,3,4,5,6] })
     this.setState(data)
     return this.state
@@ -28,17 +27,17 @@ const store = createStore({
   items: Items,
 })
 
-store.modules.books.actions.add('Foo B.')
-store.modules.books.actions.add('Bar F.')
-store.modules.books.actions.add('AI F.')
-console.log(store.modules.books.state)
+store.modules.books.add('Foo B.')
+store.modules.books.add('Bar F.')
+store.modules.books.add('AI F.')
 
+console.log(store.modules.books.state)
 console.log('before', store.modules.items.state)
 
-const getList = store.modules.items.actions.getList
+const getList = store.modules.items.getList
 
-getList().then((state: any)=>{
-  console.log('response', store.modules.items.state, state)
+getList().then((state: any) => {
+  console.log('response', store.modules.items.getState(), state)
 })
 
 console.log('after', store.modules.items.state)
