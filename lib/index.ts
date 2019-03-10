@@ -1,16 +1,5 @@
 import StonexEngine from './StonexEngine'
-
-// project name : stonex
-
-export declare interface TypedMap<T> {
-  [key: string]: InstanceType<T | any>
-}
-export declare interface StonexModulesMap {
-  [name: string]: new <T extends StonexModule<any>>() => T
-}
-export declare interface StonexModulesMa2p {
-  [name: string]: new <T extends StonexModule<any>>() => T
-}
+export { default as StonexEngine } from './StonexEngine'
 
 export function createStore (
   modulesMap: any,
