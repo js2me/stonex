@@ -1,14 +1,13 @@
-import StonexEngine from './StonexEngine'
+import { noop } from './helpers/base_helpers'
+import StonexEngine, { MiddlewareAction } from './StonexEngine'
 export { default as StonexEngine } from './StonexEngine'
 
 export function createStore (
   modulesMap: any,
-  middlewares: Array<() => void> = []
+  middlewares: MiddlewareAction[] = []
 ): any {
   return new StonexEngine(modulesMap, middlewares)
 }
-
-const noop = (...args: any[]) => {}
 
 export class StonexModule<State> {
   public __STONEXMODULE__ = true

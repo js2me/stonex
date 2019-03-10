@@ -1,6 +1,8 @@
 export function getAllMethodsFromModule (module: object): string[] {
   const methods: string[] = []
   const reservedMethods = [
+    'getState',
+    'setState',
     'constructor',
     '__defineGetter__',
     '__defineSetter__',

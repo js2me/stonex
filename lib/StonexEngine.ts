@@ -1,41 +1,46 @@
+import { copy, isType, noop, types } from './helpers/base_helpers'
 import { getAllMethodsFromModule } from './helpers/store_helpers'
 
-const noop = () => {}
-
-enum types {
-    array, object, other, function
+export enum MiddlewareDataTypes {
+  METHOD_CALL = 'METHOD_CALL'
 }
 
-const isType = (data: any, expectedType: types): boolean => {
-  const typeOf = typeof data
-  if (data instanceof Array) {
-    return types.array === expectedType
-  }
-  if (typeOf === 'object') {
-    return types.object === expectedType
-  }
-  if (typeOf === 'function') {
-    return types.function === expectedType
-  }
-  return types.other === expectedType
+export enum MiddlewareResponses {
+  BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
 }
 
-const copy = (data: any) => {
-  if (isType(data, types.array)) {
-    return data.slice()
-  }
-  if (isType(data, types.object)) {
-    return Object.assign({}, data)
-  }
-  return data
+export declare type MiddlewareResponse = [MiddlewareResponses, any?]
+
+export declare interface MiddlewareData {
+  moduleName: string,
+  type: MiddlewareDataTypes,
+  methodName?: string,
+  data?: any,
 }
+
+export declare type MiddlewareAction = (data: MiddlewareData) => (void | MiddlewareResponse)
 
 class StonexEngine {
+
+  public static callMiddlewares (middlewares: MiddlewareAction[], data: MiddlewareData): MiddlewareResponse {
+    // tslint:disable-next-line:prefer-for-of
+    for (let index = 0; index < middlewares.length; index++) {
+      const middleware = middlewares[index]
+      const [ response, changes ] = middleware(data) || [null, null]
+      if (response) {
+        return [response, changes]
+      }
+
+    }
+    return [MiddlewareResponses.BREAK]
+  }
 
   public static parseModule (
     Module: any,
     moduleName: string,
-    engineContext: StonexEngine):
+    engineContext: StonexEngine,
+    middlewares: MiddlewareAction[]
+    ):
   { [key: string]: Function, state: any } {
     const moduleInstance = new Module()
     if (!moduleInstance.__STONEXMODULE__) {
@@ -54,21 +59,36 @@ class StonexEngine {
 
     return {
       ...getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
-        result[method] = moduleInstance[method].bind(moduleInstance)
+        result[method] = (...args: any[]) => {
+          const [response, newArgs] = StonexEngine.callMiddlewares(middlewares, {
+            data: args,
+            methodName: method,
+            moduleName,
+            type: MiddlewareDataTypes.METHOD_CALL,
+          })
+          if (response === MiddlewareResponses.PREVENT) {
+            return
+          }
+          if (response === MiddlewareResponses.MODIFY) {
+            args = newArgs
+          }
+          return moduleInstance[method].apply(moduleInstance, args)
+        }
         return result
       }, {}),
+      getState: moduleInstance.getState,
       state:  initialState
     }
   }
 
-  public middleware = []
+  public middlewares: MiddlewareAction[] = []
   private modules = {}
 
-  constructor (modulesMap: any, middleware: any) {
-    this.middleware = middleware
+  constructor (modulesMap: any, middlewares: MiddlewareAction[] = []) {
+    this.middlewares = middlewares
 
     for (const moduleName of Object.keys(modulesMap)) {
-      this.modules[moduleName] = StonexEngine.parseModule(modulesMap[moduleName], moduleName, this)
+      this.modules[moduleName] = StonexEngine.parseModule(modulesMap[moduleName], moduleName, this, middlewares)
     }
   }
 
