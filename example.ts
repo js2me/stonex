@@ -1,17 +1,19 @@
-import ItemsModule from './example/modules/items'
-import { createStore } from './lib'
+import { createStore, StonexModule } from './lib'
+
+export class Books extends StonexModule<any> {
+  public state = []
+
+  public add (book: string): void {
+    this.setState([...this.state, `${this.state.length + 1}. ${book}`])
+  }
+}
 
 const store = createStore({
-  items: ItemsModule,
+  example: Books,
 })
 
-store.items.setFullItem({ id: 'test1' })
-store.items.setFullItem({ id: 'test1' })
-store.items.setFullItem({ id: 'test1' })
-store.items.setFullItem({ id: 'test2' })
-store.items.setFullItem({ id: 'test3' })
-store.items.setFullItem({ id: 'test4' })
+store.modules.example.actions.add('Foo B.')
+store.modules.example.actions.add('Bar F.')
+store.modules.example.actions.add('AI F.')
 
-setTimeout(()=>{
-  console.log('asd', store.items.getState())
-})
+console.log(store.modules.example.state)

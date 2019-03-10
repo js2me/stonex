@@ -14,6 +14,7 @@
 		"interface-name": false,
 		"object-literal-key-quotes": false,
 		"no-shadowed-variable": false,
-		"strict-type-predicates": false
+		"strict-type-predicates": false,
+		"no-console": false
 	}
 }
