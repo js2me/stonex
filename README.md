@@ -14,3 +14,10 @@
     🌀 State container for JavaScript/TypeScript applications 🌀️
   </p>
 </div>
+
+
+
+
+## 📝 License
+
+Licensed under the [MIT License](./LICENSE).
