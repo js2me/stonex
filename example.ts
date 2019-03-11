@@ -1,5 +1,5 @@
 import { createStore, StonexModule } from './lib'
-import { MiddlewareData, MiddlewareResponse } from './lib/StonexEngine'
+import StonexEngine, { MiddlewareData } from './lib/StonexEngine'
 
 export class Books extends StonexModule<any> {
   public state = []
@@ -27,9 +27,9 @@ const store = createStore({
   books: Books,
   items: Items,
 }, [
-  ({ methodName = '', moduleName, data, type }: MiddlewareData): MiddlewareResponse | void => {
+  ({ methodName = '', moduleName, data, type }: MiddlewareData): void => {
     console.log(`${type} : [${moduleName.toUpperCase()}/${methodName.toUpperCase()}] \r\n\    args : `, data)
-  }
+  },
 ])
 
 store.modules.books.add('Foo B.')
@@ -39,3 +39,5 @@ store.modules.books.add('AI F.')
 const getList = store.modules.items.getList
 
 getList('lol')
+
+console.log('state', StonexEngine.createStateFromModules(store.modules))

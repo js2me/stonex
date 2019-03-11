@@ -2,7 +2,7 @@ import { copy, isType, noop, types } from './helpers/base_helpers'
 import { getAllMethodsFromModule } from './helpers/store_helpers'
 
 export enum MiddlewareDataTypes {
-  METHOD_CALL = 'METHOD_CALL'
+  METHOD_CALL = 'METHOD_CALL', STATE_CHANGE = 'STATE_CHANGE', STATE_GET = 'STATE_GET'
 }
 
 export enum MiddlewareResponses {
@@ -16,23 +16,43 @@ export declare interface MiddlewareData {
   type: MiddlewareDataTypes,
   methodName?: string,
   data?: any,
+  state: object,
 }
 
-export declare type MiddlewareAction = (data: MiddlewareData) => (void | MiddlewareResponse)
+export declare type MiddlewareAction =
+  (
+    data: MiddlewareData,
+    prevResponse?: null | MiddlewareResponse
+  ) => (void | MiddlewareResponse)
 
 class StonexEngine {
 
-  public static callMiddlewares (middlewares: MiddlewareAction[], data: MiddlewareData): MiddlewareResponse {
-    // tslint:disable-next-line:prefer-for-of
-    for (let index = 0; index < middlewares.length; index++) {
-      const middleware = middlewares[index]
-      const [ response, changes ] = middleware(data) || [null, null]
-      if (response) {
-        return [response, changes]
-      }
+  public static createStateFromModules (modules: object): object {
+    const state = {}
+    Object.keys(modules).forEach((name) => {
+      state[name] = copy(modules[name].state)
+    })
+    return state
+  }
 
+  public static callMiddlewares (middlewares: MiddlewareAction[], action: () => MiddlewareData): MiddlewareResponse {
+    // tslint:disable-next-line:prefer-for-of
+    const data = (middlewares.length ? action() : null) as MiddlewareData
+    const breakResponse: MiddlewareResponse = [MiddlewareResponses.BREAK, null]
+    let prevResponse: MiddlewareResponse = breakResponse
+
+    for (const middleware of middlewares) {
+      const [ response, changes ] = middleware(data, prevResponse) || breakResponse
+      if (response && response !== MiddlewareResponses.BREAK) {
+        if (response === MiddlewareResponses.PREVENT) {
+          return [response, changes]
+        } else {
+          prevResponse = [response, copy(changes)]
+        }
+      }
     }
-    return [MiddlewareResponses.BREAK]
+
+    return prevResponse
   }
 
   public static parseModule (
@@ -52,7 +72,7 @@ class StonexEngine {
     moduleInstance.getState = engineContext.getState.bind(engineContext, moduleName)
     const initialState = copy(moduleInstance.state)
     delete moduleInstance.state
-    // let stateCache = initialState
+
     Object.defineProperty(moduleInstance, 'state', {
       get: () => moduleInstance.getState(),
     })
@@ -60,12 +80,13 @@ class StonexEngine {
     return {
       ...getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
         result[method] = (...args: any[]) => {
-          const [response, newArgs] = StonexEngine.callMiddlewares(middlewares, {
+          const [response, newArgs] = StonexEngine.callMiddlewares(middlewares, () => ({
             data: args,
             methodName: method,
             moduleName,
+            state: StonexEngine.createStateFromModules(engineContext.modules),
             type: MiddlewareDataTypes.METHOD_CALL,
-          })
+          }))
           if (response === MiddlewareResponses.PREVENT) {
             return
           }
@@ -92,10 +113,10 @@ class StonexEngine {
     }
   }
 
-  public getModuleByName (name: string): { state: any, actions: object } {
-    let module = this.modules[name]
+  public getModuleByName (moduleName: string): { state: any, actions: object } {
+    let module = this.modules[moduleName]
     if (!module) {
-      module = this.modules[name] = {
+      module = this.modules[moduleName] = {
         actions: {},
         state: {},
       }
@@ -103,11 +124,24 @@ class StonexEngine {
     return module
   }
 
-  public setState (module: string, changes: any, callback: (state: any) => any = noop): void {
+  public setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
     const changesAsFunction = isType(changes, types.function)
     const changeAction = () => {
-      this.mergeChangesToState(module, changesAsFunction ? changes() : changes)
-      callback(this.getModuleByName(module).state)
+      let stateChanges = changesAsFunction ? changes() : changes
+      const [response, newStateChanges] = StonexEngine.callMiddlewares(this.middlewares, () => ({
+        data: stateChanges,
+        moduleName,
+        state: StonexEngine.createStateFromModules(this.modules),
+        type: MiddlewareDataTypes.STATE_CHANGE,
+      }))
+      if (response === MiddlewareResponses.PREVENT) {
+        return
+      }
+      if (response === MiddlewareResponses.MODIFY) {
+        stateChanges = copy(newStateChanges)
+      }
+      this.mergeChangesToState(moduleName, stateChanges)
+      callback(this.getModuleByName(moduleName).state)
     }
     if (changesAsFunction) {
       setTimeout(changeAction, 0)
@@ -116,12 +150,25 @@ class StonexEngine {
     }
   }
 
-  public getState (module: string): any {
-    return copy(this.getModuleByName(module).state)
+  public getState (moduleName: string): any {
+    let state = copy(this.getModuleByName(moduleName).state)
+    const [response, modifiedState] = StonexEngine.callMiddlewares(this.middlewares, () => ({
+      data: state,
+      moduleName,
+      state: StonexEngine.createStateFromModules(this.modules),
+      type: MiddlewareDataTypes.STATE_GET,
+    }))
+    if (response === MiddlewareResponses.PREVENT) {
+      return
+    }
+    if (response === MiddlewareResponses.MODIFY) {
+      state = modifiedState
+    }
+    return state
   }
 
-  private mergeChangesToState (module: string, stateChanges: any): void {
-    const currentModule = this.getModuleByName(module)
+  private mergeChangesToState (moduleName: string, stateChanges: any): void {
+    const currentModule = this.getModuleByName(moduleName)
     const currentState = currentModule.state
     if (isType(stateChanges, types.object) && isType(currentState, types.object)) {
       currentModule.state = { ...currentState, ...copy(stateChanges) }
