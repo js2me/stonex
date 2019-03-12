@@ -1,3 +1,4 @@
+import { ModulesMap, Store, StonexModule, StonexModules } from 'lib'
 import { copy, isType, noop, types } from './helpers/base_helpers'
 import { getAllMethodsFromModule } from './helpers/store_helpers'
 
@@ -25,7 +26,13 @@ export declare type MiddlewareAction =
     prevResponse?: null | MiddlewareResponse
   ) => (void | MiddlewareResponse)
 
-class StonexEngine {
+export declare interface IStonexEngine<MP>{
+  modules: {
+    [K in keyof MP]: MP[K]
+  }
+}
+
+class StonexEngine<MP>{
 
   public static createStateFromModules (modules: object): object {
     const state = {}
@@ -55,10 +62,10 @@ class StonexEngine {
     return prevResponse
   }
 
-  public static parseModule (
+  public static parseModule<MP> (
     Module: any,
     moduleName: string,
-    engineContext: StonexEngine,
+    engineContext: StonexEngine<MP>,
     middlewares: MiddlewareAction[]
     ):
   { [key: string]: Function, state: any } {
@@ -101,11 +108,15 @@ class StonexEngine {
       state:  initialState
     }
   }
+  public modules: StonexModules<MP>
 
-  public middlewares: MiddlewareAction[] = []
-  private modules = {}
+  private middlewares: MiddlewareAction[] = []
 
-  constructor (modulesMap: any, middlewares: MiddlewareAction[] = []) {
+  constructor (modulesMap: ModulesMap<MP>, middlewares: MiddlewareAction[] = []) {
+    // TODO: fix it
+    Object.defineProperty(this, 'modules', {
+      value: {}
+    })
     this.middlewares = middlewares
 
     for (const moduleName of Object.keys(modulesMap)) {
@@ -113,7 +124,7 @@ class StonexEngine {
     }
   }
 
-  public getModuleByName (moduleName: string): { state: any, actions: object } {
+  private getModuleByName (moduleName: string): { state: any, actions: object } {
     let module = this.modules[moduleName]
     if (!module) {
       module = this.modules[moduleName] = {
@@ -124,7 +135,7 @@ class StonexEngine {
     return module
   }
 
-  public setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
+  private setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
     const changesAsFunction = isType(changes, types.function)
     const changeAction = () => {
       let stateChanges = changesAsFunction ? changes() : changes
@@ -150,7 +161,7 @@ class StonexEngine {
     }
   }
 
-  public getState (moduleName: string): any {
+  private getState (moduleName: string): any {
     let state = copy(this.getModuleByName(moduleName).state)
     const [response, modifiedState] = StonexEngine.callMiddlewares(this.middlewares, () => ({
       data: state,
