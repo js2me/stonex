@@ -1,30 +1,28 @@
 import { noop } from './helpers/base_helpers'
-import StonexEngine, { MiddlewareAction } from './StonexEngine'
+import StonexEngine from './StonexEngine'
 export { default as StonexEngine } from './StonexEngine'
 
 export declare interface ObjectMap<T> {
   [key: string]: T
 }
 
-export declare type ModulesMap<MP> = {
-  [K in keyof MP]: (new () => MP[K])
+export declare type ModulesMap<M> = {
+  [K in keyof M]: (new () => M[K])
 }
 
-export declare interface Store<MP> {
-  modules: {
-    [K in keyof MP]: MP[K]
-  }
+export declare interface Store<M> {
+  modules: StonexModules<M>
 }
 
-export declare type StonexModules<MP> = {
-  [K in keyof MP]: MP[K]
+export declare type StonexModules<M> = {
+  [K in keyof M]: M[K]
 }
 
-export function createStore<MP> (
-  modulesMap: ModulesMap<MP>,
+export function createStore<M> (
+  modulesMap: ModulesMap<M>,
   middlewares: MiddlewareAction[] = []
-): Store<MP> {
-  return new StonexEngine<MP>(modulesMap, middlewares)
+): Store<M> {
+  return new StonexEngine<M>(modulesMap, middlewares)
 }
 
 export class StonexModule<State> {
@@ -36,12 +34,32 @@ export class StonexModule<State> {
   public getState = noop
 }
 
-/*
-
-class Factory {
-  public create<T> (type: (new () => T)): T {
-    return new type()
-  }
+export enum MiddlewareDataTypes {
+  METHOD_CALL = 'METHOD_CALL', STATE_CHANGE = 'STATE_CHANGE', STATE_GET = 'STATE_GET'
 }
 
-*/
+export enum MiddlewareResponses {
+  BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
+}
+
+export declare type MiddlewareResponse = [MiddlewareResponses, any?]
+
+export declare interface MiddlewareData {
+  moduleName: string,
+  type: MiddlewareDataTypes,
+  methodName?: string,
+  data?: any,
+  state: object,
+}
+
+export declare type MiddlewareAction =
+  (
+    data: MiddlewareData,
+    prevResponse?: null | MiddlewareResponse
+  ) => (void | MiddlewareResponse)
+
+export declare interface IStonexEngine<MP>{
+  modules: {
+    [K in keyof MP]: MP[K]
+  }
+}

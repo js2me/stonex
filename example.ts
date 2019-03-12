@@ -1,5 +1,5 @@
 import { createStore, StonexModule } from './lib'
-import StonexEngine, { MiddlewareData } from './lib/StonexEngine'
+import { MiddlewareData } from './lib/StonexEngine'
 
 export class Books extends StonexModule<any> {
   public state = []
@@ -29,8 +29,7 @@ const store = createStore({ books: Books }, [
   },
 ])
 
-store.modules.books.add('lol')
-
+store.modules.books.add('some book')
 // const getList = store.modules.items.getList
 
 // getList('lol')

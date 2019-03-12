@@ -1,38 +1,11 @@
-import { ModulesMap, Store, StonexModule, StonexModules } from 'lib'
+import {
+  MiddlewareAction, MiddlewareData, MiddlewareDataTypes,
+  MiddlewareResponse, MiddlewareResponses, ModulesMap, StonexModules
+} from 'lib'
 import { copy, isType, noop, types } from './helpers/base_helpers'
 import { getAllMethodsFromModule } from './helpers/store_helpers'
 
-export enum MiddlewareDataTypes {
-  METHOD_CALL = 'METHOD_CALL', STATE_CHANGE = 'STATE_CHANGE', STATE_GET = 'STATE_GET'
-}
-
-export enum MiddlewareResponses {
-  BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
-}
-
-export declare type MiddlewareResponse = [MiddlewareResponses, any?]
-
-export declare interface MiddlewareData {
-  moduleName: string,
-  type: MiddlewareDataTypes,
-  methodName?: string,
-  data?: any,
-  state: object,
-}
-
-export declare type MiddlewareAction =
-  (
-    data: MiddlewareData,
-    prevResponse?: null | MiddlewareResponse
-  ) => (void | MiddlewareResponse)
-
-export declare interface IStonexEngine<MP>{
-  modules: {
-    [K in keyof MP]: MP[K]
-  }
-}
-
-class StonexEngine<MP>{
+class StonexEngine<MP> {
 
   public static createStateFromModules (modules: object): object {
     const state = {}
@@ -43,7 +16,6 @@ class StonexEngine<MP>{
   }
 
   public static callMiddlewares (middlewares: MiddlewareAction[], action: () => MiddlewareData): MiddlewareResponse {
-    // tslint:disable-next-line:prefer-for-of
     const data = (middlewares.length ? action() : null) as MiddlewareData
     const breakResponse: MiddlewareResponse = [MiddlewareResponses.BREAK, null]
     let prevResponse: MiddlewareResponse = breakResponse
@@ -184,9 +156,6 @@ class StonexEngine<MP>{
     if (isType(stateChanges, types.object) && isType(currentState, types.object)) {
       currentModule.state = { ...currentState, ...copy(stateChanges) }
     } else {
-    // } else if (isType(stateChanges, types.array) && isType(currentState, types.array)) {
-    //   currentModule.state = [ ...currentState, ...copy(stateChanges) ]
-    // } else {
       currentModule.state = copy(stateChanges)
     }
   }
