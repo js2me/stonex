@@ -1,5 +1,4 @@
-import { createStore, StonexModule } from './lib'
-import { MiddlewareData } from './lib/StonexEngine'
+import { createStore, StonexModule, MiddlewareData } from './lib'
 
 export class Books extends StonexModule<any> {
   public state = []
@@ -17,19 +16,26 @@ export class Items extends StonexModule<any> {
 
   public getList = async () => {
     this.setState({ isLoading: true })
-    const data = await Promise.resolve({ data: [1,2,3,4,5,6] })
-    this.setState(data)
-    return this.state
+    const data = await Promise.resolve([1,2,3,4,5,6])
+    this.setState({ data })
+    return this.state.data
   }
 }
 
-const store = createStore({ books: Books }, [
+const store = createStore({ books: Books, items: Items }, [
   ({ methodName = '', moduleName, data, type }: MiddlewareData): void => {
     console.log(`${type} : [${moduleName.toUpperCase()}/${methodName.toUpperCase()}] \r\n\    args : `, data)
   },
 ])
 
-store.modules.books.add('some book')
+store.modules.books.add('some book 1')
+store.modules.books.add('some book 2')
+store.modules.books.add('some book 3')
+store.modules.books.add('some book 4')
+
+store.modules.items.getList().then((listData)=>{
+  console.log('listData', listData)
+})
 // const getList = store.modules.items.getList
 
 // getList('lol')

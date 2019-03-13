@@ -1,11 +1,12 @@
 import {
-  MiddlewareAction, MiddlewareData, MiddlewareDataTypes,
-  MiddlewareResponse, MiddlewareResponses, ModulesMap, StonexModules
-} from 'lib'
-import { copy, isType, noop, types } from './helpers/base_helpers'
-import { getAllMethodsFromModule } from './helpers/store_helpers'
+  MiddlewareAction, MiddlewareDataTypes,
+  ModulesMap, StonexModules
+} from '.'
+import { copy, isType, noop, types } from './helpers/base'
+import { getAllMethodsFromModule } from './helpers/store'
+import Middleware from './Middleware'
 
-class StonexEngine<MP> {
+export default class StonexEngine<MP> {
 
   public static createStateFromModules (modules: object): object {
     const state = {}
@@ -13,25 +14,6 @@ class StonexEngine<MP> {
       state[name] = copy(modules[name].state)
     })
     return state
-  }
-
-  public static callMiddlewares (middlewares: MiddlewareAction[], action: () => MiddlewareData): MiddlewareResponse {
-    const data = (middlewares.length ? action() : null) as MiddlewareData
-    const breakResponse: MiddlewareResponse = [MiddlewareResponses.BREAK, null]
-    let prevResponse: MiddlewareResponse = breakResponse
-
-    for (const middleware of middlewares) {
-      const [ response, changes ] = middleware(data, prevResponse) || breakResponse
-      if (response && response !== MiddlewareResponses.BREAK) {
-        if (response === MiddlewareResponses.PREVENT) {
-          return [response, changes]
-        } else {
-          prevResponse = [response, copy(changes)]
-        }
-      }
-    }
-
-    return prevResponse
   }
 
   public static parseModule<MP> (
@@ -58,22 +40,13 @@ class StonexEngine<MP> {
 
     return {
       ...getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
-        result[method] = (...args: any[]) => {
-          const [response, newArgs] = StonexEngine.callMiddlewares(middlewares, () => ({
-            data: args,
-            methodName: method,
-            moduleName,
-            state: StonexEngine.createStateFromModules(engineContext.modules),
-            type: MiddlewareDataTypes.METHOD_CALL,
-          }))
-          if (response === MiddlewareResponses.PREVENT) {
-            return
-          }
-          if (response === MiddlewareResponses.MODIFY) {
-            args = newArgs
-          }
-          return moduleInstance[method].apply(moduleInstance, args)
-        }
+        result[method] = (...args: any[]) => Middleware.connect(middlewares, () => ({
+          data: args,
+          methodName: method,
+          moduleName,
+          state: StonexEngine.createStateFromModules(engineContext.modules),
+          type: MiddlewareDataTypes.METHOD_CALL,
+        }), (args) => moduleInstance[method].apply(moduleInstance, args), args)
         return result
       }, {}),
       getState: moduleInstance.getState,
@@ -110,21 +83,16 @@ class StonexEngine<MP> {
   private setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
     const changesAsFunction = isType(changes, types.function)
     const changeAction = () => {
-      let stateChanges = changesAsFunction ? changes() : changes
-      const [response, newStateChanges] = StonexEngine.callMiddlewares(this.middlewares, () => ({
+      const stateChanges = changesAsFunction ? changes() : changes
+      return Middleware.connect(this.middlewares, () => ({
         data: stateChanges,
         moduleName,
         state: StonexEngine.createStateFromModules(this.modules),
         type: MiddlewareDataTypes.STATE_CHANGE,
-      }))
-      if (response === MiddlewareResponses.PREVENT) {
-        return
-      }
-      if (response === MiddlewareResponses.MODIFY) {
-        stateChanges = copy(newStateChanges)
-      }
-      this.mergeChangesToState(moduleName, stateChanges)
-      callback(this.getModuleByName(moduleName).state)
+      }), (stateChanges) => {
+        this.mergeChangesToState(moduleName, stateChanges)
+        callback(this.getModuleByName(moduleName).state)
+      }, stateChanges)
     }
     if (changesAsFunction) {
       setTimeout(changeAction, 0)
@@ -134,20 +102,13 @@ class StonexEngine<MP> {
   }
 
   private getState (moduleName: string): any {
-    let state = copy(this.getModuleByName(moduleName).state)
-    const [response, modifiedState] = StonexEngine.callMiddlewares(this.middlewares, () => ({
+    const state = copy(this.getModuleByName(moduleName).state)
+    return Middleware.connect(this.middlewares, () => ({
       data: state,
       moduleName,
       state: StonexEngine.createStateFromModules(this.modules),
       type: MiddlewareDataTypes.STATE_GET,
-    }))
-    if (response === MiddlewareResponses.PREVENT) {
-      return
-    }
-    if (response === MiddlewareResponses.MODIFY) {
-      state = modifiedState
-    }
-    return state
+    }), (state) => state, state)
   }
 
   private mergeChangesToState (moduleName: string, stateChanges: any): void {
@@ -161,5 +122,3 @@ class StonexEngine<MP> {
   }
 
 }
-
-export default StonexEngine

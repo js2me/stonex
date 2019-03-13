@@ -1,4 +1,4 @@
-import { noop } from './helpers/base_helpers'
+import { noop } from './helpers/base'
 import StonexEngine from './StonexEngine'
 export { default as StonexEngine } from './StonexEngine'
 
@@ -58,7 +58,7 @@ export declare type MiddlewareAction =
     prevResponse?: null | MiddlewareResponse
   ) => (void | MiddlewareResponse)
 
-export declare interface IStonexEngine<MP>{
+export declare interface IStonexEngine<MP> {
   modules: {
     [K in keyof MP]: MP[K]
   }
