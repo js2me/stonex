@@ -1,11 +1,10 @@
 import {
-  MiddlewareAction, MiddlewareDataTypes,
-  ModulesMap, StonexModules, StoreBinder
+  MiddlewareAction, MiddlewareData,
+  MiddlewareDataTypes, ModulesMap, StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
 import { getAllMethodsFromModule } from './helpers/store'
 import Middleware from './Middleware'
-import { StonexModule } from './StonexModule'
 
 export default class StonexEngine<MP> {
 
@@ -17,31 +16,21 @@ export default class StonexEngine<MP> {
     return state
   }
 
-  public static createStoreBinder = <MP>(
-    moduleName: string,
-    engineContext: StonexEngine<MP>
-  ): StoreBinder<any> => ({
-    getState: engineContext.getState.bind(engineContext, moduleName),
-    moduleName,
-    setState: engineContext.setState.bind(engineContext, moduleName)
-  })
-
   public static parseModule<MP> (
-    Module: new (storeBinder: StoreBinder<any>) => StonexModule<any>,
+    Module: any,
     moduleName: string,
     engineContext: StonexEngine<MP>,
     middlewares: MiddlewareAction[]
     ):
   { [key: string]: Function, state: any } {
-    const storeBinder = StonexEngine.createStoreBinder(moduleName, engineContext)
-    const moduleInstance = new Module(storeBinder)
+    const moduleInstance = new Module()
     if (!moduleInstance.__STONEXMODULE__) {
       console.error(`${name} is not a Stonex Module` + '\r\n' +
         'To solve this you should create class which will be extended from StonexModule class')
     }
 
-    // moduleInstance.setState = engineContext.setState.bind(engineContext, moduleName)
-    // moduleInstance.getState = engineContext.getState.bind(engineContext, moduleName)
+    moduleInstance.setState = engineContext.setState.bind(engineContext, moduleName)
+    moduleInstance.getState = engineContext.getState.bind(engineContext, moduleName)
     const initialState = copy(moduleInstance.state)
     delete moduleInstance.state
 
@@ -80,35 +69,19 @@ export default class StonexEngine<MP> {
     }
   }
 
-  public setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
-    const changesAsFunction = isType(changes, types.function)
-    const changeAction = () => {
-      const stateChanges = changesAsFunction ? changes() : changes
-      return Middleware.connect(this.middlewares, () => ({
-        data: stateChanges,
-        moduleName,
-        state: StonexEngine.createStateSnapshot(this.modules),
-        type: MiddlewareDataTypes.STATE_CHANGE,
-      }), (stateChanges) => {
-        this.mergeChangesToState(moduleName, stateChanges)
-        callback(this.getModuleByName(moduleName).state)
-      }, stateChanges)
+  public connectMiddleware (
+    type: MiddlewareDataTypes,
+    data: Partial<MiddlewareData>,
+    action: (changes: any) => any
+  ): any {
+    if (!this.middlewares.length) {
+      return action(data.data)
     }
-    if (changesAsFunction) {
-      setTimeout(changeAction, 0)
-    } else {
-      changeAction()
-    }
-  }
-
-  public getState (moduleName: string): any {
-    const state = copy(this.getModuleByName(moduleName).state)
     return Middleware.connect(this.middlewares, () => ({
-      data: state,
-      moduleName,
+      ...data,
       state: StonexEngine.createStateSnapshot(this.modules),
-      type: MiddlewareDataTypes.STATE_GET,
-    }), (state) => state, state)
+      type,
+    } as MiddlewareData), action, data.data)
   }
 
   private getModuleByName (moduleName: string): { state: any, actions: object } {
@@ -120,6 +93,33 @@ export default class StonexEngine<MP> {
       }
     }
     return module
+  }
+
+  private setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {
+    const changesAsFunction = isType(changes, types.function)
+    const changeAction = () => {
+      const stateChanges = changesAsFunction ? changes() : changes
+      return this.connectMiddleware(MiddlewareDataTypes.STATE_CHANGE, {
+        data: stateChanges,
+        moduleName,
+      }, (stateChanges: any) => {
+        this.mergeChangesToState(moduleName, stateChanges)
+        callback(this.getModuleByName(moduleName).state)
+      })
+    }
+    if (changesAsFunction) {
+      setTimeout(changeAction, 0)
+    } else {
+      changeAction()
+    }
+  }
+
+  private getState (moduleName: string): any {
+    const state = copy(this.getModuleByName(moduleName).state)
+    return this.connectMiddleware(MiddlewareDataTypes.STATE_GET, {
+      data: state,
+      moduleName,
+    }, (state) => state)
   }
 
   private mergeChangesToState (moduleName: string, stateChanges: any): void {

@@ -63,3 +63,9 @@ export declare interface IStonexEngine<MP> {
     [K in keyof MP]: MP[K]
   }
 }
+
+export declare interface StoreBinder<State> {
+  moduleName: string
+  getState: () => State,
+  setState: (changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any) => any
+}

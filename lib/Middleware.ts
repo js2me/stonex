@@ -33,7 +33,7 @@ export default class Middleware {
     mdAction: () => MiddlewareData,
     action: (changes: any) => any,
     changableData: any
-  ) {
+  ): any {
     const [response, modifiedState] = Middleware.call(middlewares, mdAction)
     if (response === MiddlewareResponses.PREVENT) {
       return
