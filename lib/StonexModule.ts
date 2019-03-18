@@ -1,5 +1,5 @@
-import { StonexEngine, Store, StoreBinder } from '.'
-import { isType, noop, types } from './helpers/base'
+import { StoreBinder } from '.'
+import { noop } from './helpers/base'
 
 export class StonexModule<State> {
   public __STONEXMODULE__ = true
@@ -21,6 +21,7 @@ export class StonexModule<State> {
 
   public getState = (): State => {
     console.log("FFFF")
+    console.log(this.storeBinder.getState)
     return this.storeBinder.getState()
   }
 

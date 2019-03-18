@@ -3,6 +3,7 @@ export function getAllMethodsFromModule (module: object): string[] {
   const reservedMethods = [
     'getState',
     'setState',
+    'resetState',
     'constructor',
     '__defineGetter__',
     '__defineSetter__',

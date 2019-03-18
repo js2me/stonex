@@ -1,13 +1,13 @@
-import { noop } from './helpers/base'
 import StonexEngine from './StonexEngine'
 export { default as StonexEngine } from './StonexEngine'
+export { StonexModule } from './StonexModule'
 
 export declare interface ObjectMap<T> {
   [key: string]: T
 }
 
 export declare type ModulesMap<M> = {
-  [K in keyof M]: (new () => M[K])
+  [K in keyof M]: (new (storeBinder: StoreBinder<any>) => M[K])
 }
 
 export declare interface Store<M> {
@@ -23,15 +23,6 @@ export function createStore<M> (
   middlewares: MiddlewareAction[] = []
 ): Store<M> {
   return new StonexEngine<M>(modulesMap, middlewares)
-}
-
-export class StonexModule<State> {
-  public __STONEXMODULE__ = true
-
-  public readonly state: State
-
-  public setState = noop
-  public getState = noop
 }
 
 export enum MiddlewareDataTypes {

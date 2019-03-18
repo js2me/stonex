@@ -21,11 +21,7 @@ export default class StonexEngine<MP> {
     moduleName: string,
     engineContext: StonexEngine<MP>,
   ): StoreBinder<any> => ({
-    getState: () => {
-
-      console.log('>>>>>>>>>>>>>>>>>>>>AAAAAAAAAAAAAAAAAA')
-      return engineContext.getState.bind(engineContext, moduleName)()
-    },
+    getState: engineContext.getState.bind(engineContext, moduleName),
     moduleName,
     resetState: (callback: (state: any) => any): void => {
       engineContext.setState(moduleName, engineContext.modules[moduleName].__initialState, callback)
@@ -68,18 +64,20 @@ export default class StonexEngine<MP> {
     delete moduleInstance.state
 
     Object.defineProperty(moduleInstance, 'state', {
-      get: () => moduleInstance.getState(),
+      // TODO: it call StonexEngine.getState at 108:62
+      get: () => storeBinder.getState(),
     })
 
+    console.log('GGGGGGGGGGGGGGG>>>>>>>>', getAllMethodsFromModule(moduleInstance))
     getAllMethodsFromModule(moduleInstance).forEach((method: string) => {
-      const originalMethod = moduleInstance[method]
+      const originalMethod = moduleInstance[method].bind(moduleInstance)
       moduleInstance[method] = (...args: any[]) => Middleware.connect(this.middlewares, () => ({
         data: args,
         methodName: method,
         moduleName,
         state: StonexEngine.createStateSnapshot(this.modules),
         type: MiddlewareDataTypes.METHOD_CALL,
-      }), (args) => originalMethod.apply(moduleInstance, args), args)
+      }), (args) => originalMethod(...args), args)
     })
 
     return moduleInstance
