@@ -1,14 +1,16 @@
-import { createStore, MiddlewareData, StonexModule } from './lib'
+import { createStore, MiddlewareData } from './lib'
+import { StonexModule } from './lib/StonexModule'
 
-export class Books extends StonexModule<any> {
+export class Books extends StonexModule<string[]> {
   public state = []
 
   public add (book: string): void {
+    console.log('this.stte', this.setState)
     this.setState([...this.state, `${this.state.length + 1}. ${book}`])
   }
 }
 
-export class Items extends StonexModule<any> {
+export class Items extends StonexModule<{ data: number[], isLoading: boolean }> {
   public state = {
     data: [],
     isLoading: false,
@@ -33,7 +35,7 @@ store.modules.books.add('some book 2')
 store.modules.books.add('some book 3')
 store.modules.books.add('some book 4')
 
-store.modules.items.getList().then((listData) => {
+store.modules.items.getList().then((listData: any) => {
   console.log('listData', listData)
 }).catch((e: any) => {
   console.log('e', e)

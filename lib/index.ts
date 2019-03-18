@@ -68,4 +68,5 @@ export declare interface StoreBinder<State> {
   moduleName: string
   getState: () => State,
   setState: (changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any) => any
+  resetState: (callback: (state: any) => any) => void
 }

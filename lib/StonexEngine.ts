@@ -19,51 +19,20 @@ export default class StonexEngine<MP> {
 
   public static createStoreBinder = <MP>(
     moduleName: string,
-    engineContext: StonexEngine<MP>
+    engineContext: StonexEngine<MP>,
   ): StoreBinder<any> => ({
-    getState: engineContext.getState.bind(engineContext, moduleName),
+    getState: () => {
+
+      console.log('>>>>>>>>>>>>>>>>>>>>AAAAAAAAAAAAAAAAAA')
+      return engineContext.getState.bind(engineContext, moduleName)()
+    },
     moduleName,
-    setState: engineContext.setState.bind(engineContext, moduleName)
+    resetState: (callback: (state: any) => any): void => {
+      engineContext.setState(moduleName, engineContext.modules[moduleName].__initialState, callback)
+    },
+    setState: engineContext.setState.bind(engineContext, moduleName),
   })
 
-  public static parseModule<MP> (
-    Module: new (storeBinder: StoreBinder<any>) => StonexModule<any>,
-    moduleName: string,
-    engineContext: StonexEngine<MP>,
-    middlewares: MiddlewareAction[]
-    ):
-  { [key: string]: Function, state: any } {
-    const storeBinder = StonexEngine.createStoreBinder(moduleName, engineContext)
-    const moduleInstance = new Module(storeBinder)
-    if (!moduleInstance.__STONEXMODULE__) {
-      console.error(`${name} is not a Stonex Module` + '\r\n' +
-        'To solve this you should create class which will be extended from StonexModule class')
-    }
-
-    // moduleInstance.setState = engineContext.setState.bind(engineContext, moduleName)
-    // moduleInstance.getState = engineContext.getState.bind(engineContext, moduleName)
-    const initialState = copy(moduleInstance.state)
-    delete moduleInstance.state
-
-    Object.defineProperty(moduleInstance, 'state', {
-      get: () => moduleInstance.getState(),
-    })
-
-    return {
-      ...getAllMethodsFromModule(moduleInstance).reduce((result, method: string) => {
-        result[method] = (...args: any[]) => Middleware.connect(middlewares, () => ({
-          data: args,
-          methodName: method,
-          moduleName,
-          state: StonexEngine.createStateSnapshot(engineContext.modules),
-          type: MiddlewareDataTypes.METHOD_CALL,
-        }), (args) => moduleInstance[method].apply(moduleInstance, args), args)
-        return result
-      }, {}),
-      getState: moduleInstance.getState,
-      state:  initialState
-    }
-  }
   public modules: StonexModules<MP>
 
   private middlewares: MiddlewareAction[] = []
@@ -76,8 +45,44 @@ export default class StonexEngine<MP> {
     this.middlewares = middlewares
 
     for (const moduleName of Object.keys(modulesMap)) {
-      this.modules[moduleName] = StonexEngine.parseModule(modulesMap[moduleName], moduleName, this, middlewares)
+      this.modules[moduleName] = this.connectModule(moduleName, modulesMap[moduleName])
     }
+
+  }
+
+  public connectModule<State> (
+    moduleName: string,
+    Class: new (storeBinder: StoreBinder<any>) => any
+  ): StonexModule<State> {
+    const storeBinder = StonexEngine.createStoreBinder(moduleName, this)
+    const moduleInstance = new Class(storeBinder)
+    if (!moduleInstance.__STONEXMODULE__) {
+      console.error(`${name} is not a Stonex Module` + '\r\n' +
+        'To solve this you should create class which will be extended from StonexModule class')
+    }
+
+    // moduleInstance.setState = engineContext.setState.bind(engineContext, moduleName)
+    // moduleInstance.getState = engineContext.getState.bind(engineContext, moduleName)
+    // TODO: сделать.
+    moduleInstance.__initialState = copy(moduleInstance.state)
+    delete moduleInstance.state
+
+    Object.defineProperty(moduleInstance, 'state', {
+      get: () => moduleInstance.getState(),
+    })
+
+    getAllMethodsFromModule(moduleInstance).forEach((method: string) => {
+      const originalMethod = moduleInstance[method]
+      moduleInstance[method] = (...args: any[]) => Middleware.connect(this.middlewares, () => ({
+        data: args,
+        methodName: method,
+        moduleName,
+        state: StonexEngine.createStateSnapshot(this.modules),
+        type: MiddlewareDataTypes.METHOD_CALL,
+      }), (args) => originalMethod.apply(moduleInstance, args), args)
+    })
+
+    return moduleInstance
   }
 
   public setState (moduleName: string, changes: any, callback: (state: any) => any = noop): void {

@@ -19,7 +19,12 @@ export class StonexModule<State> {
     this.moduleName = storeBinder.moduleName
   }
 
-  public getState = (): State => this.storeBinder.getState()
+  public getState = (): State => {
+    console.log("FFFF")
+    return this.storeBinder.getState()
+  }
+
+  public resetState = (callback: (state: any) => any): void => this.storeBinder.resetState(callback)
 
   protected setState = (
     changes: ((() => Partial<State>) | Partial<State>),
