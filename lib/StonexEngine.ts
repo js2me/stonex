@@ -64,7 +64,7 @@ export default class StonexEngine<MP> {
     delete moduleInstance.state
 
     Object.defineProperty(moduleInstance, 'state', {
-      // TODO: it call StonexEngine.getState at 108:62
+      // TODO: RECURSION: it call StonexEngine.getState at 108:62
       get: () => storeBinder.getState(),
     })
 
@@ -105,6 +105,7 @@ export default class StonexEngine<MP> {
   }
 
   public getState (moduleName: string): any {
+    // TODO: RECURSION: it call StoreBinder.getState at 24
     const state = copy(this.getModuleByName(moduleName).state)
     return Middleware.connect(this.middlewares, () => ({
       data: state,
