@@ -5,6 +5,7 @@ function getAllMethodsFromModule(module) {
     const reservedMethods = [
         'getState',
         'setState',
+        'resetState',
         'constructor',
         '__defineGetter__',
         '__defineSetter__',
@@ -33,4 +34,4 @@ function getAllMethodsFromModule(module) {
     return methods;
 }
 exports.getAllMethodsFromModule = getAllMethodsFromModule;
-//# sourceMappingURL=store.js.map
+//# sourceMappingURL=module.js.map
