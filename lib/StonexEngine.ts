@@ -24,7 +24,7 @@ export default class StonexEngine<MP> {
   private middlewares: MiddlewareAction[] = []
 
   constructor (modulesMap: ModulesMap<MP>, middlewares: MiddlewareAction[] = []) {
-    this.middlewares = middlewares
+    this.connectMiddleware(middlewares)
     for (const moduleName of Object.keys(modulesMap)) {
       this.modules[moduleName] = this.connectModule(moduleName, modulesMap[moduleName])
     }

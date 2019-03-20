@@ -1,4 +1,5 @@
 import StonexEngine from './StonexEngine'
+import { StonexModule } from './StonexModule'
 export { default as StonexEngine } from './StonexEngine'
 export { StonexModule } from './StonexModule'
 
@@ -19,6 +20,10 @@ export declare interface Store<M> {
   ) => any
   resetState: (moduleName: string, callback?: (state: any) => any) => void
   connectMiddleware: (middleware: MiddlewareAction | MiddlewareAction[]) => void
+  connectModule: <State> (
+    moduleName: string,
+    Class: new (storeBinder: StoreBinder<any>) => any
+  ) => StonexModule<State>
 }
 
 export declare type StonexModules<M> = {
