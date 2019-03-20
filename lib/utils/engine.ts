@@ -6,8 +6,6 @@ export const createStoreBinder = <MP>(
   ): StoreBinder<any> => ({
     getState: engineContext.getState.bind(engineContext, moduleName),
     moduleName,
-    resetState: (callback: (state: any) => any): void => {
-      engineContext.setState(moduleName, engineContext.modules[moduleName].__initialState, callback)
-    },
+    resetState: engineContext.resetState.bind(engineContext, moduleName),
     setState: engineContext.setState.bind(engineContext, moduleName),
   })

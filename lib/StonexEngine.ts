@@ -41,6 +41,7 @@ export default class StonexEngine<MP> {
     }
 
     moduleInstance.__initialState = copy(moduleInstance.state)
+
     recreateState(moduleInstance,moduleInstance.__initialState)
 
     getAllMethodsFromModule(moduleInstance).forEach((method: string) => {
@@ -87,6 +88,15 @@ export default class StonexEngine<MP> {
       state: StonexEngine.createStateSnapshot(this.modules),
       type: MiddlewareDataTypes.STATE_GET,
     }), (state) => state, state)
+  }
+
+  public resetState (moduleName: string, callback: (state: any) => any = noop): void {
+    this.setState(moduleName, this.modules[moduleName].__initialState, callback)
+  }
+
+  public connectMiddleware (middleware: MiddlewareAction | MiddlewareAction[]): void {
+    const middlewares = (isType(middleware, types.array) ? middleware : [middleware]) as MiddlewareAction[]
+    this.middlewares.push(...middlewares)
   }
 
   private getModuleByName (moduleName: string): StonexModule<any> {

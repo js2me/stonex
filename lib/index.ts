@@ -12,6 +12,13 @@ export declare type ModulesMap<M> = {
 
 export declare interface Store<M> {
   modules: StonexModules<M>
+  getState: <State>(moduleName: string) => State
+  setState: <State>(
+    moduleName: string,
+    changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any
+  ) => any
+  resetState: (moduleName: string, callback?: (state: any) => any) => void
+  connectMiddleware: (middleware: MiddlewareAction | MiddlewareAction[]) => void
 }
 
 export declare type StonexModules<M> = {
@@ -59,5 +66,5 @@ export declare interface StoreBinder<State> {
   moduleName: string
   getState: () => State,
   setState: (changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any) => any
-  resetState: (callback: (state: any) => any) => void
+  resetState: (callback?: (state: any) => any) => void
 }

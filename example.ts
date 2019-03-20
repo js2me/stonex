@@ -29,19 +29,20 @@ const store = createStore({ books: Books, items: Items },[
       console.log(`${type} : [${moduleName.toUpperCase()}/${methodName.toUpperCase()}] \r\n\args : `, data, '\r\n')
     }
   },
-  ({ moduleName, data, type, state }: MiddlewareData): void => {
-    if (type === 'STATE_CHANGE') {
-      console.log(
-        `CHANGING STATE : [${moduleName.toUpperCase()}]`,
-        '\r\n/new changes/ : ',
-        data,
-        '\r\n/current state/ : ',
-        state[moduleName],
-        '\r\n'
-      )
-    }
-  },
 ])
+
+store.connectMiddleware(({ moduleName, data, type, state }: MiddlewareData): void => {
+  if (type === 'STATE_CHANGE') {
+    console.log(
+      `CHANGING STATE : [${moduleName.toUpperCase()}]`,
+      '\r\n/new changes/ : ',
+      data,
+      '\r\n/current state/ : ',
+      state[moduleName],
+      '\r\n'
+    )
+  }
+})
 
 store.modules.books.add('1')
 store.modules.books.add('2')
