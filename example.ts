@@ -44,14 +44,7 @@ store.connectMiddleware(({ moduleName, data, type, state }: MiddlewareData): voi
   }
 })
 
-store.connectModule('books2', Books)
-
 store.modules.books.add('example')
-
-
-
-
-store.modules.books2.add('example')
 
 store.modules.items.getList().then((listData: any) => {
   store.modules.items.resetState()

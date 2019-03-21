@@ -26,7 +26,7 @@ export default class StonexEngine<MP> {
   constructor (modulesMap: ModulesMap<MP>, middlewares: MiddlewareAction[] = []) {
     this.connectMiddleware(middlewares)
     for (const moduleName of Object.keys(modulesMap)) {
-      this.modules[moduleName] = this.connectModule(moduleName, modulesMap[moduleName])
+      this.connectModule(moduleName, modulesMap[moduleName])
     }
   }
 
@@ -54,6 +54,8 @@ export default class StonexEngine<MP> {
         type: MiddlewareDataTypes.METHOD_CALL,
       }), (args) => originalMethod(...args), args)
     })
+
+    this.modules[moduleName] = moduleInstance
 
     return moduleInstance
   }
