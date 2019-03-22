@@ -1,29 +1,23 @@
-import StonexEngine from './StonexEngine'
-import { StonexModule } from './StonexModule'
+import { MiddlewareAction } from './Middleware'
+import StonexEngine, { Store } from './StonexEngine'
+import { StoreBinder } from './StoreBinder'
 export { default as StonexEngine } from './StonexEngine'
-export { StonexModule } from './StonexModule'
+export * from './StonexModule'
+export * from './Middleware'
+export * from './StoreBinder'
+export * from './StateWorker'
+export * from './StonexEngine'
 
-export declare interface ObjectMap<T> {
-  [key: string]: T
+export declare type ModuleCreatorsMap<M> = {
+  [K in keyof M]: ModuleCreator<any, M[K]>
 }
 
-export declare type ModulesMap<M> = {
-  [K in keyof M]: (new (storeBinder: StoreBinder<any>) => M[K])
-}
+export declare type ModuleCreator<State, MI> =
+  (new (storeBinder: StoreBinder<any>) => MI) | ModuleConfiguration<any, MI>
 
-export declare interface Store<M> {
-  modules: StonexModules<M>
-  getState: <State>(moduleName: string) => State
-  setState: <State>(
-    moduleName: string,
-    changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any
-  ) => any
-  resetState: (moduleName: string, callback?: (state: any) => any) => void
-  connectMiddleware: (middleware: MiddlewareAction | MiddlewareAction[]) => void
-  connectModule: <State> (
-    moduleName: string,
-    Class: new (storeBinder: StoreBinder<any>) => any
-  ) => StonexModule<State>
+export declare interface ModuleConfiguration<State = any, MI = any> {
+  module: new (storeBinder: StoreBinder<State>) => MI,
+  storeBinder?: StoreBinder<State>
 }
 
 export declare type StonexModules<M> = {
@@ -31,45 +25,8 @@ export declare type StonexModules<M> = {
 }
 
 export function createStore<M> (
-  modulesMap: ModulesMap<M>,
+  modulesMap: ModuleCreatorsMap<M>,
   middlewares: MiddlewareAction[] = []
 ): Store<M> {
   return new StonexEngine<M>(modulesMap, middlewares)
-}
-
-export enum MiddlewareDataTypes {
-  METHOD_CALL = 'METHOD_CALL', STATE_CHANGE = 'STATE_CHANGE', STATE_GET = 'STATE_GET'
-}
-
-export enum MiddlewareResponses {
-  BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
-}
-
-export declare type MiddlewareResponse = [MiddlewareResponses, any?]
-
-export declare interface MiddlewareData {
-  moduleName: string,
-  type: MiddlewareDataTypes,
-  methodName?: string,
-  data?: any,
-  state: object,
-}
-
-export declare type MiddlewareAction =
-  (
-    data: MiddlewareData,
-    prevResponse?: null | MiddlewareResponse
-  ) => (void | MiddlewareResponse)
-
-export declare interface IStonexEngine<MP> {
-  modules: {
-    [K in keyof MP]: MP[K]
-  }
-}
-
-export declare interface StoreBinder<State> {
-  moduleName: string
-  getState: () => State,
-  setState: (changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any) => any
-  resetState: (callback?: (state: any) => any) => void
 }

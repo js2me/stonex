@@ -46,6 +46,12 @@ store.connectMiddleware(({ moduleName, data, type, state }: MiddlewareData): voi
 
 store.modules.books.add('example')
 
+store.connectModule('bukz', {
+  module: Books
+})
+
+// TODO: store.modules.bukz -> not exist :(
+
 store.modules.items.getList().then((listData: any) => {
   store.modules.items.resetState()
 }).catch((e: any) => {

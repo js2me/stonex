@@ -19,12 +19,5 @@ export const isType = (data: any, expectedType: types): boolean => {
   return types.other === expectedType
 }
 
-export const copy = (data: any) => {
-  if (isType(data, types.array)) {
-    return data.slice()
-  }
-  if (isType(data, types.object)) {
-    return Object.assign({}, data)
-  }
-  return data
-}
+export const copy = (data: any) =>
+  isType(data, types.array) ? data.slice() : isType(data, types.object) ? Object.assign({}, data) : data

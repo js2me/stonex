@@ -1,8 +1,28 @@
-import {
-    MiddlewareAction, MiddlewareData,
-    MiddlewareResponse, MiddlewareResponses
-  } from '.'
 import { copy } from './helpers/base'
+
+export enum MiddlewareDataTypes {
+  METHOD_CALL = 'METHOD_CALL', STATE_CHANGE = 'STATE_CHANGE', STATE_GET = 'STATE_GET'
+}
+
+export enum MiddlewareResponses {
+  BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
+}
+
+export declare type MiddlewareResponse = [MiddlewareResponses, any?]
+
+export declare interface MiddlewareData {
+  moduleName: string,
+  type: MiddlewareDataTypes,
+  methodName?: string,
+  data?: any,
+  state: object,
+}
+
+export declare type MiddlewareAction =
+  (
+    data: MiddlewareData,
+    prevResponse?: null | MiddlewareResponse
+  ) => (void | MiddlewareResponse)
 
 export default class Middleware {
 
