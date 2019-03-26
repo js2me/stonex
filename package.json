@@ -1,6 +1,6 @@
 {
   "name": "stonex",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "simple container",
   "main": "dist/index.js",
   "scripts": {
