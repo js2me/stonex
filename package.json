@@ -2,7 +2,7 @@
   "name": "stonex",
   "version": "0.0.2-alpha",
   "description": "simple container",
-  "main": "dist/lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "_prepublish": "yarn build",
     "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example.ts",
