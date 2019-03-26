@@ -21,13 +21,5 @@ exports.isType = (data, expectedType) => {
     }
     return types.other === expectedType;
 };
-exports.copy = (data) => {
-    if (exports.isType(data, types.array)) {
-        return data.slice();
-    }
-    if (exports.isType(data, types.object)) {
-        return Object.assign({}, data);
-    }
-    return data;
-};
+exports.copy = (data) => exports.isType(data, types.array) ? data.slice() : exports.isType(data, types.object) ? Object.assign({}, data) : data;
 //# sourceMappingURL=base.js.map

@@ -1,14 +1,16 @@
 {
   "name": "stonex",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "simple container",
   "main": "dist/lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "tslint 'lib/**/*.ts'",
+    "_prepublish": "yarn build",
+    "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example.ts",
     "build": "tsc -p .",
     "exec": "ts-node example.ts",
-    "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example.ts"
+    "lint": "tslint 'lib/**/*.ts'",
+    "precommit": "yarn lint --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "acacode",
   "license": "MIT",

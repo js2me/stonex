@@ -8,7 +8,7 @@ export enum MiddlewareResponses {
   BREAK = 'BREAK', PREVENT = 'PREVENT', MODIFY = 'MODIFY'
 }
 
-export declare type MiddlewareResponse = [MiddlewareResponses, any?]
+export declare type MiddlewareResponse = [MiddlewareResponses, any]
 
 export declare interface MiddlewareData {
   moduleName: string,

@@ -3,9 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createStoreBinder = (moduleName, engineContext) => ({
     getState: engineContext.getState.bind(engineContext, moduleName),
     moduleName,
-    resetState: (callback) => {
-        engineContext.setState(moduleName, engineContext.modules[moduleName].__initialState, callback);
-    },
+    resetState: engineContext.resetState.bind(engineContext, moduleName),
     setState: engineContext.setState.bind(engineContext, moduleName),
 });
-//# sourceMappingURL=engine.js.map
+//# sourceMappingURL=StoreBinder.js.map

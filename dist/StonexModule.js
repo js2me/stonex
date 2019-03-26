@@ -7,11 +7,11 @@ class StonexModule {
             throw new Error('Stonex Module created but not registered in Stonex Store. \r\n' +
                 'Please attach all your modules to store');
         }
-        const { getState, setState, resetState } = storeBinder;
+        const { getState, setState, resetState, moduleName } = storeBinder;
         this.getState = getState;
         this.setState = setState;
         this.resetState = resetState;
-        this.moduleName = storeBinder.moduleName;
+        this.moduleName = moduleName;
     }
 }
 exports.StonexModule = StonexModule;
