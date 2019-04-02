@@ -15,8 +15,8 @@ export declare type ModuleCreatorsMap<M> = {
 export declare type ModuleCreator<State, MI> =
   (new (storeBinder: StoreBinder<any>) => MI) | ModuleConfiguration<any, MI>
 
-export declare interface ModuleConfiguration<State = any, MI = any> {
-  module: new (storeBinder: StoreBinder<State>) => MI,
+export declare interface ModuleConfiguration<State = any, M = any> {
+  module: new (storeBinder: StoreBinder<State>) => M,
   storeBinder?: StoreBinder<State>
 }
 

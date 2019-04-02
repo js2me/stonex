@@ -58,10 +58,12 @@ export default class StonexEngine<MP> implements Store<MP> {
     moduleName: string,
     data: ModuleCreator<State, any>
   ): StonexModule<State> {
-    const { module, storeBinder } = isType(data, types.function) ? {
+    const { module, storeBinder = createStoreBinder<MP, State>(moduleName, this) } = isType(data, types.function) ? {
       module: data as new (storeBinder: StoreBinder<State>) => any,
       storeBinder: createStoreBinder<MP, State>(moduleName, this),
     } : data as ModuleConfiguration<State>
+
+    console.log('storeBinder', storeBinder, data)
 
     const moduleInstance = new module(storeBinder as StoreBinder<State>)
     if (!moduleInstance.__STONEXMODULE__) {

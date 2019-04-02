@@ -13,8 +13,9 @@ export class StonexModule<State> {
 
   constructor (storeBinder: StoreBinder<State>) {
     if (!storeBinder) {
-      throw new Error('Stonex Module created but not registered in Stonex Store. \r\n' +
-      'Please attach all your modules to store')
+      throw new Error(
+        'Stonex Module created but not registered in Stonex Store. \r\n' +
+        'Please attach all your modules to store')
     }
     const { getState, setState, resetState, moduleName } = storeBinder
     this.getState = getState
