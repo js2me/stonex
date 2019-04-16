@@ -1,9 +1,8 @@
-import { MiddlewareAction } from './Middleware'
 import StonexEngine, { Store } from './StonexEngine'
 import { StoreBinder } from './StoreBinder'
+import { StateWorker } from './StateWorker';
 export { default as StonexEngine } from './StonexEngine'
 export * from './StonexModule'
-export * from './Middleware'
 export * from './StoreBinder'
 export * from './StateWorker'
 export * from './StonexEngine'
@@ -26,7 +25,7 @@ export declare type StonexModules<M> = {
 
 export function createStore<M> (
   modulesMap: ModuleCreatorsMap<M>,
-  middlewares: MiddlewareAction[] = []
+  stateWorker?: StateWorker
 ): Store<M> {
-  return new StonexEngine<M>(modulesMap, middlewares)
+  return new StonexEngine<M>(modulesMap, stateWorker)
 }

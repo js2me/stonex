@@ -1,11 +1,13 @@
-import { createStore, MiddlewareData } from './lib'
+import { createStore } from './lib'
 import { StonexModule } from './lib/StonexModule'
 
 export class Books extends StonexModule<string[]> {
   public state = []
 
   public add (book: string): void {
-    this.setState([...this.state, `${this.state.length + 1}. ${book}`])
+    this.setState([...this.state, `${this.state.length + 1}. ${book}`], (state) => {
+      console.log('it should be updated', state)
+    })
   }
 }
 
@@ -23,28 +25,22 @@ export class Items extends StonexModule<{ data: number[]; isLoading: boolean }> 
   }
 }
 
-const store = createStore({ books: Books, items: Items }, [
-  ({ methodName = '', moduleName, data, type }: MiddlewareData): void => {
-    if (type === 'METHOD_CALL') {
-      console.log(`${type} : [${moduleName.toUpperCase()}/${methodName.toUpperCase()}] \r\n\args : `, data, '\r\n')
-    }
-  }
-])
+const store = createStore({ books: Books, items: Items })
 
-store.connectMiddleware(
-  ({ moduleName, data, type, state }: MiddlewareData): void => {
-    if (type === 'STATE_CHANGE') {
-      console.log(
-        `CHANGING STATE : [${moduleName.toUpperCase()}]`,
-        '\r\n/new changes/ : ',
-        data,
-        '\r\n/current state/ : ',
-        state[moduleName],
-        '\r\n'
-      )
-    }
-  }
-)
+// store.connectMiddleware(
+//   ({ moduleName, data, type, state }: MiddlewareData): void => {
+//     if (type === 'STATE_CHANGE') {
+//       console.log(
+//         `CHANGING STATE : [${moduleName.toUpperCase()}]`,
+//         '\r\n/new changes/ : ',
+//         data,
+//         '\r\n/current state/ : ',
+//         state[moduleName],
+//         '\r\n'
+//       )
+//     }
+//   }
+// )
 
 store.modules.books.add('example')
 
@@ -61,3 +57,5 @@ store.modules.items
   .catch((e: any) => {
     console.log('e', e)
   })
+
+console.log(store.modules.books.getState())
