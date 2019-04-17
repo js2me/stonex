@@ -1,5 +1,5 @@
 
-import { StonexEngine } from '.'
+import { StonexStore } from '.'
 
 export declare interface StoreBinder<State> {
   moduleName: string
@@ -10,7 +10,7 @@ export declare interface StoreBinder<State> {
 
 export const createStoreBinder = <MP, State>(
     moduleName: string,
-    engineContext: StonexEngine<MP>,
+    engineContext: StonexStore<MP>,
   ): StoreBinder<State> => ({
     getState: engineContext.getState.bind(engineContext, moduleName),
     moduleName,

@@ -1,4 +1,4 @@
-import { createStore } from './lib'
+import { StonexStore } from './lib'
 import { StonexModule } from './lib/StonexModule'
 
 export class Books extends StonexModule<string[]> {
@@ -25,22 +25,7 @@ export class Items extends StonexModule<{ data: number[]; isLoading: boolean }> 
   }
 }
 
-const store = createStore({ books: Books, items: Items })
-
-// store.connectMiddleware(
-//   ({ moduleName, data, type, state }: MiddlewareData): void => {
-//     if (type === 'STATE_CHANGE') {
-//       console.log(
-//         `CHANGING STATE : [${moduleName.toUpperCase()}]`,
-//         '\r\n/new changes/ : ',
-//         data,
-//         '\r\n/current state/ : ',
-//         state[moduleName],
-//         '\r\n'
-//       )
-//     }
-//   }
-// )
+const store = new StonexStore({ books: Books, items: Items })
 
 store.modules.books.add('example')
 
@@ -52,6 +37,7 @@ store.connectModule('bukz', {
 store.modules.items
   .getList()
   .then((listData: any) => {
+    console.log('listData', listData)
     store.modules.items.resetState()
   })
   .catch((e: any) => {

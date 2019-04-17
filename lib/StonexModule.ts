@@ -17,10 +17,6 @@ export class StonexModule<State> {
         'Stonex Module created but not registered in Stonex Store. \r\n' +
         'Please attach all your modules to store')
     }
-    const { getState, setState, resetState, moduleName } = storeBinder
-    this.getState = getState
-    this.setState = setState
-    this.resetState = resetState
-    this.moduleName = moduleName
+    Object.assign(this, storeBinder)
   }
 }

@@ -7,6 +7,7 @@ export declare interface StateWorker {
 }
 
 export class StateWorker implements StateWorker {
+
   public static recreateState (moduleInstance: StonexModule<any>, value: any): void {
     Object.defineProperty(moduleInstance, 'state', {
       get: () => value,

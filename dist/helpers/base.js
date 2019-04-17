@@ -1,25 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.noop = (...args) => { };
+exports.noop = function () {
+    var args = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        args[_i] = arguments[_i];
+    }
+};
 var types;
 (function (types) {
-    types[types["array"] = 0] = "array";
-    types[types["object"] = 1] = "object";
-    types[types["other"] = 2] = "other";
-    types[types["function"] = 3] = "function";
+    types["array"] = "array";
+    types["function"] = "function";
+    types["object"] = "object";
+    types["other"] = "other";
 })(types = exports.types || (exports.types = {}));
-exports.isType = (data, expectedType) => {
-    const typeOf = typeof data;
-    if (data instanceof Array) {
-        return types.array === expectedType;
-    }
-    if (typeOf === 'object') {
-        return types.object === expectedType;
-    }
-    if (typeOf === 'function') {
-        return types.function === expectedType;
-    }
-    return types.other === expectedType;
+exports.isType = function (data, expectedType) {
+    return (types[data instanceof Array ? 'array' : typeof data] || types.other) === expectedType;
 };
-exports.copy = (data) => exports.isType(data, types.array) ? data.slice() : exports.isType(data, types.object) ? Object.assign({}, data) : data;
+exports.copy = function (data) {
+    return exports.isType(data, types.array) ? data.slice() : exports.isType(data, types.object) ? Object.assign({}, data) : data;
+};
 //# sourceMappingURL=base.js.map

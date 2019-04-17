@@ -22,15 +22,13 @@ export declare interface Store<MP> {
   ) => StonexModule<State>
 }
 
-export default class StonexEngine<MP> implements Store<MP> {
+class StonexStore<MP> implements Store<MP> {
 
-  public static createStateSnapshot<MP> (modules: MP): object {
-    const state = {}
-    Object.keys(modules).forEach((name) => {
+  public static createStateSnapshot = <MP>(modules: MP): object =>
+    Object.keys(modules).reduce((state, name) => {
       state[name] = copy(modules[name].state)
-    })
-    return state
-  }
+      return state
+    }, {})
 
   public modules: StonexModules<MP> = {} as StonexModules<MP>
 
@@ -38,9 +36,9 @@ export default class StonexEngine<MP> implements Store<MP> {
 
   constructor (
     modulesMap: ModuleCreatorsMap<MP>,
-    stateWorker: StateWorker = StateWorker
+    stateWorker?: StateWorker
   ) {
-    this.stateWorker = stateWorker
+    this.stateWorker = stateWorker || StateWorker
     for (const moduleName of Object.keys(modulesMap)) {
       this.connectModule(moduleName, modulesMap[moduleName])
     }
@@ -86,15 +84,12 @@ export default class StonexEngine<MP> implements Store<MP> {
     }
   }
 
-  public getState (moduleName: string): any {
-    return copy(this.getModuleByName(moduleName).state)
-  }
+  public getState = (moduleName: string): any => copy(this.getModuleByName(moduleName).state)
 
-  public resetState (moduleName: string, callback: (state: any) => any = noop): void {
+  public resetState = (moduleName: string, callback: (state: any) => any = noop): void =>
     this.setState(moduleName, this.modules[moduleName].__initialState, callback)
-  }
 
-  private getModuleByName (moduleName: string): StonexModule<any> {
+  private getModuleByName (moduleName: string): StonexModule<any> | never {
     const module = this.modules[moduleName]
     if (!module) {
       throw new Error(`Module with name ${moduleName} is not exist in your stonex store`)
@@ -102,3 +97,6 @@ export default class StonexEngine<MP> implements Store<MP> {
     return module
   }
 }
+
+export default StonexStore
+
