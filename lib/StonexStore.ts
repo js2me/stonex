@@ -36,7 +36,9 @@ class StonexStore<MP> implements Store<MP> {
 
   constructor (
     modulesMap: ModuleCreatorsMap<MP>,
-    stateWorker?: StateWorker
+    {
+      stateWorker?: StateWorker
+    }
   ) {
     this.stateWorker = stateWorker || StateWorker
     for (const moduleName of Object.keys(modulesMap)) {
@@ -48,14 +50,15 @@ class StonexStore<MP> implements Store<MP> {
     moduleName: string,
     data: ModuleCreator<State, any>
   ): StonexModule<State> {
+
     const createDefaultStoreBinder = () => createStoreBinder<MP, State>(moduleName, this)
 
-    const { module, storeBinder = createDefaultStoreBinder() } = isType(data, types.function) ? {
+    const { module: Module, storeBinder = createDefaultStoreBinder() } = isType(data, types.function) ? {
       module: data as new (storeBinder: StoreBinder<State>) => any,
       storeBinder: createDefaultStoreBinder(),
     } : data as ModuleConfiguration<State>
 
-    const moduleInstance = new module(storeBinder)
+    const moduleInstance = new Module(storeBinder)
     if (!moduleInstance.__STONEXMODULE__) {
       console.error(`${name} is not a Stonex Module` + '\r\n' +
         `To solve this you should extend your class ${name} from StonexModule class`)
@@ -70,15 +73,24 @@ class StonexStore<MP> implements Store<MP> {
     return moduleInstance
   }
 
-  public setState<State> (moduleName: string, changes: any, callback: (state: State) => any = noop): void {
+  public setState<State> (
+    moduleName: string,
+    changes: Partial<State>,
+    callback: (state: State) => any
+  ): void
+  public setState<State> (
+    moduleName: string,
+    changes: (state: State) => Partial<State>,
+    callback: (state: State) => any = noop
+  ): void {
     const changesAsFunction = isType(changes, types.function)
-    const changeAction = (stateChanges: Partial<State>) => {
+    const changeAction = (stateChanges: any) => {
       const moduleInstance = this.getModuleByName(moduleName)
       this.stateWorker.updateState<State>(moduleInstance, stateChanges)
       callback(moduleInstance.state)
     }
     if (changesAsFunction) {
-      setTimeout(() => changeAction(changes()), 0)
+      setTimeout(() => changeAction(changes(this.getModuleByName(moduleName).state)), 0)
     } else {
       changeAction(changes)
     }

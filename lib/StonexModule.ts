@@ -8,7 +8,11 @@ export class StonexModule<State> {
   public readonly moduleName: string
 
   public getState: () => State
-  public setState: (changes: ((() => Partial<State>) | Partial<State>), callback?: (state: any) => any) => any
+  public setState: (
+    changes: ((state: State) => Partial<State>) | Partial<State>,
+    callback?: (state: any) => any
+  ) => any
+
   public resetState: (callback?: (state: any) => any) => void
 
   constructor (storeBinder: StoreBinder<State>) {
