@@ -11,9 +11,12 @@
     "lint": "tslint 'lib/**/*.ts'",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "npm run build --debug-brk=5858"
+    "debug": "npm run build --debug-brk=5858",
   },
-  "pre-commit": ["lint:fix", "build"],
+  "pre-commit": [
+    "lint:fix",
+    "build"
+  ],
   "author": "acacode",
   "license": "MIT",
   "devDependencies": {
@@ -30,6 +33,7 @@
     "babel-preset-es2015": "6.24.1",
     "babel-runtime": "6.26.0",
     "nodemon": "^1.18.10",
+    "pre-commit": "^1.2.2",
     "ts-node": "^8.0.2",
     "tslint": "5.13.0",
     "tslint-config-standard": "^8.0.1",
