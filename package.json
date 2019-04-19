@@ -9,9 +9,11 @@
     "build": "tsc -p .",
     "exec": "ts-node example.ts",
     "lint": "tslint 'lib/**/*.ts'",
-    "precommit": "yarn lint --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:fix": "yarn lint --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug": "npm run build --debug-brk=5858"
   },
+  "pre-commit": ["lint:fix", "build"],
   "author": "acacode",
   "license": "MIT",
   "devDependencies": {

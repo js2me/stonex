@@ -35,10 +35,8 @@ class StonexStore<MP> implements Store<MP> {
   private stateWorker: StateWorker
 
   constructor (
-    modulesMap: ModuleCreatorsMap<MP>,
-    {
-      stateWorker?: StateWorker
-    }
+    modulesMap: Partial<ModuleCreatorsMap<MP>>,
+    stateWorker?: StateWorker
   ) {
     this.stateWorker = stateWorker || StateWorker
     for (const moduleName of Object.keys(modulesMap)) {
@@ -111,4 +109,3 @@ class StonexStore<MP> implements Store<MP> {
 }
 
 export default StonexStore
-

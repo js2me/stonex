@@ -1,6 +1,6 @@
 import { StoreBinder } from '.'
 
-export class StonexModule<State> {
+export class StonexModule<State = any> {
   public readonly __STONEXMODULE__ = true
 
   public readonly state: State

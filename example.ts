@@ -25,13 +25,31 @@ export class Items extends StonexModule<{ data: number[]; isLoading: boolean }> 
   }
 }
 
-const store = new StonexStore({ books: Books, items: Items })
+export class BlackBox extends StonexModule {
+  public state = {
+    foo: {
+      bar: 'bar'
+    }
+  }
+
+  public changeSomething (ref: any): any {
+    this.setState({
+      foo: {
+        ...this.state.foo,
+        bar: ref
+      }
+    })
+  }
+}
+
+const store = new StonexStore({ books: Books, items: Items, blackBox: BlackBox })
 
 store.modules.books.add('example')
 
 store.connectModule('bukz', {
   module: Books
 })
+
 // TODO: store.modules.bukz -> not exist :(
 
 store.modules.items
@@ -44,4 +62,4 @@ store.modules.items
     console.log('e', e)
   })
 
-console.log(store.modules.books.getState())
+console.log("store.getState('books')", store.getState('books'))

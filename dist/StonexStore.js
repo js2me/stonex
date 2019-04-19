@@ -17,6 +17,8 @@ var StonexStore = /** @class */ (function () {
             var moduleName = _a[_i];
             this.connectModule(moduleName, modulesMap[moduleName]);
         }
+        var lol = 5;
+        console.log('asdasd', lol);
     }
     StonexStore.prototype.connectModule = function (moduleName, data) {
         var _this = this;
@@ -24,8 +26,8 @@ var StonexStore = /** @class */ (function () {
         var _a = base_1.isType(data, base_1.types.function) ? {
             module: data,
             storeBinder: createDefaultStoreBinder(),
-        } : data, module = _a.module, _b = _a.storeBinder, storeBinder = _b === void 0 ? createDefaultStoreBinder() : _b;
-        var moduleInstance = new module(storeBinder);
+        } : data, Module = _a.module, _b = _a.storeBinder, storeBinder = _b === void 0 ? createDefaultStoreBinder() : _b;
+        var moduleInstance = new Module(storeBinder);
         if (!moduleInstance.__STONEXMODULE__) {
             console.error(name + " is not a Stonex Module" + '\r\n' +
                 ("To solve this you should extend your class " + name + " from StonexModule class"));
@@ -45,7 +47,7 @@ var StonexStore = /** @class */ (function () {
             callback(moduleInstance.state);
         };
         if (changesAsFunction) {
-            setTimeout(function () { return changeAction(changes()); }, 0);
+            setTimeout(function () { return changeAction(changes(_this.getModuleByName(moduleName).state)); }, 0);
         }
         else {
             changeAction(changes);
