@@ -15,6 +15,10 @@ export class StonexModule<State = any> {
 
   public resetState: (callback?: (state: any) => any) => void
 
+  /* tslint:disable:variable-name */
+  public __initialState: State
+  /* tslint:enable:variable-name */
+
   constructor (storeBinder: StoreBinder<State>) {
     if (!storeBinder) {
       throw new Error(

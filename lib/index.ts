@@ -1,4 +1,5 @@
 // ts disable
+import { StonexModule } from './StonexModule'
 import { StoreBinder } from './StoreBinder'
 export { default as StonexStore } from './StonexStore'
 export * from './StonexModule'
@@ -14,7 +15,7 @@ export declare type ModuleCreator<State, MI> =
   (new (storeBinder: StoreBinder<any>) => MI) | ModuleConfiguration<any, MI>
 
 export declare interface ModuleConfiguration<State = any, M = any> {
-  module: new (storeBinder: StoreBinder<State>) => M,
+  module: new (storeBinder: StoreBinder<State>) => StonexModule<State>,
   storeBinder?: StoreBinder<State>
 }
 

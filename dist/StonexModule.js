@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var StonexModule = /** @class */ (function () {
+    /* tslint:enable:variable-name */
     function StonexModule(storeBinder) {
         this.__STONEXMODULE__ = true;
         if (!storeBinder) {

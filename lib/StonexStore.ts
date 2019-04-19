@@ -1,9 +1,9 @@
 import {
   ModuleConfiguration, ModuleCreator, ModuleCreatorsMap,
-  StonexModules,
-  StoreBinder
+  StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
+import { getAllMethodsFromModule } from './helpers/module'
 import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
 import { createStoreBinder } from './StoreBinder'
@@ -22,6 +22,17 @@ export declare interface Store<MP> {
   ) => StonexModule<State>
 }
 
+declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
+declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
+declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
+
+export declare type Modifier<MP> = StoreModifier<MP, ModuleModifier<ActionModifier>>
+
+export declare interface StoreConfiguration<MP> {
+  stateWorker?: StateWorker
+  modifiers?: Array<Modifier<MP>>
+}
+
 class StonexStore<MP> implements Store<MP> {
 
   public static createStateSnapshot = <MP>(modules: MP): object =>
@@ -33,30 +44,52 @@ class StonexStore<MP> implements Store<MP> {
   public modules: StonexModules<MP> = {} as StonexModules<MP>
 
   private stateWorker: StateWorker
+  private modifiers: Array<Modifier<MP>>
 
   constructor (
     modulesMap: Partial<ModuleCreatorsMap<MP>>,
-    stateWorker?: StateWorker
+    { stateWorker, modifiers }: StoreConfiguration<MP> = {}
   ) {
     this.stateWorker = stateWorker || StateWorker
+    this.modifiers = modifiers || []
+
+    const moduleModifiers: ModuleModifier[] = this.modifiers.reduce((moduleModifiers: ModuleModifier[], modifier) => {
+      const moduleModifier: ModuleModifier | any = modifier(this)
+      if (typeof moduleModifier === 'function') {
+        moduleModifiers.push(moduleModifier)
+      }
+      return moduleModifiers
+    },[])
+
     for (const moduleName of Object.keys(modulesMap)) {
-      this.connectModule(moduleName, modulesMap[moduleName])
+      this.connectModule(moduleName, modulesMap[moduleName], moduleModifiers)
     }
   }
 
   public connectModule<State> (
     moduleName: string,
-    data: ModuleCreator<State, any>
+    data: ModuleCreator<State, any>,
+    moduleModifiers: ModuleModifier[] = []
   ): StonexModule<State> {
 
     const createDefaultStoreBinder = () => createStoreBinder<MP, State>(moduleName, this)
 
     const { module: Module, storeBinder = createDefaultStoreBinder() } = isType(data, types.function) ? {
-      module: data as new (storeBinder: StoreBinder<State>) => any,
+      module: data as ModuleConfiguration<State>['module'],
       storeBinder: createDefaultStoreBinder(),
     } : data as ModuleConfiguration<State>
 
     const moduleInstance = new Module(storeBinder)
+
+    const actionModifiers: Function[] = []
+
+    moduleModifiers.forEach(modifier => {
+      const actionModifier = modifier(moduleInstance)
+      if (typeof actionModifier === 'function') {
+        actionModifiers.push(actionModifier)
+      }
+    })
+
     if (!moduleInstance.__STONEXMODULE__) {
       console.error(`${name} is not a Stonex Module` + '\r\n' +
         `To solve this you should extend your class ${name} from StonexModule class`)
@@ -65,6 +98,18 @@ class StonexStore<MP> implements Store<MP> {
     moduleInstance.__initialState = copy(moduleInstance.state)
 
     this.stateWorker.recreateState(moduleInstance,moduleInstance.__initialState)
+
+    getAllMethodsFromModule(moduleInstance).forEach(methodName => {
+      const closuredMethod = moduleInstance[methodName]
+      moduleInstance[methodName] = (...args: any[]) => {
+        for (const modifier of actionModifiers) {
+          if (modifier(args, moduleInstance.moduleName, methodName) === false) {
+            return null
+          }
+        }
+        return closuredMethod.apply(moduleInstance, args)
+      }
+    })
 
     this.modules[moduleName] = moduleInstance
 
@@ -99,7 +144,7 @@ class StonexStore<MP> implements Store<MP> {
   public resetState = (moduleName: string, callback: (state: any) => any = noop): void =>
     this.setState(moduleName, this.modules[moduleName].__initialState, callback)
 
-  private getModuleByName (moduleName: string): StonexModule<any> | never {
+  private getModuleByName = (moduleName: string): StonexModule<any> | never => {
     const module = this.modules[moduleName]
     if (!module) {
       throw new Error(`Module with name ${moduleName} is not exist in your stonex store`)

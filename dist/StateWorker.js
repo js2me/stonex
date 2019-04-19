@@ -16,6 +16,12 @@ var StateWorker = /** @class */ (function () {
     function StateWorker() {
     }
     StateWorker.recreateState = function (moduleInstance, value) {
+        var boundGetState = moduleInstance.getState.bind(moduleInstance);
+        // excuse me what the fuck ?
+        // with calling getState typescript returns :
+        // Module with name blackBox is not exist in your stonex store
+        // WAT ?
+        console.log('boundGetState', boundGetState());
         Object.defineProperty(moduleInstance, 'state', {
             get: function () { return value; },
             set: function () {
