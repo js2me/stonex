@@ -12,10 +12,12 @@
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "npm run build --debug-brk=5858",
+    "stage-dist-changes": "git add dist"
   },
   "pre-commit": [
     "lint:fix",
-    "build"
+    "build",
+    "stage-dist-changes"
   ],
   "author": "acacode",
   "license": "MIT",

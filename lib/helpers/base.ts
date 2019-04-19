@@ -1,5 +1,7 @@
 
+/* tslint:disable:no-empty */
 export const noop = (...args: any[]) => {}
+/* tslint:enable:no-empty */
 
 export enum types {
     array = 'array',

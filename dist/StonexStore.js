@@ -17,8 +17,6 @@ var StonexStore = /** @class */ (function () {
             var moduleName = _a[_i];
             this.connectModule(moduleName, modulesMap[moduleName]);
         }
-        var lol = 5;
-        console.log('asdasd', lol);
     }
     StonexStore.prototype.connectModule = function (moduleName, data) {
         var _this = this;
