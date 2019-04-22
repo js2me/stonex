@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var base_1 = require("./helpers/base");
 var ModifiersWorker_1 = require("./ModifiersWorker");
-var StateStorage_1 = require("./StateStorage");
 var StateWorker_1 = require("./StateWorker");
 var StoreBinder_1 = require("./StoreBinder");
 var StonexStore = /** @class */ (function () {
@@ -52,10 +51,7 @@ var StonexStore = /** @class */ (function () {
                 ("To solve this you should extend your class " + name + " from StonexModule class"));
         }
         moduleInstance.__initialState = base_1.copy(moduleInstance.state);
-        moduleInstance.__stateId = this.storeId + "/" + moduleName.toUpperCase();
-        if (typeof StateStorage_1.stateStorage.getById(moduleInstance.__stateId) === 'undefined') {
-            StateStorage_1.stateStorage.createState(moduleInstance.__stateId, moduleInstance.__initialState);
-        }
+        this.stateWorker.initializeState(moduleInstance);
         ModifiersWorker_1.default.attachActionModifiersToModule(actionModifiers, moduleInstance);
         this.modules[moduleName] = moduleInstance;
         return moduleInstance;

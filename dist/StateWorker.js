@@ -16,6 +16,17 @@ var StateWorker = /** @class */ (function () {
     function StateWorker() {
         this.state = {};
     }
+    StateWorker.prototype.initializeState = function (moduleInstance) {
+        this.state[moduleInstance.moduleName] = moduleInstance.__initialState;
+        delete moduleInstance.state;
+        Object.defineProperty(moduleInstance, 'state', {
+            get: function () { return moduleInstance.getState(); },
+            set: function () {
+                throw new Error("State of the module " + moduleInstance.moduleName + " is immutable.\r\n" +
+                    ("Please use \"this.setState\" for updating state of the " + moduleInstance.moduleName + " module"));
+            },
+        });
+    };
     StateWorker.prototype.setState = function (moduleInstance, changes, callback) {
         var _this = this;
         if (callback === void 0) { callback = base_1.noop; }
@@ -45,16 +56,9 @@ var StateWorker = /** @class */ (function () {
             flattedStateChanges = __assign({}, (base_1.isType(currentState, base_1.types.object) ? currentState : {}), base_1.copy(stateChanges));
         }
         else {
-            flattedStateChanges = stateChanges;
+            flattedStateChanges = base_1.isType(stateChanges, base_1.types.array) ? base_1.copy(stateChanges).slice() : stateChanges;
         }
         this.state[moduleInstance.moduleName] = flattedStateChanges;
-        Object.defineProperty(moduleInstance, 'state', {
-            get: function () { return moduleInstance.getState(); },
-            set: function () {
-                throw new Error("State is immutable (module: " + moduleInstance.moduleName + ")");
-            },
-        });
-        Object.freeze(moduleInstance.state);
     };
     return StateWorker;
 }());

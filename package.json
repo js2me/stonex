@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "_prepublish": "yarn build",
-    "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example.ts",
+    "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example/index.ts",
     "build": "tsc -p .",
     "exec": "ts-node example.ts",
     "lint": "tslint 'lib/**/*.ts'",

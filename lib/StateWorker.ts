@@ -5,6 +5,22 @@ export class StateWorker {
 
   public state = {}
 
+  public initializeState (moduleInstance: any): void {
+    this.state[moduleInstance.moduleName] = moduleInstance.__initialState
+
+    delete moduleInstance.state
+
+    Object.defineProperty(moduleInstance, 'state', {
+      get: () => moduleInstance.getState(),
+      set: () => {
+        throw new Error(
+          `State of the module ${moduleInstance.moduleName} is immutable.\r\n` +
+          `Please use "this.setState" for updating state of the ${moduleInstance.moduleName} module`
+        )
+      },
+    })
+  }
+
   public setState<State> (
     moduleInstance: StonexModule<State>,
     changes: Partial<State> | ((state: State) => Partial<State>),
@@ -37,18 +53,10 @@ export class StateWorker {
     if (isType(stateChanges, types.object)) {
       flattedStateChanges = { ...(isType(currentState, types.object) ? currentState : {}), ...copy(stateChanges) }
     } else {
-      flattedStateChanges = stateChanges
+      flattedStateChanges = isType(stateChanges, types.array) ? [...copy(stateChanges)] : stateChanges
     }
 
     this.state[moduleInstance.moduleName] = flattedStateChanges
-
-    Object.defineProperty(moduleInstance, 'state', {
-      get: () => moduleInstance.getState(),
-      set: () => {
-        throw new Error(`State is immutable (module: ${moduleInstance.moduleName})`)
-      },
-    })
-    Object.freeze(moduleInstance.state)
   }
 
 }

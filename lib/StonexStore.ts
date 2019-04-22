@@ -4,7 +4,6 @@ import {
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
 import ModifiersWorker, { ActionModifier, Modifier, ModuleModifier } from './ModifiersWorker'
-import { stateStorage } from './StateStorage'
 import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
 import { createStoreBinder } from './StoreBinder'
@@ -87,11 +86,7 @@ class StonexStore<MP> implements Store<MP> {
     }
 
     moduleInstance.__initialState = copy(moduleInstance.state)
-    moduleInstance.__stateId = `${this.storeId}/${moduleName.toUpperCase()}`
-
-    if (typeof stateStorage.getById(moduleInstance.__stateId) === 'undefined') {
-      stateStorage.createState(moduleInstance.__stateId, moduleInstance.__initialState)
-    }
+    this.stateWorker.initializeState(moduleInstance)
 
     ModifiersWorker.attachActionModifiersToModule(actionModifiers, moduleInstance)
 
