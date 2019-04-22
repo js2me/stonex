@@ -10,8 +10,9 @@ cache:
 stages:
   - compile
   - test
-  - name: publish
-    if: branch = master
+  - publish
+  # - name: publish
+  #   if: branch = master
 
 before_install:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
