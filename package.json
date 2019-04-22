@@ -11,7 +11,7 @@
     "lint": "tslint 'lib/**/*.ts'",
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "npm run build --debug-brk=5858",
+    "debug": "npm run build:live --debug-brk=5858",
     "stage-dist-changes": "git add dist"
   },
   "pre-commit": [

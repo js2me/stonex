@@ -6,6 +6,7 @@ export * from './StonexModule'
 export * from './StoreBinder'
 export * from './StateWorker'
 export * from './StonexStore'
+export * from './ModifiersWorker'
 
 export declare type ModuleCreatorsMap<M> = {
   [K in keyof M]: ModuleCreator<any, M[K]>

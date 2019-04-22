@@ -14,30 +14,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var base_1 = require("./helpers/base");
 var StateWorker = /** @class */ (function () {
     function StateWorker() {
+        var _this = this;
+        this.state = {};
+        this.getState = function (moduleName) {
+            return base_1.copy(_this.state[moduleName]);
+        };
+        this.resetState = function (moduleInstance, callback) {
+            if (callback === void 0) { callback = base_1.noop; }
+            return _this.setState(moduleInstance, moduleInstance.__initialState, callback);
+        };
     }
-    StateWorker.recreateState = function (moduleInstance, value) {
-        var boundGetState = moduleInstance.getState.bind(moduleInstance);
-        // excuse me what the fuck ?
-        // with calling getState typescript returns :
-        // Module with name blackBox is not exist in your stonex store
-        // WAT ?
-        console.log('boundGetState', boundGetState());
+    StateWorker.prototype.setState = function (moduleInstance, changes, callback) {
+        var _this = this;
+        if (callback === void 0) { callback = base_1.noop; }
+        var changesAsFunction = base_1.isType(changes, base_1.types.function);
+        var changeAction = function (stateChanges) {
+            _this.updateState(moduleInstance, stateChanges);
+            callback(moduleInstance.state);
+        };
+        if (changesAsFunction) {
+            setTimeout(function () { return changeAction(changes(moduleInstance.state)); }, 0);
+        }
+        else {
+            changeAction(changes);
+        }
+    };
+    StateWorker.prototype.updateState = function (moduleInstance, stateChanges) {
+        console.log('try to get state here ( updateState )');
+        var currentState = this.getState(moduleInstance.moduleName);
+        var flattedStateChanges = null;
+        if (base_1.isType(stateChanges, base_1.types.object)) {
+            flattedStateChanges = __assign({}, (base_1.isType(currentState, base_1.types.object) ? currentState : {}), base_1.copy(stateChanges));
+        }
+        else {
+            flattedStateChanges = stateChanges;
+        }
+        this.state[moduleInstance.moduleName] = flattedStateChanges;
         Object.defineProperty(moduleInstance, 'state', {
-            get: function () { return value; },
+            get: function () { return moduleInstance.getState(); },
             set: function () {
                 throw new Error("State is immutable (module: " + moduleInstance.moduleName + ")");
             },
         });
         Object.freeze(moduleInstance.state);
-    };
-    StateWorker.updateState = function (moduleInstance, stateChanges) {
-        var currentState = base_1.copy(moduleInstance.state);
-        if (base_1.isType(stateChanges, base_1.types.object) && base_1.isType(currentState, base_1.types.object)) {
-            StateWorker.recreateState(moduleInstance, __assign({}, currentState, base_1.copy(stateChanges)));
-        }
-        else {
-            StateWorker.recreateState(moduleInstance, stateChanges);
-        }
     };
     return StateWorker;
 }());

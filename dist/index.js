@@ -9,4 +9,5 @@ __export(require("./StonexModule"));
 __export(require("./StoreBinder"));
 __export(require("./StateWorker"));
 __export(require("./StonexStore"));
+__export(require("./ModifiersWorker"));
 //# sourceMappingURL=index.js.map

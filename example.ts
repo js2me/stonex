@@ -1,4 +1,4 @@
-import { Modifier, StonexStore, Store } from './lib'
+import { Modifier, StateWorker, StonexStore, Store } from './lib'
 import { StonexModule } from './lib/StonexModule'
 
 export class Books extends StonexModule<string[]> {
@@ -63,11 +63,12 @@ const Logger: Modifier<MyStore> = (store: Store<MyStore>) => {
 
     module.getState = (...args) => {
       console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {GET STATE}`)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] `, args)
       return closuredGetState(...args)
     }
 
     module.setState = (...args) => {
-      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {SET STATE}`)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {SET STATE}`, args)
       return closuredSetState(...args)
     }
 
@@ -76,11 +77,15 @@ const Logger: Modifier<MyStore> = (store: Store<MyStore>) => {
       return closuredResetState()
     }
 
-    return (args, moduleName, methodName) => {
+    return (args, moduleName: string, methodName: string) => {
       console.log(`-----> [ACTION] CALLED ${moduleName.toUpperCase()}/${methodName.toUpperCase()}
                 arguments`, args)
     }
   }
+}
+
+class OwnFuckinStateWorker extends StateWorker {
+
 }
 
 const store = new StonexStore<MyStore>(
@@ -91,7 +96,8 @@ const store = new StonexStore<MyStore>(
   },{
     modifiers: [
       Logger
-    ]
+    ],
+    stateWorker: OwnFuckinStateWorker
   }
 )
 

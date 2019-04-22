@@ -3,7 +3,8 @@ import {
   StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
-import { getAllMethodsFromModule } from './helpers/module'
+import ModifiersWorker, { ActionModifier, Modifier, ModuleModifier } from './ModifiersWorker'
+import { stateStorage } from './StateStorage'
 import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
 import { createStoreBinder } from './StoreBinder'
@@ -22,14 +23,12 @@ export declare interface Store<MP> {
   ) => StonexModule<State>
 }
 
-declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
-declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
-declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
-
-export declare type Modifier<MP> = StoreModifier<MP, ModuleModifier<ActionModifier>>
+// declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
+// declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
+// declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
 
 export declare interface StoreConfiguration<MP> {
-  stateWorker?: StateWorker
+  stateWorker?: new (...args: any[]) => StateWorker,
   modifiers?: Array<Modifier<MP>>
 }
 
@@ -41,28 +40,25 @@ class StonexStore<MP> implements Store<MP> {
       return state
     }, {})
 
+  public storeId: number = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now())
+
   public modules: StonexModules<MP> = {} as StonexModules<MP>
 
   private stateWorker: StateWorker
-  private modifiers: Array<Modifier<MP>>
+  // private modifiers: Array<Modifier<MP>>
 
   constructor (
     modulesMap: Partial<ModuleCreatorsMap<MP>>,
-    { stateWorker, modifiers }: StoreConfiguration<MP> = {}
+    { stateWorker = StateWorker, modifiers }: StoreConfiguration<MP> = {}
   ) {
-    this.stateWorker = stateWorker || StateWorker
-    this.modifiers = modifiers || []
-
-    const moduleModifiers: ModuleModifier[] = this.modifiers.reduce((moduleModifiers: ModuleModifier[], modifier) => {
-      const moduleModifier: ModuleModifier | any = modifier(this)
-      if (typeof moduleModifier === 'function') {
-        moduleModifiers.push(moduleModifier)
-      }
-      return moduleModifiers
-    },[])
+    this.stateWorker = new stateWorker()
 
     for (const moduleName of Object.keys(modulesMap)) {
-      this.connectModule(moduleName, modulesMap[moduleName], moduleModifiers)
+      this.connectModule(
+        moduleName,
+        modulesMap[moduleName],
+        ModifiersWorker.getModuleModifiers(modifiers || [], this)
+      )
     }
   }
 
@@ -81,68 +77,40 @@ class StonexStore<MP> implements Store<MP> {
 
     const moduleInstance = new Module(storeBinder)
 
-    const actionModifiers: Function[] = []
-
-    moduleModifiers.forEach(modifier => {
-      const actionModifier = modifier(moduleInstance)
-      if (typeof actionModifier === 'function') {
-        actionModifiers.push(actionModifier)
-      }
-    })
+    const actionModifiers: ActionModifier[] = ModifiersWorker.getActionModifiers(moduleModifiers, moduleInstance)
 
     if (!moduleInstance.__STONEXMODULE__) {
       console.error(`${name} is not a Stonex Module` + '\r\n' +
         `To solve this you should extend your class ${name} from StonexModule class`)
     }
 
+    console.log('try to get state here ( connectModule )')
     moduleInstance.__initialState = copy(moduleInstance.state)
+    moduleInstance.__stateId = `${this.storeId}/${moduleName.toUpperCase()}`
 
-    this.stateWorker.recreateState(moduleInstance,moduleInstance.__initialState)
+    if (typeof stateStorage.getById(moduleInstance.__stateId) === 'undefined') {
+      stateStorage.createState(moduleInstance.__stateId, moduleInstance.__initialState)
+    }
 
-    getAllMethodsFromModule(moduleInstance).forEach(methodName => {
-      const closuredMethod = moduleInstance[methodName]
-      moduleInstance[methodName] = (...args: any[]) => {
-        for (const modifier of actionModifiers) {
-          if (modifier(args, moduleInstance.moduleName, methodName) === false) {
-            return null
-          }
-        }
-        return closuredMethod.apply(moduleInstance, args)
-      }
-    })
+    ModifiersWorker.attachActionModifiersToModule(actionModifiers, moduleInstance)
 
     this.modules[moduleName] = moduleInstance
 
     return moduleInstance
   }
 
-  public setState<State> (
+  public setState = <State>(
     moduleName: string,
-    changes: Partial<State>,
-    callback: (state: State) => any
-  ): void
-  public setState<State> (
-    moduleName: string,
-    changes: (state: State) => Partial<State>,
+    changes: Partial<State> | ((state: State) => Partial<State>),
     callback: (state: State) => any = noop
-  ): void {
-    const changesAsFunction = isType(changes, types.function)
-    const changeAction = (stateChanges: any) => {
-      const moduleInstance = this.getModuleByName(moduleName)
-      this.stateWorker.updateState<State>(moduleInstance, stateChanges)
-      callback(moduleInstance.state)
-    }
-    if (changesAsFunction) {
-      setTimeout(() => changeAction(changes(this.getModuleByName(moduleName).state)), 0)
-    } else {
-      changeAction(changes)
-    }
-  }
+  ): void =>
+    this.stateWorker.setState(this.getModuleByName(moduleName), changes, callback)
 
-  public getState = (moduleName: string): any => copy(this.getModuleByName(moduleName).state)
+  public getState = (moduleName: string): any =>
+    this.stateWorker.getState(moduleName)
 
   public resetState = (moduleName: string, callback: (state: any) => any = noop): void =>
-    this.setState(moduleName, this.modules[moduleName].__initialState, callback)
+    this.stateWorker.resetState(this.getModuleByName(moduleName), callback)
 
   private getModuleByName = (moduleName: string): StonexModule<any> | never => {
     const module = this.modules[moduleName]

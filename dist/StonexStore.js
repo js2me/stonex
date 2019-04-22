@@ -1,18 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var base_1 = require("./helpers/base");
-var module_1 = require("./helpers/module");
+var ModifiersWorker_1 = require("./ModifiersWorker");
+var StateStorage_1 = require("./StateStorage");
 var StateWorker_1 = require("./StateWorker");
 var StoreBinder_1 = require("./StoreBinder");
 var StonexStore = /** @class */ (function () {
+    // private modifiers: Array<Modifier<MP>>
     function StonexStore(modulesMap, _a) {
-        var _b = _a === void 0 ? {} : _a, stateWorker = _b.stateWorker, modifiers = _b.modifiers;
+        var _b = _a === void 0 ? {} : _a, _c = _b.stateWorker, stateWorker = _c === void 0 ? StateWorker_1.StateWorker : _c, modifiers = _b.modifiers;
         var _this = this;
+        this.storeId = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now());
         this.modules = {};
-        this.getState = function (moduleName) { return base_1.copy(_this.getModuleByName(moduleName).state); };
+        this.setState = function (moduleName, changes, callback) {
+            if (callback === void 0) { callback = base_1.noop; }
+            return _this.stateWorker.setState(_this.getModuleByName(moduleName), changes, callback);
+        };
+        this.getState = function (moduleName) {
+            return _this.stateWorker.getState(moduleName);
+        };
         this.resetState = function (moduleName, callback) {
             if (callback === void 0) { callback = base_1.noop; }
-            return _this.setState(moduleName, _this.modules[moduleName].__initialState, callback);
+            return _this.stateWorker.resetState(_this.getModuleByName(moduleName), callback);
         };
         this.getModuleByName = function (moduleName) {
             var module = _this.modules[moduleName];
@@ -21,18 +30,10 @@ var StonexStore = /** @class */ (function () {
             }
             return module;
         };
-        this.stateWorker = stateWorker || StateWorker_1.StateWorker;
-        this.modifiers = modifiers || [];
-        var moduleModifiers = this.modifiers.reduce(function (moduleModifiers, modifier) {
-            var moduleModifier = modifier(_this);
-            if (typeof moduleModifier === 'function') {
-                moduleModifiers.push(moduleModifier);
-            }
-            return moduleModifiers;
-        }, []);
-        for (var _i = 0, _c = Object.keys(modulesMap); _i < _c.length; _i++) {
-            var moduleName = _c[_i];
-            this.connectModule(moduleName, modulesMap[moduleName], moduleModifiers);
+        this.stateWorker = new stateWorker();
+        for (var _i = 0, _d = Object.keys(modulesMap); _i < _d.length; _i++) {
+            var moduleName = _d[_i];
+            this.connectModule(moduleName, modulesMap[moduleName], ModifiersWorker_1.default.getModuleModifiers(modifiers || [], this));
         }
     }
     StonexStore.prototype.connectModule = function (moduleName, data, moduleModifiers) {
@@ -44,53 +45,20 @@ var StonexStore = /** @class */ (function () {
             storeBinder: createDefaultStoreBinder(),
         } : data, Module = _a.module, _b = _a.storeBinder, storeBinder = _b === void 0 ? createDefaultStoreBinder() : _b;
         var moduleInstance = new Module(storeBinder);
-        var actionModifiers = [];
-        moduleModifiers.forEach(function (modifier) {
-            var actionModifier = modifier(moduleInstance);
-            if (typeof actionModifier === 'function') {
-                actionModifiers.push(actionModifier);
-            }
-        });
+        var actionModifiers = ModifiersWorker_1.default.getActionModifiers(moduleModifiers, moduleInstance);
         if (!moduleInstance.__STONEXMODULE__) {
             console.error(name + " is not a Stonex Module" + '\r\n' +
                 ("To solve this you should extend your class " + name + " from StonexModule class"));
         }
+        console.log('try to get state here ( connectModule )');
         moduleInstance.__initialState = base_1.copy(moduleInstance.state);
-        this.stateWorker.recreateState(moduleInstance, moduleInstance.__initialState);
-        module_1.getAllMethodsFromModule(moduleInstance).forEach(function (methodName) {
-            var closuredMethod = moduleInstance[methodName];
-            moduleInstance[methodName] = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                for (var _a = 0, actionModifiers_1 = actionModifiers; _a < actionModifiers_1.length; _a++) {
-                    var modifier = actionModifiers_1[_a];
-                    if (modifier(args, moduleInstance.moduleName, methodName) === false) {
-                        return null;
-                    }
-                }
-                return closuredMethod.apply(moduleInstance, args);
-            };
-        });
+        moduleInstance.__stateId = this.storeId + "/" + moduleName.toUpperCase();
+        if (typeof StateStorage_1.stateStorage.getById(moduleInstance.__stateId) === 'undefined') {
+            StateStorage_1.stateStorage.createState(moduleInstance.__stateId, moduleInstance.__initialState);
+        }
+        ModifiersWorker_1.default.attachActionModifiersToModule(actionModifiers, moduleInstance);
         this.modules[moduleName] = moduleInstance;
         return moduleInstance;
-    };
-    StonexStore.prototype.setState = function (moduleName, changes, callback) {
-        var _this = this;
-        if (callback === void 0) { callback = base_1.noop; }
-        var changesAsFunction = base_1.isType(changes, base_1.types.function);
-        var changeAction = function (stateChanges) {
-            var moduleInstance = _this.getModuleByName(moduleName);
-            _this.stateWorker.updateState(moduleInstance, stateChanges);
-            callback(moduleInstance.state);
-        };
-        if (changesAsFunction) {
-            setTimeout(function () { return changeAction(changes(_this.getModuleByName(moduleName).state)); }, 0);
-        }
-        else {
-            changeAction(changes);
-        }
     };
     StonexStore.createStateSnapshot = function (modules) {
         return Object.keys(modules).reduce(function (state, name) {
