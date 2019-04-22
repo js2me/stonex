@@ -14,15 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var base_1 = require("./helpers/base");
 var StateWorker = /** @class */ (function () {
     function StateWorker() {
-        var _this = this;
         this.state = {};
-        this.getState = function (moduleName) {
-            return base_1.copy(_this.state[moduleName]);
-        };
-        this.resetState = function (moduleInstance, callback) {
-            if (callback === void 0) { callback = base_1.noop; }
-            return _this.setState(moduleInstance, moduleInstance.__initialState, callback);
-        };
     }
     StateWorker.prototype.setState = function (moduleInstance, changes, callback) {
         var _this = this;
@@ -39,8 +31,14 @@ var StateWorker = /** @class */ (function () {
             changeAction(changes);
         }
     };
+    StateWorker.prototype.getState = function (moduleName) {
+        return base_1.copy(this.state[moduleName]);
+    };
+    StateWorker.prototype.resetState = function (moduleInstance, callback) {
+        if (callback === void 0) { callback = base_1.noop; }
+        return this.setState(moduleInstance, moduleInstance.__initialState, callback);
+    };
     StateWorker.prototype.updateState = function (moduleInstance, stateChanges) {
-        console.log('try to get state here ( updateState )');
         var currentState = this.getState(moduleInstance.moduleName);
         var flattedStateChanges = null;
         if (base_1.isType(stateChanges, base_1.types.object)) {

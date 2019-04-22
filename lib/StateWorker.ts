@@ -22,14 +22,15 @@ export class StateWorker {
     }
   }
 
-  public getState = <State>(moduleName: string): State =>
-    copy(this.state[moduleName])
+  public getState<State> (moduleName: string): State {
+    return copy(this.state[moduleName])
+  }
 
-  public resetState = <State>(moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void =>
-    this.setState(moduleInstance, moduleInstance.__initialState, callback)
+  public resetState<State> (moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void {
+    return this.setState(moduleInstance, moduleInstance.__initialState, callback)
+  }
 
   private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void {
-    console.log('try to get state here ( updateState )')
     const currentState = this.getState(moduleInstance.moduleName)
     let flattedStateChanges = null
 

@@ -31,9 +31,10 @@ var StonexStore = /** @class */ (function () {
             return module;
         };
         this.stateWorker = new stateWorker();
+        var moduleModifiers = ModifiersWorker_1.default.getModuleModifiers(modifiers || [], this);
         for (var _i = 0, _d = Object.keys(modulesMap); _i < _d.length; _i++) {
             var moduleName = _d[_i];
-            this.connectModule(moduleName, modulesMap[moduleName], ModifiersWorker_1.default.getModuleModifiers(modifiers || [], this));
+            this.connectModule(moduleName, modulesMap[moduleName], moduleModifiers);
         }
     }
     StonexStore.prototype.connectModule = function (moduleName, data, moduleModifiers) {
@@ -50,7 +51,6 @@ var StonexStore = /** @class */ (function () {
             console.error(name + " is not a Stonex Module" + '\r\n' +
                 ("To solve this you should extend your class " + name + " from StonexModule class"));
         }
-        console.log('try to get state here ( connectModule )');
         moduleInstance.__initialState = base_1.copy(moduleInstance.state);
         moduleInstance.__stateId = this.storeId + "/" + moduleName.toUpperCase();
         if (typeof StateStorage_1.stateStorage.getById(moduleInstance.__stateId) === 'undefined') {

@@ -62,14 +62,21 @@ const Logger: Modifier<MyStore> = (store: Store<MyStore>) => {
     const closuredResetState = module.resetState.bind(module)
 
     module.getState = (...args) => {
-      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {GET STATE}`)
-      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] `, args)
-      return closuredGetState(...args)
+
+      const state = closuredGetState(...args)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {GET STATE}`, state)
+      return state
     }
 
     module.setState = (...args) => {
+
+      const prevState = closuredGetState()
+
+      const resultOfSetState = closuredSetState(...args)
       console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] {SET STATE}`, args)
-      return closuredSetState(...args)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}]             prev state: `, prevState)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}]             new state: `, closuredGetState())
+      return resultOfSetState
     }
 
     module.resetState = () => {
@@ -84,10 +91,6 @@ const Logger: Modifier<MyStore> = (store: Store<MyStore>) => {
   }
 }
 
-class OwnFuckinStateWorker extends StateWorker {
-
-}
-
 const store = new StonexStore<MyStore>(
   {
     blackBox: BlackBox,
@@ -97,7 +100,7 @@ const store = new StonexStore<MyStore>(
     modifiers: [
       Logger
     ],
-    stateWorker: OwnFuckinStateWorker
+    stateWorker: class OwnFuckinStateWorker extends StateWorker {}
   }
 )
 

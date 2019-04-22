@@ -53,11 +53,13 @@ class StonexStore<MP> implements Store<MP> {
   ) {
     this.stateWorker = new stateWorker()
 
+    const moduleModifiers = ModifiersWorker.getModuleModifiers(modifiers || [], this)
+
     for (const moduleName of Object.keys(modulesMap)) {
       this.connectModule(
         moduleName,
         modulesMap[moduleName],
-        ModifiersWorker.getModuleModifiers(modifiers || [], this)
+        moduleModifiers
       )
     }
   }
@@ -84,7 +86,6 @@ class StonexStore<MP> implements Store<MP> {
         `To solve this you should extend your class ${name} from StonexModule class`)
     }
 
-    console.log('try to get state here ( connectModule )')
     moduleInstance.__initialState = copy(moduleInstance.state)
     moduleInstance.__stateId = `${this.storeId}/${moduleName.toUpperCase()}`
 
