@@ -1,0 +1,51 @@
+language: node_js
+node_js:
+  - "node"
+
+cache:
+  yarn: true
+  directories:
+    - "node_modules"
+
+stages:
+  - compile
+  - test
+  - name: deploy
+    if: branch = master
+
+before_install:
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+  - export PACKAGE_VERSION=$(node -p "require('./package.json').version")
+  - export NPM_REMOTE_VERSION=$(npm view stonex version)
+  - export PACKAGE_NAME=$(node -p "require('./package.json').name")
+
+install:
+  - yarn install --frozen-lockfile
+
+compile:
+  - yarn build
+
+test:
+  - yarn lint
+  - yarn test
+
+deploy:
+  - rm -rf example
+  - git remote rm origin
+  - git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
+  - git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
+  - git fetch -p
+  - git fetch
+  - git symbolic-ref HEAD refs/heads/release
+  - git symbolic-ref HEAD
+  - git remote show origin
+  - git status
+  - yarn git-release ${PACKAGE_VERSION}
+  
+
+notifications:
+  email:
+    recipients:
+    - ${NOTIFY_EMAIL}
+    on_success: change
+    on_failure: always
