@@ -38,6 +38,7 @@ jobs:
         - git add . && git reset HEAD .npmrc
         - git status
         - git commit -m "Build release ${PACKAGE_VERSION} [ci skip]";
+        - npm whoami
         - yarn release ${PACKAGE_VERSION}
 
 notifications:
