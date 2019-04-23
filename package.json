@@ -1,6 +1,6 @@
 {
   "name": "stonex",
-  "version": "0.0.6-alpha",
+  "version": "0.0.7-alpha",
   "description": "Predictable state container for TypeScript/JavaScript applications",
   "main": "dist/index.js",
   "scripts": {
