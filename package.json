@@ -11,7 +11,7 @@
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 0",
     "debug": "npm run build:live --debug-brk=5858",
-    "release": "release-it"
+    "git-release": "release-it"
   },
   "author": "acacode",
   "license": "MIT",
