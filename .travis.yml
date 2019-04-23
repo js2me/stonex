@@ -26,7 +26,7 @@ jobs:
       name: "Build JS files"
       script: yarn build
     - stage: publish
-      if: branch = master
+      if: branch = master && type = push
       name: "Publish to NPM, Github Releases"
       script:
         - bash ./publish.sh
