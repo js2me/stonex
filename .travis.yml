@@ -19,10 +19,12 @@ install:
 jobs:
   include:
     - stage: tests
+      name: "Linter and all possible testing"
       script:
         - yarn lint
         - yarn test
     - stage: build
+      name: "Build JS files"
       script: yarn build
     - stage: publish
       # if: branch = master
@@ -35,7 +37,7 @@ jobs:
         - git fetch -p
         - git symbolic-ref HEAD refs/heads/release
         - git status
-        - yarn git-release ${PACKAGE_VERSION}
+        - yarn release ${PACKAGE_VERSION}
 
 notifications:
   email:

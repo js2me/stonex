@@ -1,7 +1,7 @@
 {
   "name": "stonex",
   "version": "0.0.4-alpha",
-  "description": "simple container",
+  "description": "Predictable state container for TypeScript/JavaScript applications",
   "main": "dist/index.js",
   "scripts": {
     "_prepublish": "yarn build",
@@ -12,7 +12,8 @@
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 0",
     "debug": "npm run build:live --debug-brk=5858",
-    "stage-dist-changes": "git add dist"
+    "stage-dist-changes": "git add dist",
+    "release": "release-it"
   },
   "pre-commit": [
     "lint",
