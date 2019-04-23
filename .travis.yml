@@ -31,7 +31,7 @@ jobs:
       # if: branch = master AND type = push
       name: "Publish to NPM, Github Releases"
       script: bash ./prepublish.sh
-      build:
+      deploy:
         provider: releases
         api_key: $GITHUB_TOKEN
         skip_cleanup: true
