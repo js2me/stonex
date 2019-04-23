@@ -19,3 +19,4 @@ echo "AAAA"
 # npm publish
 # git checkout -- .
 # git push origin --delete ${PUBLISH_BRANCH}
+# end
