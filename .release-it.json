@@ -1,0 +1,18 @@
+{
+    "non-interactive": true,
+    "git": {
+        "changelog": "git log --pretty=format:\"* %s [%h]\"",
+        "requireCleanWorkingDir": false,
+        "requireUpstream": false,
+        "commit": true,
+        "tag": true,
+        "push": true,
+        "commitMessage": "Release ${name} ${version} [ci skip]"
+    },
+    "npm": {
+        "publish": false
+    },
+    "github": {
+        "release": true
+    }
+}

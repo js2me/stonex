@@ -3,6 +3,7 @@ export function getAllMethodsFromModule (module: object): string[] {
   const reservedMethods = [
     'getState',
     'setState',
+    'resetState',
     'constructor',
     '__defineGetter__',
     '__defineSetter__',
@@ -29,7 +30,9 @@ export function getAllMethodsFromModule (module: object): string[] {
 
   Object.keys(module).forEach(addMethodToList)
 
+  /* tslint:disable:no-conditional-assignment */
   while (module = Object.getPrototypeOf(module)) {
+  /* tslint:enable:no-conditional-assignment */
     const keys = Object.getOwnPropertyNames(module)
     keys.forEach(addMethodToList)
   }

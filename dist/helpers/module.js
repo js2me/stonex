@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function getAllMethodsFromModule(module) {
-    const methods = [];
-    const reservedMethods = [
+    var methods = [];
+    var reservedMethods = [
         'getState',
         'setState',
+        'resetState',
         'constructor',
         '__defineGetter__',
         '__defineSetter__',
@@ -17,20 +18,24 @@ function getAllMethodsFromModule(module) {
         'valueOf',
         'toLocaleString',
     ];
-    const checkMethodOnExistInList = (value, key) => typeof value === 'function' &&
-        reservedMethods.indexOf(key) === -1 &&
-        methods.indexOf(key) === -1;
-    const addMethodToList = (key) => {
+    var checkMethodOnExistInList = function (value, key) {
+        return typeof value === 'function' &&
+            reservedMethods.indexOf(key) === -1 &&
+            methods.indexOf(key) === -1;
+    };
+    var addMethodToList = function (key) {
         if (checkMethodOnExistInList(module[key], key)) {
             methods.push(key);
         }
     };
     Object.keys(module).forEach(addMethodToList);
+    /* tslint:disable:no-conditional-assignment */
     while (module = Object.getPrototypeOf(module)) {
-        const keys = Object.getOwnPropertyNames(module);
+        /* tslint:enable:no-conditional-assignment */
+        var keys = Object.getOwnPropertyNames(module);
         keys.forEach(addMethodToList);
     }
     return methods;
 }
 exports.getAllMethodsFromModule = getAllMethodsFromModule;
-//# sourceMappingURL=store.js.map
+//# sourceMappingURL=module.js.map

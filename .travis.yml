@@ -1,0 +1,39 @@
+language: node_js
+node_js:
+  - "node"
+
+cache:
+  yarn: true
+  directories:
+    - "node_modules"
+
+before_install:
+  - export PACKAGE_VERSION=$(node -p "require('./package.json').version")
+  - export NPM_REMOTE_VERSION=$(npm view stonex version)
+  - export PACKAGE_NAME=$(node -p "require('./package.json').name")
+
+install:
+  - yarn install --frozen-lockfile
+
+jobs:
+  include:
+    - stage: tests
+      name: "Linter and all possible testing"
+      script:
+        - yarn lint
+        - yarn test
+    - stage: build
+      name: "Build JS files"
+      script: yarn build
+    - stage: publish
+      if: branch = master
+      name: "Publish to NPM, Github Releases"
+      script:
+        - bash ./publish.sh
+
+notifications:
+  email:
+    recipients:
+      - ${NOTIFY_EMAIL}
+    on_success: change
+    on_failure: always

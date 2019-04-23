@@ -17,6 +17,7 @@
 		"strict-type-predicates": false,
 		"no-console": false,
 		"max-classes-per-file": false,
-		"ban-types": false
+		"ban-types": false,
+		"arrow-parens": false
 	}
 }

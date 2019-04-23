@@ -1,28 +1,31 @@
-import { StonexEngine, Store, StoreBinder } from '.'
-import { isType, noop, types } from './helpers/base'
+import { StoreBinder } from '.'
 
-export class StonexModule<State> {
-  public __STONEXMODULE__ = true
+export class StonexModule<State = any> {
+  public readonly __STONEXMODULE__ = true
 
-  public state: State
+  public readonly state: State
 
-  public moduleName: string
+  public readonly moduleName: string
 
-  private storeBinder: StoreBinder<State>
+  public getState: () => State
+  public setState: (
+    changes: ((state: State) => Partial<State>) | Partial<State>,
+    callback?: (state: any) => any
+  ) => any
+
+  public resetState: (callback?: (state: any) => any) => void
+
+  /* tslint:disable:variable-name */
+  public __initialState: State
+  public __stateId: string
+  /* tslint:enable:variable-name */
 
   constructor (storeBinder: StoreBinder<State>) {
     if (!storeBinder) {
-      throw new Error('Stonex Module created but not registered in Stonex Store. \r\n' +
-      'Please attach all your modules to store')
+      throw new Error(
+        'Stonex Module created but not registered in Stonex Store. \r\n' +
+        'Please attach all your modules to store')
     }
-    this.storeBinder = storeBinder
-    this.moduleName = storeBinder.moduleName
+    Object.assign(this, storeBinder)
   }
-
-  public getState = (): State => this.storeBinder.getState()
-
-  protected setState = (
-    changes: ((() => Partial<State>) | Partial<State>),
-    callback: (state: any) => any = noop
-  ): any => this.storeBinder.setState(changes, callback)
 }
