@@ -18,6 +18,7 @@ install:
 jobs:
   include:
     - stage: tests
+      if: type = push
       name: "Linter and all possible testing"
       script:
         - yarn lint
