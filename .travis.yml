@@ -7,10 +7,10 @@ cache:
   directories:
     - "node_modules"
 
-stages:
-  - compile
-  - test
-  - publish
+# stages:
+#   - compile
+#   - test
+#   - publish
   # - name: publish
   #   if: branch = master
 
@@ -42,7 +42,19 @@ publish:
   - git remote show origin
   - git status
   - yarn git-release ${PACKAGE_VERSION}
-  
+
+
+jobs:
+  include:
+    - stage: tests
+      script:
+        - yarn lint
+        - yarn test
+    - stage: build
+      script: yarn build
+    - stage: publish
+      only: master
+      script: ./publish.sh
 
 notifications:
   email:
