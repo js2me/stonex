@@ -4,7 +4,6 @@
   "description": "Predictable state container for TypeScript/JavaScript applications",
   "main": "dist/index.js",
   "scripts": {
-    "_prepublish": "yarn build",
     "build:live": "nodemon --legacy-watch --watch \".\\**\\*.ts\" --exec ts-node example/index.ts",
     "build": "tsc -p .",
     "exec": "ts-node example.ts",
@@ -12,19 +11,12 @@
     "lint:fix": "yarn lint --fix",
     "test": "echo \"Error: no test specified\" && exit 0",
     "debug": "npm run build:live --debug-brk=5858",
-    "stage-dist-changes": "git add dist",
     "release": "release-it"
   },
-  "pre-commit": [
-    "lint",
-    "build",
-    "stage-dist-changes"
-  ],
   "author": "acacode",
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^1.18.10",
-    "pre-commit": "^1.2.2",
     "release-it": "9.2.0",
     "ts-node": "^8.0.2",
     "tslint-config-standard": "^8.0.1",
