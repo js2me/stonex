@@ -1,30 +1,20 @@
 
+/* tslint:disable:no-empty */
 export const noop = (...args: any[]) => {}
+/* tslint:enable:no-empty */
 
 export enum types {
-    array, object, other, function
+    array = 'array',
+    function = 'function',
+    object = 'object',
+    other = 'other',
 }
 
-export const isType = (data: any, expectedType: types): boolean => {
-  const typeOf = typeof data
-  if (data instanceof Array) {
-    return types.array === expectedType
-  }
-  if (typeOf === 'object') {
-    return types.object === expectedType
-  }
-  if (typeOf === 'function') {
-    return types.function === expectedType
-  }
-  return types.other === expectedType
-}
+export const isType = (data: any, expectedType: types): boolean =>
+  (types[data instanceof Array ? 'array' : typeof data] || types.other) === expectedType
 
-export const copy = (data: any) => {
-  if (isType(data, types.array)) {
-    return data.slice()
-  }
-  if (isType(data, types.object)) {
-    return Object.assign({}, data)
-  }
-  return data
-}
+export const copy = (data: any) =>
+  isType(data, types.array) ?
+    data.slice() :
+    isType(data, types.object) ?
+      Object.assign({}, data) : data
