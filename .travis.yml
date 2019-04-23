@@ -27,9 +27,8 @@ jobs:
       script: yarn build
     - stage: publish
       name: "Publish to NPM, Github Releases"
-      master:
-        script:
-          - bash ./publish.sh
+      script:
+        - bash ./publish.sh
 
 notifications:
   email:
