@@ -9,7 +9,7 @@
         "commitMessage": "Release ${name} ${version} [ci skip]"
     },
     "npm": {
-        "publish": false
+        "publish": true
     },
     "github": {
         "release": true
