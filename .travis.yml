@@ -36,8 +36,6 @@ jobs:
         api_key: $GITHUB_TOKEN
         skip_cleanup: true
         draft: true
-        on:
-          tags: true
 
 
 notifications:

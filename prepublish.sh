@@ -11,6 +11,8 @@ rm -rf example .release-it.json logo.png
 yarn build
 git add .
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
+git tag ${PACKAGE_VERSION}
+git push origin ${PACKAGE_VERSION}
 git push --set-upstream origin ${PUBLISH_BRANCH}
 # {
 #   yarn git-release ${PACKAGE_VERSION}
