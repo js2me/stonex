@@ -8,7 +8,6 @@ cache:
     - "node_modules"
 
 before_install:
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
   - export PACKAGE_VERSION=$(node -p "require('./package.json').version")
   - export NPM_REMOTE_VERSION=$(npm view stonex version)
   - export PACKAGE_NAME=$(node -p "require('./package.json').name")
@@ -42,12 +41,15 @@ jobs:
         - git remote show origin
         - git status
         - rm -rf example
-        - git add . && git reset HEAD .npmrc
+        - git add .
         - git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
-        - git push --set-upstream origin ${TRAVIS_BRANCH}
+        - git push ${TRAVIS_BRANCH}
         - yarn git-release ${PACKAGE_VERSION}
+        - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+        - npm whoami
         - npm publish
-        - git push --set-upstream origin ${TRAVIS_BRANCH}
+        - git checkout -- .
+        - git push ${TRAVIS_BRANCH}
         - git reset --hard ${ACTUAL_DEV_VERSION}
         - git push -f origin ${TRAVIS_BRANCH}
 
