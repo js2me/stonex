@@ -28,7 +28,7 @@ jobs:
       name: "Build JS files"
       script: yarn build
     - stage: publish
-      if: ${TRAVIS_BRANCH} = master && ${TRAVIS_PULL_REQUEST} = false
+      if: TRAVIS_BRANCH = master && TRAVIS_PULL_REQUEST = false
       name: "Publish to NPM, Github Releases"
       script:
         - bash ./publish.sh
