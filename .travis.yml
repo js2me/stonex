@@ -25,7 +25,8 @@ jobs:
     - stage: build
       script: yarn build
     - stage: publish
-      branch: master
+      only:
+        - master
       script:
         - ls -a
         - echo It is worked!
@@ -33,6 +34,6 @@ jobs:
 notifications:
   email:
     recipients:
-    - ${NOTIFY_EMAIL}
+      - ${NOTIFY_EMAIL}
     on_success: change
     on_failure: always

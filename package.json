@@ -15,7 +15,7 @@
     "stage-dist-changes": "git add dist"
   },
   "pre-commit": [
-    "lint:fix",
+    "lint",
     "build",
     "stage-dist-changes"
   ],
