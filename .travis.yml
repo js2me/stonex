@@ -17,18 +17,18 @@ install:
 
 jobs:
   include:
-    - stage: tests
-      if: type = push
-      name: "Linter and all possible testing"
-      script:
-        - yarn lint
-        - yarn test
-    - stage: build
-      if: type = pull_request
-      name: "Build JS files"
-      script: yarn build
+    # - stage: tests
+    #   if: type = push
+    #   name: "Linter and all possible testing"
+    #   script:
+    #     - yarn lint
+    #     - yarn test
+    # - stage: build
+    #   if: type = pull_request
+    #   name: "Build JS files"
+    #   script: yarn build
     - stage: publish
-      if: branch = master AND type = push
+      # if: branch = master AND type = push
       name: "Publish to NPM, Github Releases"
       script:
         - bash ./publish.sh
