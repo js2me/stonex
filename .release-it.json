@@ -1,8 +1,5 @@
 {
     "non-interactive": true,
-    "scripts": {
-        "changelog": "git log --pretty=format:\"* %s (%h)\" [REV_RANGE]"
-    },
     "git": {
         "requireCleanWorkingDir": false,
         "requireUpstream": false,
