@@ -18,12 +18,12 @@ install:
 
 jobs:
   include:
-    # - stage: tests
-    #   script:
-    #     - yarn lint
-    #     - yarn test
-    # - stage: build
-    #   script: yarn build
+    - stage: tests
+      script:
+        - yarn lint
+        - yarn test
+    - stage: build
+      script: yarn build
     - stage: publish
       if: branch = master
       name: "Publish to NPM, Github Releases"
