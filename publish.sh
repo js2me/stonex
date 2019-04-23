@@ -16,6 +16,7 @@ git add .
 echo "git status"
 git status
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
+git pull origin release
 git push --set-upstream origin release
 yarn git-release ${PACKAGE_VERSION}
 echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
