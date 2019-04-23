@@ -28,7 +28,7 @@ jobs:
       name: "Build JS files"
       script: yarn build
     - stage: publish
-      if: type != pull_request && branch = master
+      if: type = pull_request && branch = master
       name: "Publish to NPM, Github Releases"
       script:
         - bash ./publish.sh
