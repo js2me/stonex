@@ -25,6 +25,8 @@ jobs:
     - stage: build
       name: "Build JS files"
       script: yarn build
+  include:
+    if: branch = master
     - stage: publish
       if: branch = master
       name: "Publish to NPM, Github Releases"
