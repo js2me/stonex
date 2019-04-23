@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-export PUBLISH_BRANCH=release/${PACKAGE_VERSION}-$(git rev-parse --short HEAD)
+export PUBLISH_BRANCH=release-${PACKAGE_VERSION}-$(git rev-parse --short HEAD)
 git remote rm origin
 git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
 git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
