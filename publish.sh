@@ -12,9 +12,13 @@ yarn build
 git add .
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
 git push --set-upstream origin ${PUBLISH_BRANCH}
-yarn git-release ${PACKAGE_VERSION}
-echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
-npm whoami
-npm publish
-git checkout -- .
-git push origin --delete ${PUBLISH_BRANCH}
+{
+  yarn git-release ${PACKAGE_VERSION}
+  echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+  npm whoami
+  npm publish
+  git checkout -- .
+  git push origin --delete ${PUBLISH_BRANCH}
+} || {
+  git push origin --delete ${PUBLISH_BRANCH}
+}
