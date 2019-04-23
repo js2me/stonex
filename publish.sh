@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-export PUBLISH_BRANCH=travis-release-${PACKAGE_VERSION}
+export PUBLISH_BRANCH=release/${PACKAGE_VERSION}-$(git rev-parse --short HEAD)
 git remote rm origin
 git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
 git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
@@ -19,6 +19,4 @@ echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
 npm whoami
 npm publish
 git checkout -- .
-git push --set-upstream origin ${PUBLISH_BRANCH}
-git reset --hard ${ACTUAL_DEV_VERSION}
-git push -f origin ${PUBLISH_BRANCH}
+git push origin --delete ${PUBLISH_BRANCH}

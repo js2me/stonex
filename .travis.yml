@@ -11,7 +11,6 @@ before_install:
   - export PACKAGE_VERSION=$(node -p "require('./package.json').version")
   - export NPM_REMOTE_VERSION=$(npm view stonex version)
   - export PACKAGE_NAME=$(node -p "require('./package.json').name")
-  - export ACTUAL_DEV_VERSION=$(git rev-parse HEAD)
 
 install:
   - yarn install --frozen-lockfile
