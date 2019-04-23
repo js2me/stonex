@@ -10,8 +10,6 @@ git symbolic-ref HEAD refs/heads/${PUBLISH_BRANCH}
 rm -rf example
 yarn build
 git add .
-echo "git status"
-git status
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
 git push --set-upstream origin ${PUBLISH_BRANCH}
 yarn git-release ${PACKAGE_VERSION}

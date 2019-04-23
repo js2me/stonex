@@ -17,23 +17,22 @@ install:
 
 jobs:
   include:
-    # - stage: tests
-    #   name: "Linter and all possible testing"
-    #   script:
-    #     - yarn lint
-    #     - yarn test
-    # - stage: build
-    #   name: "Build JS files"
-    #   script: yarn build
+    - stage: tests
+      name: "Linter and all possible testing"
+      script:
+        - yarn lint
+        - yarn test
+    - stage: build
+      name: "Build JS files"
+      script: yarn build
     - stage: publish
-      # if: branch = master
+      if: branch = master
       name: "Publish to NPM, Github Releases"
       script:
         - bash ./publish.sh
 
 notifications:
   email:
-    recipients:
-      - ${NOTIFY_EMAIL}
+    - ${NOTIFY_EMAIL}
     on_success: change
     on_failure: always
