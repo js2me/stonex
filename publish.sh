@@ -7,20 +7,22 @@ git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.gi
 git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
 git checkout -b ${PUBLISH_BRANCH}
 git symbolic-ref HEAD refs/heads/${PUBLISH_BRANCH}
-rm -rf example .release-it.json logo.png
+rm -rf example
 yarn build
 git add .
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
-git tag ${PACKAGE_VERSION}
-git push origin ${PACKAGE_VERSION}
 git push --set-upstream origin ${PUBLISH_BRANCH}
+{
+  yarn git-release ${PACKAGE_VERSION}
+} || {
+  git push origin --delete ${PUBLISH_BRANCH}
+}
+echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+npm whoami
 # {
-#   yarn git-release ${PACKAGE_VERSION}
-#   echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
-#   npm whoami
 #   npm publish
-#   git checkout -- .
-#   git push origin --delete ${PUBLISH_BRANCH}
 # } || {
 #   git push origin --delete ${PUBLISH_BRANCH}
 # }
+git checkout -- .
+git push origin --delete ${PUBLISH_BRANCH}
