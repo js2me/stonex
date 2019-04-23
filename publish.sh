@@ -10,10 +10,11 @@ git fetch
 git symbolic-ref HEAD refs/heads/${TRAVIS_BRANCH}
 git symbolic-ref HEAD
 git remote show origin
-git status
 rm -rf example
 yarn build
 git add .
+echo "git status"
+git status
 git commit -m "build release ${PACKAGE_VERSION} [ci skip]"
 git push --set-upstream origin ${TRAVIS_BRANCH}
 yarn git-release ${PACKAGE_VERSION}
