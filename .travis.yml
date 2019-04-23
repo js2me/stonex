@@ -18,15 +18,15 @@ install:
 
 jobs:
   include:
-    - stage: tests
-      script:
-        - yarn lint
-        - yarn test
-    - stage: build
-      script: yarn build
+    # - stage: tests
+    #   script:
+    #     - yarn lint
+    #     - yarn test
+    # - stage: build
+    #   script: yarn build
     - stage: publish
-      only:
-        - master
+      if: branch = master
+      name: "Publish to NPM, Github Releases"
       script:
         - ls -a
         - echo It is worked!
