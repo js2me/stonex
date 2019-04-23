@@ -3,8 +3,8 @@
 set -e
 ls -l
 git remote rm origin
-git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/kinka.git
-git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/kinka.git
+git remote add origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
+git remote set-url origin https://js2me:${GITHUB_TOKEN}@github.com/acacode/stonex.git
 git fetch -p
 git fetch
 git symbolic-ref HEAD refs/heads/${TRAVIS_BRANCH}
