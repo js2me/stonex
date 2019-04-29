@@ -11,6 +11,7 @@ var StonexStore = /** @class */ (function () {
         var _this = this;
         this.storeId = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now());
         this.modules = {};
+        this.createStateSnapshot = function () { return StonexStore.createStateSnapshot(_this.modules); };
         this.setState = function (moduleName, changes, callback) {
             if (callback === void 0) { callback = base_1.noop; }
             return _this.stateWorker.setState(_this.getModuleByName(moduleName), changes, callback);

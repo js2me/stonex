@@ -23,3 +23,7 @@ export declare interface ModuleConfiguration<State = any, M = any> {
 export declare type StonexModules<M> = {
   [K in keyof M]: M[K]
 }
+
+export declare type StateSnapshot<M> = {
+  [K in keyof M]: M[K] extends StonexModule<any> ? M[K]['state'] : null
+}

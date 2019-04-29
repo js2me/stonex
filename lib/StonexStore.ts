@@ -1,5 +1,6 @@
 import {
   ModuleConfiguration, ModuleCreator, ModuleCreatorsMap,
+  StateSnapshot,
   StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
@@ -20,6 +21,7 @@ export declare interface Store<MP> {
     moduleName: string,
     data: ModuleCreator<State, any>
   ) => StonexModule<State>
+  createStateSnapshot: () => StateSnapshot<MP>
 }
 
 // declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
@@ -33,11 +35,11 @@ export declare interface StoreConfiguration<MP> {
 
 class StonexStore<MP> implements Store<MP> {
 
-  public static createStateSnapshot = <MP>(modules: MP): object =>
+  public static createStateSnapshot = <MP>(modules: MP): StateSnapshot<MP> =>
     Object.keys(modules).reduce((state, name) => {
       state[name] = copy(modules[name].state)
       return state
-    }, {})
+    }, {}) as StateSnapshot<MP>
 
   public storeId: number = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now())
 
@@ -62,6 +64,8 @@ class StonexStore<MP> implements Store<MP> {
       )
     }
   }
+
+  public createStateSnapshot = (): StateSnapshot<MP> => StonexStore.createStateSnapshot(this.modules)
 
   public connectModule<State> (
     moduleName: string,
