@@ -14,19 +14,16 @@ export declare interface Store<MP> {
   getState: <State>(moduleName: string) => State
   setState: <State>(
     moduleName: string,
-    changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any
+    changes: ((() => Partial<State>) | Partial<State>), callback?: (state: State) => any
   ) => any
   resetState: (moduleName: string, callback?: (state: any) => any) => void
   connectModule: <State> (
     moduleName: string,
     data: ModuleCreator<State, any>
   ) => StonexModule<State>
-  createStateSnapshot: () => StateSnapshot<MP>
+  createStateSnapshot: () => StateSnapshot<MP>,
+  storeId: number
 }
-
-// declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
-// declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
-// declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
 
 export declare interface StoreConfiguration<MP> {
   stateWorker?: new (...args: any[]) => StateWorker,
@@ -46,7 +43,6 @@ class StonexStore<MP> implements Store<MP> {
   public modules: StonexModules<MP> = {} as StonexModules<MP>
 
   private stateWorker: StateWorker
-  // private modifiers: Array<Modifier<MP>>
 
   constructor (
     modulesMap: Partial<ModuleCreatorsMap<MP>>,
