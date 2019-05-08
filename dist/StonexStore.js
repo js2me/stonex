@@ -5,7 +5,6 @@ var ModifiersWorker_1 = require("./ModifiersWorker");
 var StateWorker_1 = require("./StateWorker");
 var StoreBinder_1 = require("./StoreBinder");
 var StonexStore = /** @class */ (function () {
-    // private modifiers: Array<Modifier<MP>>
     function StonexStore(modulesMap, _a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.stateWorker, stateWorker = _c === void 0 ? StateWorker_1.StateWorker : _c, modifiers = _b.modifiers;
         var _this = this;
