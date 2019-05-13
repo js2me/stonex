@@ -67,7 +67,7 @@ module.exports = [
   // UMD builds
   {
     ...inputOutputConfig('dist/stonex.js', 'umd', {
-      name: 'ReactStonex',
+      name: 'Stonex',
     }),
     external: deps,
     plugins: [
@@ -84,7 +84,7 @@ module.exports = [
   },
   {
     ...inputOutputConfig('dist/stonex.min.js', 'umd', {
-      name: 'ReactStonex',
+      name: 'Stonex',
     }),
     external: deps,
     plugins: [
