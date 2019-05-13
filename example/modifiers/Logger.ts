@@ -1,4 +1,4 @@
-import { Modifier, StonexModule, Store } from '../../lib'
+import { Modifier, StonexModule, Store } from '../../src'
 import { Modules } from '../modules'
 
 const Logger: Modifier<Modules> = (store: Store<Modules>) => {
