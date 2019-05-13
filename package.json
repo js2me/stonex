@@ -10,7 +10,7 @@
     "build": "rollup -c",
     "clean": "rimraf lib dist es",
     "debug": "npm run build:live --debug-brk=5858",
-    "exec": "ts-node example.ts",
+    "exec": "ts-node example/index.ts",
     "lint:fix": "yarn lint --fix",
     "lint": "tslint 'src/**/*.ts'",
     "prepare": "yarn clean && yarn build",
