@@ -1,2 +1,10 @@
+# production files
+dist
+lib
+es
+
+
+
+# other
 node_modules
-yarn-error.log
+*.log

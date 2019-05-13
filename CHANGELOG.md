@@ -15,9 +15,12 @@
 ## [0.1.3-alpha](https://github.com/acacode/stonex/releases/tag/0.1.3-alpha)
 
 ### Changed
-- Renamed `lib` to `src` folder
-- Travis CI config
-- Updated `CHANGELOG`
+- Renamed `lib` to `src` folder  
+- Travis CI config  
+- Updated `CHANGELOG`  
+
+### Added
+- Rollup build (before build was with using `tsc`)
 
 ### Removed
 - `release-it` dev. dependency

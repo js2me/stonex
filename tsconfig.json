@@ -16,7 +16,7 @@
       "noImplicitThis": true,
       "noUnusedLocals": true,
       "outDir": "dist",
-      "rootDir": "lib",
+      "rootDir": "src",
       "sourceMap": true,
       "strictNullChecks": true,
       "suppressImplicitAnyIndexErrors": true,
@@ -26,7 +26,7 @@
       ]
     },
     "include": [
-      "lib/**/*.ts"
+      "src/**/*.ts"
     ],
     "exclude": [
       "dist",
