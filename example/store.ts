@@ -1,4 +1,4 @@
-import { StateWorker, StonexStore } from '../lib'
+import { StateWorker, StonexStore } from '../src'
 // import Logger from './modifiers/Logger'
 import modules, { Modules } from './modules'
 

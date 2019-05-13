@@ -1,4 +1,4 @@
-import { Modifier, StonexModule, Store } from '../../lib'
+import { Modifier, StonexModule, Store } from '../../src'
 import { Modules } from '../modules'
 
 const Logger: Modifier<Modules> = (store: Store<Modules>) => {
@@ -11,13 +11,12 @@ const Logger: Modifier<Modules> = (store: Store<Modules>) => {
     const closuredSetState = module.setState.bind(module)
     // const closuredResetState = module.resetState.bind(module)
 
-    // module.getState = (...args) => {
-
-    //   const state = closuredGetState(...args)
-    //   console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] GET/STATE`, state)
-    //   // console.log(new Error('ssss'))
-    //   return state
-    // }
+    module.getState = (...args) => {
+      const state = closuredGetState(...args)
+      console.log(`-----> [MODULE ${module.moduleName.toUpperCase()}] GET/STATE`, state)
+      // console.log(new Error('ssss'))
+      return state
+    }
 
     module.setState = (...args) => {
 

@@ -1,5 +1,6 @@
 import {
   ModuleConfiguration, ModuleCreator, ModuleCreatorsMap,
+  StateSnapshot,
   StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
@@ -13,18 +14,16 @@ export declare interface Store<MP> {
   getState: <State>(moduleName: string) => State
   setState: <State>(
     moduleName: string,
-    changes: ((() => Partial<State>) | Partial<State>), callback: (state: State) => any
+    changes: ((() => Partial<State>) | Partial<State>), callback?: (state: State) => any
   ) => any
   resetState: (moduleName: string, callback?: (state: any) => any) => void
   connectModule: <State> (
     moduleName: string,
     data: ModuleCreator<State, any>
   ) => StonexModule<State>
+  createStateSnapshot: () => StateSnapshot<MP>,
+  storeId: number
 }
-
-// declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
-// declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
-// declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
 
 export declare interface StoreConfiguration<MP> {
   stateWorker?: new (...args: any[]) => StateWorker,
@@ -33,18 +32,17 @@ export declare interface StoreConfiguration<MP> {
 
 class StonexStore<MP> implements Store<MP> {
 
-  public static createStateSnapshot = <MP>(modules: MP): object =>
+  public static createStateSnapshot = <MP>(modules: MP): StateSnapshot<MP> =>
     Object.keys(modules).reduce((state, name) => {
       state[name] = copy(modules[name].state)
       return state
-    }, {})
+    }, {}) as StateSnapshot<MP>
 
   public storeId: number = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now())
 
   public modules: StonexModules<MP> = {} as StonexModules<MP>
 
   private stateWorker: StateWorker
-  // private modifiers: Array<Modifier<MP>>
 
   constructor (
     modulesMap: Partial<ModuleCreatorsMap<MP>>,
@@ -62,6 +60,8 @@ class StonexStore<MP> implements Store<MP> {
       )
     }
   }
+
+  public createStateSnapshot = (): StateSnapshot<MP> => StonexStore.createStateSnapshot(this.modules)
 
   public connectModule<State> (
     moduleName: string,

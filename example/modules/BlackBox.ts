@@ -1,4 +1,4 @@
-import { StonexModule } from '../../lib'
+import { StonexModule } from '../../src'
 
 export default class BlackBox extends StonexModule<any> {
   public state = {

@@ -1,4 +1,4 @@
-import { StonexModule } from '../../lib'
+import { StonexModule } from '../../src'
 
 export default class Items extends StonexModule<{ data: number[]; isLoading: boolean }> {
   public state = {

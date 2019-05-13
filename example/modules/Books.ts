@@ -1,4 +1,4 @@
-import { StonexModule } from '../../lib'
+import { StonexModule } from '../../src'
 
 export declare interface Book {
   name: string,

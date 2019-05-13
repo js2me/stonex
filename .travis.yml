@@ -11,31 +11,49 @@ before_install:
   - export PACKAGE_VERSION=$(node -p "require('./package.json').version")
   - export NPM_REMOTE_VERSION=$(npm view stonex version)
   - export PACKAGE_NAME=$(node -p "require('./package.json').name")
+  - export BRANCH_IS_TAG=$(node -p "/^([0-9].[0-9].[0-9]+((-(alpha|beta))|))$/.test('${TRAVIS_BRANCH}')")
+  - export GIT_LOG="$(git log --pretty=format:"* %s (%h)")"
+  - export PROJECT_NAME="acacode/stonex"
+  - export RELEASE_BODY=$(node -p "'[Click here to see release changes](https://github.com/$PROJECT_NAME/blob/$TRAVIS_BRANCH/CHANGELOG.md#' + require('./build/getLatestTag.js') + ')'")
 
 install:
   - yarn install --frozen-lockfile
 
 jobs:
   include:
-    - stage: tests
-      if: type = push
-      name: "Linter and all possible testing"
+    - stage: lint
+      script: yarn lint
+    - stage: test
       script:
-        - yarn lint
         - yarn test
-    - stage: build
-      if: type = pull_request
-      name: "Build JS files"
-      script: yarn build
+        - yarn run exec
     - stage: publish
-      if: branch = master AND type = push
-      name: "Publish to NPM, Github Releases"
-      script:
-        - bash ./publish.sh
+      if: env(BRANCH_IS_TAG) != true AND branch = master AND type = push
+      name: "Create Github Release"
+      before_deploy:
+        - git config --global user.email "builds@travis-ci.com"
+        - git config --global user.name "Travis CI"
+        - git tag $PACKAGE_VERSION -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER from $TRAVIS_BRANCH"
+        - git push -q https://$GITHUB_TOKEN@github.com/$PROJECT_NAME --tags
+        - zip -r release.zip dist lib es src index.d.ts LICENSE README.md package.json
+        - ls -l
+      deploy:
+        provider: releases
+        name: "Release ${PACKAGE_VERSION}"
+        body: "$RELEASE_BODY"
+        overwrite: true
+        skip_cleanup: true
+        api_key:
+          secure: ${GITHUB_TOKEN}
+        file:
+          - release.zip
+        on:
+          all_branches: true
+          repo: $PROJECT_NAME
+      after_deploy:
+        - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc
+        - npm publish
 
 notifications:
   email:
-    recipients:
-      - ${NOTIFY_EMAIL}
-    on_success: change
-    on_failure: always
+    - ${NOTIFY_EMAIL}

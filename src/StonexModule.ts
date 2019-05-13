@@ -17,7 +17,6 @@ export class StonexModule<State = any> {
 
   /* tslint:disable:variable-name */
   public __initialState: State
-  public __stateId: string
   /* tslint:enable:variable-name */
 
   constructor (storeBinder: StoreBinder<State>) {
