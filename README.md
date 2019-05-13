@@ -16,7 +16,6 @@
 </div>
 
 
-d
 
 ## 📝 License
 
