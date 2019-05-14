@@ -10,5 +10,7 @@ export default class Books extends StonexModule<string[]> {
 
   public add (book: Book): void {
     this.setState([...this.state, `${book.name} of ${book.author}`])
+
+    this.modules.items.getList('lol')
   }
 }

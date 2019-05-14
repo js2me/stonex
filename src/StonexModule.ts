@@ -1,11 +1,13 @@
-import { StoreBinder } from '.'
+import { StonexModules, StoreBinder } from '.'
 
-export class StonexModule<State = any> {
+export class StonexModule<State = any, MP = any> {
   public readonly __STONEXMODULE__ = true
 
   public readonly state: State
 
   public readonly moduleName: string
+
+  public readonly modules: StonexModules<MP>
 
   public getState: () => State
   public setState: (
@@ -19,12 +21,13 @@ export class StonexModule<State = any> {
   public __initialState: State
   /* tslint:enable:variable-name */
 
-  constructor (storeBinder: StoreBinder<State>) {
+  constructor (storeBinder: StoreBinder<State, MP>) {
     if (!storeBinder) {
       throw new Error(
         'Stonex Module created but not registered in Stonex Store. \r\n' +
         'Please attach all your modules to store')
     }
+
     Object.assign(this, storeBinder)
   }
 }

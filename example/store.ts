@@ -6,5 +6,5 @@ export default new StonexStore<Modules>(modules,{
   modifiers: [
     // Logger
   ],
-  stateWorker: class OwnFuckinStateWorker extends StateWorker {}
+  stateWorker: class SuperStateWorker extends StateWorker {}
 })

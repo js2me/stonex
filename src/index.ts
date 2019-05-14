@@ -21,7 +21,7 @@ export declare type ModuleCreatorsMap<M> = {
 }
 
 export declare type ModuleCreator<State, MI> =
-  (new (storeBinder: StoreBinder<any>) => MI) | ModuleConfiguration<any, MI>
+  (new (storeBinder: StoreBinder<State>) => MI) | ModuleConfiguration<any, MI>
 
 export declare interface ModuleConfiguration<State = any, M = any> {
   module: new (storeBinder: StoreBinder<State>) => StonexModule<State>,
