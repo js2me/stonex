@@ -118,20 +118,21 @@ Have two arguments:
   2. **configuration** - Configuration object which need to override something inside stonex.  
   Have keys: `stateWorker`, `modifiers`  
 
-  2.1. `stateWorker`  
+  - `stateWorker`  
   Default value is `StateWorker`  
   [Code link](./src/StateWorker.ts#L4)  
 
   Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
 
-  2.2. `modifiers`  
+  - `modifiers`  
   Default value is `[]`  
 
   This list array of functions where function is [Modifier](./src/ModifiersWorker.ts#L9)  
 
   Simple description about `Modifier` type:  
 
-  ```js
+```js
+
   const yourModifier = (store) => {
     // it has been called when store will be created
 
@@ -144,14 +145,25 @@ Have two arguments:
       }
     }
   }
-  ```
 
+```
 
+  <hr>
 
 Usings:  
 
 ```js
-const store = new StonexStore(modules, configuration)
+const store = new StonexStore({
+  key1: StonexModule1,
+  key2: StonexModule2
+}, {
+  stateWorker: YourStateWorker,
+  modifiers: [
+    YourModifier,
+    SomeLogger,
+    SomeStoreModifier,
+  ]
+})
 ```
 
 
