@@ -118,33 +118,33 @@ Have two arguments:
   2. **configuration** - Configuration object which need to override something inside stonex.  
   Have keys: `stateWorker`, `modifiers`  
 
-    2.1. `stateWorker`  
-    Default value is `StateWorker`  
-    [Code link](./src/StateWorker.ts#L4)  
+  2.1. `stateWorker`  
+  Default value is `StateWorker`  
+  [Code link](./src/StateWorker.ts#L4)  
 
-    Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
+  Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
 
-    2.2. `modifiers`  
-    Default value is `[]`  
+  2.2. `modifiers`  
+  Default value is `[]`  
 
-    This list array of functions where function is [Modifier](./src/ModifiersWorker.ts#L9)  
+  This list array of functions where function is [Modifier](./src/ModifiersWorker.ts#L9)  
 
-    Simple description about `Modifier` type:  
+  Simple description about `Modifier` type:  
 
-```js
-const yourModifier = (store) => {
-  // it has been called when store will be created
+  ```js
+  const yourModifier = (store) => {
+    // it has been called when store will be created
 
-  return (module) => {
-    // it has been called when module will be created
+    return (module) => {
+      // it has been called when module will be created
 
-    return (actionArgs, moduleName, methodName) => {
-      // it has been called when some action will be called
+      return (actionArgs, moduleName, methodName) => {
+        // it has been called when some action will be called
 
+      }
     }
   }
-}
-```
+  ```
 
 
 
