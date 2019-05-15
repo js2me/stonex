@@ -148,8 +148,6 @@ Have two arguments:
 
 ```
 
-  <hr>
-
 Usings:  
 
 ```js
@@ -166,6 +164,14 @@ const store = new StonexStore({
 })
 ```
 
+
+  <hr>
+
+
+
+### `StonexModule`  
+`import { StonexModule } from 'stonex'`  
+[Code link](./src/StonexModule.ts#L3)  
 
 
 
