@@ -106,7 +106,7 @@ The syntax of the modules is almost identical to the syntax of the `ReactJS` com
 
 ### `StonexStore`  
 `import { StonexStore } from 'stonex'`  
-[Code link](./src/StonexStore.ts#L33)  
+[[Source link]](./src/StonexStore.ts#L33)  
 
 Create a new stonex store  
 
@@ -120,7 +120,7 @@ Have two arguments:
 
   - `stateWorker`  
   Default value is `StateWorker`  
-  [Code link](./src/StateWorker.ts#L4)  
+  [[Source link]](./src/StateWorker.ts#L4)  
 
   Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
 
@@ -171,8 +171,52 @@ const store = new StonexStore({
 
 ### `StonexModule`  
 `import { StonexModule } from 'stonex'`  
-[Code link](./src/StonexModule.ts#L3)  
+[[Source link]](./src/StonexModule.ts#L3)  
 
+The important parent class of your stonex modules.  
+Provide linking store information to your stonex module and provides specific methods which allows to work with `state`.  
+
+
+`StonexModule` provides properties: `this.setState`, `this.getState`, `this.resetState`, `this.moduleName`, `this.modules`
+
+`setState` - Update module's state  
+`getState` - Same as `this.state`. Returns fresh state of module  
+`resetState` - Reset state of module to the initial value  
+`moduleName` - Name of that stonex module containing in your store  
+`modules` - Reference to store modules. It allows to use other store modules inside module  
+
+
+Usings:  
+
+```js
+import { StonexModule } from 'stonex'
+
+export default class AnimalsModule extends StonexModule{
+
+  /* state */
+  state = {}
+
+
+  /* methods */
+
+  createAnimal = (type, name) => {
+    this.setState({
+      ...this.state,
+      [type]: [
+        ...(this.state[type] || []),
+        { name }
+      ]
+    })
+
+    return this.state
+  }
+
+  createDog = (name) => this.createAnimal('dogs', name)
+  createCat = (name) => this.createAnimal('cats', name)
+
+}
+
+```
 
 
 
