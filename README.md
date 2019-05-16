@@ -104,9 +104,8 @@ The syntax of the modules is almost identical to the syntax of the `ReactJS` com
 ## 📚 Documentation
 
 
-### `StonexStore`  
+### `StonexStore`[[Source link]](./src/StonexStore.ts#L33)  
 `import { StonexStore } from 'stonex'`  
-[[Source link]](./src/StonexStore.ts#L33)  
 
 Create a new stonex store  
 
@@ -118,9 +117,8 @@ Have two arguments:
   2. **configuration** - Configuration object which need to override something inside stonex.  
   Have keys: `stateWorker`, `modifiers`  
 
-  - `stateWorker`  
+  - `stateWorker`[[Source link]](./src/StateWorker.ts#L4)  
   Default value is `StateWorker`  
-  [[Source link]](./src/StateWorker.ts#L4)  
 
   Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
 
@@ -169,9 +167,8 @@ const store = new StonexStore({
 
 
 
-### `StonexModule`  
+### `StonexModule`[[Source link]](./src/StonexModule.ts#L3)  
 `import { StonexModule } from 'stonex'`  
-[[Source link]](./src/StonexModule.ts#L3)  
 
 The important parent class of your stonex modules.  
 Provide linking store information to your stonex module and provides specific methods which allows to work with `state`.  
