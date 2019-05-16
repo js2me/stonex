@@ -4,6 +4,7 @@ import {
   StonexModules
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
+import { convertToStandardModule, isPureModule } from './helpers/module'
 import ModifiersWorker, { ActionModifier, Modifier, ModuleModifier } from './ModifiersWorker'
 import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
@@ -65,18 +66,22 @@ class StonexStore<MP> implements Store<MP> {
 
   public connectModule<State> (
     moduleName: string,
-    data: ModuleCreator<State, any>,
+    data: ModuleCreator<State, any> | ModuleConfiguration<State>,
     moduleModifiers: ModuleModifier[] = []
   ): StonexModule<State> {
 
     const createDefaultStoreBinder = () => createStoreBinder<MP, State>(moduleName, this)
 
-    const { module: Module, storeBinder = createDefaultStoreBinder() } = isType(data, types.function) ? {
-      module: data as ModuleConfiguration<State>['module'],
-      storeBinder: createDefaultStoreBinder(),
-    } : data as ModuleConfiguration<State>
+    const { module: Module, storeBinder = createDefaultStoreBinder() } =
+      (
+        isType(data, types.function)
+        || (isType(data, types.object) && typeof (data as ModuleConfiguration<State>).module === 'undefined')
+      ) ? {
+        module: data as ModuleConfiguration<State>['module'],
+        storeBinder: createDefaultStoreBinder(),
+      } : data as ModuleConfiguration<State>
 
-    const moduleInstance = new Module(storeBinder)
+    const moduleInstance = new (isPureModule(Module) ? convertToStandardModule(Module) : Module)(storeBinder)
 
     const actionModifiers: ActionModifier[] = ModifiersWorker.getActionModifiers(moduleModifiers, moduleInstance)
 

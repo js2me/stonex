@@ -1,3 +1,5 @@
+import { StonexModule } from '../StonexModule'
+
 export function getAllMethodsFromModule (module: object): string[] {
   const methods: string[] = []
   const reservedMethods = [
@@ -37,4 +39,27 @@ export function getAllMethodsFromModule (module: object): string[] {
     keys.forEach(addMethodToList)
   }
   return methods
+}
+
+export function isPureModule (module: any): boolean {
+  return typeof module !== 'function'
+}
+
+export function convertToStandardModule (pureModule: object): any {
+
+  return class extends StonexModule<any> {
+
+    constructor (storeBinder: any) {
+      super(storeBinder)
+
+      const keys = Object.keys(pureModule)
+
+      Object.assign(this, pureModule)
+      keys.forEach((key: any) => {
+        if (typeof pureModule[key] === 'function') {
+          this[key] = (...args: any[]) => pureModule[key].apply(this, args)
+        }
+      })
+    }
+  }
 }

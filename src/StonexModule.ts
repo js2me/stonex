@@ -1,5 +1,10 @@
 import { StonexModules, StoreBinder } from '.'
 
+// TODO: fix typings here (dynamic keys as methods)
+export declare interface PureStonexModule<State = any> {
+  state?: State | any,
+}
+
 export class StonexModule<State = any, MP = any> {
   public readonly __STONEXMODULE__ = true
 
