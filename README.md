@@ -23,10 +23,11 @@ It allows you to store and manage data correctly, and also combine all business 
 
 Easily configurable, most things can be overridden if necessary.
 
-As well as in other similar libraries, each "Stonex" module has its own **state** and **actions**. But, unlike other libraries, most of the `Stonex` features are provided "out of the box", for example, the creating asynchronous actions.
+As well as in other similar libraries, each `Stonex` module has its own **state** and **actions**. But, unlike other libraries, most of the `Stonex` features are provided "out of the box", for example, the creating asynchronous actions.
 
 The syntax of the modules is almost identical to the syntax of the `ReactJS` component.
 
+Also currently `Stonex` is supporting integrations with: [ReactJS (react-stonex)](https://github.com/acacode/react-stonex)
 
 ## 💡 How to use
 
@@ -204,17 +205,74 @@ export default class AnimalsModule extends StonexModule{
         { name }
       ]
     })
-
     return this.state
   }
 
   createDog = (name) => this.createAnimal('dogs', name)
+
   createCat = (name) => this.createAnimal('cats', name)
 
 }
 
 ```
+<!-- 
+Besides `StonexModule` stonex have `PureStonexModule`, factically it is the same but pure modules looks easier than standard modules.  
+This is pure `AnimalsModule` (from above code)  
 
+```js
+import { StonexModule } from 'stonex'
+
+export default {
+  /* state */
+  state: {}
+  /* methods */
+  createAnimal(type, name) {
+    this.setState({
+      ...this.state,
+      [type]: [
+        ...(this.state[type] || []),
+        { name }
+      ]
+    })
+    return this.state
+  }
+  createDog(name){ return this.createAnimal('dogs', name) }
+  createCat(name){ return this.createAnimal('cats', name) }
+}
+
+```
+ -->
+
+
+  <hr>
+
+
+
+### `StateWorker`[[Source link]](./src/StateWorker.ts#L4)  
+`import { StateWorker } from 'stonex'`  
+
+This is a class which do all things linked with state of each module. It provides initializing, updating and reseting state.  
+If sometimes needs to override things like `resetState` or `setState` it can helps you.  
+
+Your overriden `StateWorker` needs to send where you creating a store:  
+```js
+
+const store = new StonexStore({
+  key1: StonexModule1,
+  key2: StonexModule2
+}, {
+  stateWorker: YourStateWorker, // HERE
+  modifiers: [
+    YourModifier,
+    SomeLogger,
+    SomeStoreModifier,
+  ]
+})
+
+```
+<!-- And maybe currently you have a question why you need to use that ?  
+
+Sometimes in big applications in places where code work with application data gonna need to process data of application -->
 
 
 ## 📝 License
