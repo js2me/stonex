@@ -1,3 +1,5 @@
+import { createStoreBinder } from '../src'
+import Items from './modules/Items'
 import store from './store'
 
 store.modules.books.add({
@@ -17,5 +19,21 @@ console.log(store.modules.books.state)
 try {
   store.modules.books.state = []
 } catch (e) {
-  console.error(e)
+  console.error('Catched an error')
 }
+
+store.modules.things.addThing('superb thing')
+
+console.log('updated state of pure stonex module', store.modules.things.state)
+
+store.connectModule('otherItems', {
+  module: Items,
+  storeBinder: createStoreBinder('otherItems', store)
+},)
+
+store.modules.otherItems.getList().then(() => {
+  console.log('other items state', store.modules.otherItems.state)
+})
+
+store.modules.animals.createDog('Fluffy')
+console.log('animals state', store.modules.animals.state)

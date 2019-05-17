@@ -1,6 +1,6 @@
 {
   "name": "stonex",
-  "version": "0.1.3-alpha",
+  "version": "0.1.3-beta",
   "description": "Predictable state container for TypeScript/JavaScript applications",
   "main": "lib/stonex.js",
   "unpkg": "dist/stonex.js",

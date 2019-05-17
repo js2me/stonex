@@ -7,7 +7,7 @@
  * @flow
  */
 
-import { StonexModule } from './StonexModule'
+import { PureStonexModule, StonexModule } from './StonexModule'
 import { StoreBinder } from './StoreBinder'
 export { default as StonexStore } from './StonexStore'
 export * from './StonexModule'
@@ -21,10 +21,10 @@ export declare type ModuleCreatorsMap<M> = {
 }
 
 export declare type ModuleCreator<State, MI> =
-  (new (storeBinder: StoreBinder<any>) => MI) | ModuleConfiguration<any, MI>
+  PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => MI) | ModuleConfiguration<any, MI>
 
 export declare interface ModuleConfiguration<State = any, M = any> {
-  module: new (storeBinder: StoreBinder<State>) => StonexModule<State>,
+  module: (PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => StonexModule<State>)),
   storeBinder?: StoreBinder<State>
 }
 
