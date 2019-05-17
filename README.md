@@ -112,40 +112,30 @@ Create a new stonex store
 
 Have two arguments:  
 
-  1. **modules** - Map of modules which will contains in stonex store  
-  Each module should be extended from `StonexModule` class  
+ 1. **modules** - Map of modules which will contains in stonex store
+  Each module should be extended from `StonexModule` class or you can create a [[pure stonex module]](./README#L229)  
+ 2. **configuration** - Configuration object which need to override something inside stonex.
+  Object with keys: `stateWorker`, `modifiers`  
+    - `stateWorker`[[Source link]](./src/StateWorker.ts#L4)
+        Default value is [`StateWorker`](./src/StateWorker.ts#L4)  
+        Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
+    - `modifiers`[[Source link]](./src/StateWorker.ts#L4)
+        Default value is `[]`  
+        This list of functions where function is [Modifier](./src/ModifiersWorker.ts#L9)  
+        Simple description about `Modifier` type:  
+        ```js
+          const yourModifier = (store) => {
+            // it has been called when store will be created
+            return (module) => {
+              // it has been called when module will be created
 
-  2. **configuration** - Configuration object which need to override something inside stonex.  
-  Have keys: `stateWorker`, `modifiers`  
+              return (actionArgs, moduleName, methodName) => {
+                // it has been called when some action will be called
 
-  - `stateWorker`[[Source link]](./src/StateWorker.ts#L4)  
-  Default value is `StateWorker`  
-
-  Needs for overriding of all behaviour with working with state of each module.(`this.setState`, `this.getState`, etc)  
-
-  - `modifiers`  
-  Default value is `[]`  
-
-  This list array of functions where function is [Modifier](./src/ModifiersWorker.ts#L9)  
-
-  Simple description about `Modifier` type:  
-
-```js
-
-  const yourModifier = (store) => {
-    // it has been called when store will be created
-
-    return (module) => {
-      // it has been called when module will be created
-
-      return (actionArgs, moduleName, methodName) => {
-        // it has been called when some action will be called
-
-      }
-    }
-  }
-
-```
+              }
+            }
+          }
+        ```
 
 Usings:  
 
@@ -216,7 +206,7 @@ export default class AnimalsModule extends StonexModule{
 
 ```
 
-Besides using `StonexModule` class you can creating a simple object, factically it will works as class extended from StonexModule.  
+Besides using `StonexModule` class you can create a simple object, factically it will works as class extended from StonexModule.  
 This simple object `AnimalsModule` (from above code)  
 
 Note: all methods should be not arrow functions.  
