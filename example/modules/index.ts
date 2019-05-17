@@ -11,7 +11,8 @@ export declare interface Modules {
   things: {
     state: any,
     addThing: (name: any) => any
-  }
+  },
+  otherItems: Items,
 }
 
 export default {
@@ -30,5 +31,5 @@ export default {
       })
     },
     state: {},
-  } as PureStonexModule<any>
+  } as PureStonexModule<any>,
 }

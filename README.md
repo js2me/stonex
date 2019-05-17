@@ -252,24 +252,38 @@ export default {
 `import { StateWorker } from 'stonex'`  
 
 This is a class which do all things linked with state of each module. It provides initializing, updating and reseting state.  
-If sometimes needs to override things like `resetState` or `setState` it can helps you.  
+If will need to change behaviour of things like `resetState` or `setState` then it can helps you.  
 
-Your overriden `StateWorker` needs to send where you creating a store:  
+Overridden `State Worker` needs to send where you creating a store:  
 ```js
+import { StonexStore, StateWorker } from 'stonex'
+
+
+class YourStateWorker extends StateWorker {
+
+  resetState(moduleInstance, callback){
+    console.log(`Resetting state of ${moduleInstance.moduleName} module`)
+    return super.resetState(moduleInstance, callback)
+  }
+}
+
 
 const store = new StonexStore({
   key1: StonexModule1,
   key2: StonexModule2
 }, {
   stateWorker: YourStateWorker, // HERE
-  modifiers: [
-    YourModifier,
-    SomeLogger,
-    SomeStoreModifier,
-  ]
+  modifiers: []
 })
 
 ```
+
+
+<!-- 
+### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
+`import { createStoreBinder } from 'stonex'`   -->
+
+
 <!-- And maybe currently you have a question why you need to use that ?  
 
 Sometimes in big applications in places where code work with application data gonna need to process data of application -->
