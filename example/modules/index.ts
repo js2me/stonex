@@ -1,4 +1,5 @@
 import { PureStonexModule } from '../../src'
+import Animals from './Animals'
 import BlackBox from './BlackBox'
 import Books from './Books'
 import Items from './Items'
@@ -13,9 +14,11 @@ export declare interface Modules {
     addThing: (name: any) => any
   },
   otherItems: Items,
+  animals: any
 }
 
 export default {
+  animals: Animals,
   blackBox: BlackBox,
   books: Books,
   items: Items,

@@ -215,16 +215,15 @@ export default class AnimalsModule extends StonexModule{
 }
 
 ```
-<!-- 
-Besides `StonexModule` stonex have `PureStonexModule`, factically it is the same but pure modules looks easier than standard modules.  
-This is pure `AnimalsModule` (from above code)  
 
+Besides using `StonexModule` class you can creating a simple object, factically it will works as class extended from StonexModule.  
+This simple object `AnimalsModule` (from above code)  
+
+Note: all methods should be not arrow functions.  
 ```js
-import { StonexModule } from 'stonex'
-
 export default {
   /* state */
-  state: {}
+  state: {},
   /* methods */
   createAnimal(type, name) {
     this.setState({
@@ -235,13 +234,13 @@ export default {
       ]
     })
     return this.state
-  }
-  createDog(name){ return this.createAnimal('dogs', name) }
-  createCat(name){ return this.createAnimal('cats', name) }
+  },
+  createDog(name){ return this.createAnimal('dogs', name) },
+  createCat(name){ return this.createAnimal('cats', name) },
 }
 
 ```
- -->
+
 
 
   <hr>
@@ -279,10 +278,40 @@ const store = new StonexStore({
 ```
 
 
-<!-- 
-### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
-`import { createStoreBinder } from 'stonex'`   -->
 
+### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
+`import { createStoreBinder } from 'stonex'`  
+
+This function create an `StoreBinder` which needed if you want to change/override behaviour of all things which sends from store and add common methods/properties.  
+Factically its more needed for creating some middleware.  
+
+Example of usage:
+
+```js
+
+import { createStoreBinder, StateWorker, StonexStore } from 'stonex'
+import modules, { Modules } from './modules'
+import Items from './modules/Items'
+
+const store = new StonexStore(modules)
+
+
+const modifiedStoreBinder = {
+  ...createStoreBinder('items', store),
+  cacheState: () => {
+    sessionStorage.setItem('items-cache', JSON.stringify(store.modules.items.state))
+  }
+}
+
+store.connectModule('items', {
+  module: Items,
+  storeBinder: modifiedStoreBinder
+},)
+
+store.modules.items.cacheState()
+
+
+```
 
 <!-- And maybe currently you have a question why you need to use that ?  
 
