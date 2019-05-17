@@ -137,6 +137,23 @@ Have two arguments:
           }
         ```
 
+Instance of `StonexStore` have properties:  
+
+- `connectModule(moduleName: string, module: StonexModule | ModuleConfiguration | PureStonexModule)`  
+  Connect Stonex Module to store  
+- `createStateSnapshot()`  
+  Return snapshot of states of all modules connected to store 
+- `getState(moduleName: string)`  
+  Returns state of module  
+- `modules: StonexModules`  
+  Object with stonex modules where key is name of module 
+- `resetState(moduleName: string, callback: (state: any) => any = noop)`  
+  Reset state of module to initial value  
+- `setState(moduleName: string, changes: any, callback: (state: any) => any = noop)`  
+  Update state of module  
+- `storeId: number`  
+  Unique identifier of store  
+
 Usings:  
 
 ```js
