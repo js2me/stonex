@@ -17,6 +17,7 @@
 ### Added
 - The bridge for using another modules in module via using property `this.modules` inside methods of your StonexModule
 - Pure Stonex modules
+- Fulfill documentation in `README.md`
 
 ### Changed
 - Files of example of stonex store. Tested new feature inside code example (folder: `example`)
