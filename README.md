@@ -112,9 +112,9 @@ Create a new stonex store
 
 Have two arguments:  
 
- 1. **modules** - Map of modules which will contains in stonex store
+ 1. **modules** - Map of modules which will contains in stonex store.  
   Each module should be extended from `StonexModule` class or you can create a [[pure stonex module]](./README#L229)  
- 2. **configuration** - Configuration object which need to override something inside stonex.
+ 2. **configuration** - Configuration object which need to override something inside stonex.  
   Object with keys: `stateWorker`, `modifiers`  
     - `stateWorker`[[Source link]](./src/StateWorker.ts#L4)
         Default value is [`StateWorker`](./src/StateWorker.ts#L4)  
