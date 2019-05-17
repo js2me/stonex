@@ -19,11 +19,11 @@
 
 [What is that ?](#what-is-that)  
 [How to use](#-how-to-use)  
-[Documentation](#-documentation)  
-  [Stonex Store](#stonexstoresource-link)  
-  [Stonex Module](#stonexmodulesource-link)  
-  [StateWorker](#stateworkersource-link)  
-  [createStoreBinder](#createstorebindersource-link)  
+[Documentation](#-documentation):  
+    - [Stonex Store](#stonexstoresource-link)  
+    - [Stonex Module](#stonexmodulesource-link)  
+    - [StateWorker](#stateworkersource-link)  
+    - [createStoreBinder](#createstorebindersource-link)  
 [License](#-license)  
 
 
