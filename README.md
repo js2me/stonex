@@ -279,6 +279,10 @@ const store = new StonexStore({
 
 
 
+  <hr>
+
+
+
 ### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
 `import { createStoreBinder } from 'stonex'`  
 
