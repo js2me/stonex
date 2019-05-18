@@ -15,8 +15,19 @@
   </p>
 </div>
 
+#### Table of Contents  
 
-## What is that?
+[What is that ?](#what-is-that)  
+[How to use](#-how-to-use)  
+[Documentation](#-documentation):  
+    - [Stonex Store](#stonexstoresource-link)  
+    - [Stonex Module](#stonexmodulesource-link)  
+    - [StateWorker](#stateworkersource-link)  
+    - [createStoreBinder](#createstorebindersource-link)  
+[License](#-license)  
+
+
+## ❓ What is that ?
 
 This is a simple and easy library for managing/storing data.  
 It allows you to store and manage data correctly, and also combine all business logic into separated `Stonex` modules.
