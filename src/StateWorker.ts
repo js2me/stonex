@@ -6,7 +6,7 @@ export class StateWorker {
   public state = {}
 
   public initializeState (moduleInstance: any): void {
-    this.state[moduleInstance.moduleName] = moduleInstance.__initialState
+    this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 
     delete moduleInstance.state
 
