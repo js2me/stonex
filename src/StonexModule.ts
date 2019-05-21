@@ -5,6 +5,25 @@ export declare interface PureStonexModule<State = any> {
   state?: State | any,
 }
 
+/**
+ *
+ * @export
+ * @class StonexModule
+ * @template State
+ * @template
+ *
+ *
+ * @example
+ * class YourModule extends StonexModule {
+ *    state = {}
+ *    getData = (key) => this.state[key]
+ *    setData = (data) => this.setState(data)
+ *    clear = () => this.resetState()
+ * }
+ *
+ * yourStore.connectModule('yourModule', YourModule)
+ * yourStore.modules.yourModule.setData({ foo: 'bar' })
+ */
 export class StonexModule<State = any, MP = any> {
   public readonly __STONEXMODULE__ = true
 
@@ -73,6 +92,8 @@ export class StonexModule<State = any, MP = any> {
 
   /**
    * Creates an instance of StonexModule.
+   * Provide linking store information to your stonex module
+   * And provides specific methods which allows to work with state.
    *
    * @param {StoreBinder<State, MP>} storeBinder - creates via 'createStoreBinder' function
    *

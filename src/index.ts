@@ -23,6 +23,18 @@ export declare type ModuleCreatorsMap<M> = {
 export declare type ModuleCreator<State, MI> =
   PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => MI) | ModuleConfiguration<any, MI>
 
+// tslint:disable:max-line-length
+/**
+ * @typedef {Object} ModuleConfiguration
+ * @property {(PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => StonexModule<State>))} module - Stonex module
+ * @property {StoreBinder<State>?} storeBinder - StoreBinder middleware (it is optional property)
+ *
+ * @export
+ * @interface ModuleConfiguration
+ * @template State
+ * @template M
+ */
+// tslint:enable:max-line-length
 export declare interface ModuleConfiguration<State = any, M = any> {
   module: (PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => StonexModule<State>)),
   storeBinder?: StoreBinder<State>
