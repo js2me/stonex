@@ -11,6 +11,11 @@
 ### Removed
  -->
 
+## [0.1.3](https://github.com/acacode/stonex/releases/tag/0.1.3)
+
+### Added
+- JSDOC documentation
+
 
 ## [0.1.3-beta](https://github.com/acacode/stonex/releases/tag/0.1.3-beta)
 
