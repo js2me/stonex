@@ -52,43 +52,11 @@ export class StonexModule<State = any, MP = any> {
    */
   public readonly modules: StonexModules<MP>
 
-  /**
-   * Returns current state of stonex module. It is the same as `state` property
-   *
-   * @memberof StonexModule
-   * @returns {State}
-   */
-  public getState: () => State
-
-  /**
-   * Update state of stonex module
-   *
-   * @param {function | State} changes - what needs to update.
-   * It should be a partial state or callback function with first argument as latest state data
-   *
-   * @param {function?} callback - callback function which called when state has been updated
-   *
-   * @memberof StonexModule
-   * @returns {void}
-   */
-  public setState: (
-    changes: ((state: State) => Partial<State>) | Partial<State>,
-    callback?: (state: any) => any
-  ) => any
-
-  /**
-   * Reset state to initial/first value
-   *
-   * @param {function} callback - callback function which called when state will been flushed to initial/default value
-   *
-   * @memberof StonexModule
-   * @returns {void}
-   */
-  public resetState: (callback?: (state: any) => any) => void
-
   /* tslint:disable:variable-name */
   public __initialState: State
   /* tslint:enable:variable-name */
+
+  private storeBinder: StoreBinder<State, MP>
 
   /**
    * Creates an instance of StonexModule.
@@ -105,7 +73,41 @@ export class StonexModule<State = any, MP = any> {
         'Stonex Module created but not registered in Stonex Store. \r\n' +
         'Please attach all your modules to store')
     }
-
-    Object.assign(this, storeBinder)
+    // @ts-ignore
+    this.storeBinder = storeBinder
   }
+
+  /**
+   * Returns current state of stonex module. It is the same as `state` property
+   *
+   * @memberof StonexModule
+   * @returns {State}
+   */
+  public getState = () => this.storeBinder.getState()
+
+  /**
+   * Update state of stonex module
+   *
+   * @param {function | State} changes - what needs to update.
+   * It should be a partial state or callback function with first argument as latest state data
+   *
+   * @param {function?} callback - callback function which called when state has been updated
+   *
+   * @memberof StonexModule
+   * @returns {void}
+   */
+  public setState = (
+    changes: ((state: State) => Partial<State>) | Partial<State>,
+    callback?: (state: any) => any
+  ) => this.storeBinder.setState(changes, callback)
+
+  /**
+   * Reset state to initial/first value
+   *
+   * @param {function} callback - callback function which called when state will been flushed to initial/default value
+   *
+   * @memberof StonexModule
+   * @returns {void}
+   */
+  public resetState = (callback?: (state: any) => any) => this.storeBinder.resetState(callback)
 }
