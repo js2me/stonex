@@ -33,7 +33,8 @@ export class StonexModule<State = any, MP = any> {
    * @type {State}
    * @memberof StonexModule
    */
-  public readonly state: State
+  // @ts-ignore
+  public readonly state: State = null
 
   /**
    * Using inside stonex store. Don't change it
@@ -41,7 +42,7 @@ export class StonexModule<State = any, MP = any> {
    * @type {string}
    * @memberof StonexModule
    */
-  public readonly moduleName: string
+  public readonly moduleName: string = '@STONEX_MODULE'
 
   /**
    * Reference to another modules linked to store.
@@ -73,8 +74,21 @@ export class StonexModule<State = any, MP = any> {
         'Stonex Module created but not registered in Stonex Store. \r\n' +
         'Please attach all your modules to store')
     }
-    // @ts-ignore
-    this.storeBinder = storeBinder
+
+    if (!(
+      storeBinder.getState &&
+      storeBinder.moduleName &&
+      storeBinder.modules &&
+      storeBinder.resetState &&
+      storeBinder.setState
+    )) {
+      throw new Error(
+        'Stonex Module must be creating via valid StoreBinder. \r\n' +
+        'When you create a new instance of StonexModule, ' +
+        'it should receive a object with keys (getState, moduleName, modules, resetState, setState)')
+    }
+
+    Object.assign(this, storeBinder)
   }
 
   /**
@@ -109,5 +123,5 @@ export class StonexModule<State = any, MP = any> {
    * @memberof StonexModule
    * @returns {void}
    */
-  public resetState = (callback?: (state: any) => any) => this.storeBinder.resetState(callback)
+  public resetState = (callback?: (state: State) => any) => this.storeBinder.resetState(callback)
 }

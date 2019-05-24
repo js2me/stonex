@@ -6,7 +6,7 @@ export declare interface StoreBinder<State, MP = any> {
   moduleName: string
   modules: StonexModules<MP>
   resetState: (callback?: (state: any) => any) => void
-  setState: (changes: ((() => Partial<State>) | Partial<State>), callback?: (state: State) => any) => any
+  setState: (changes: (((state: State) => Partial<State>) | Partial<State>), callback?: (state: State) => any) => any
 }
 
 export const createStoreBinder = <MP, State>(
