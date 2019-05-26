@@ -43,6 +43,7 @@ export class StateWorker {
   }
 
   public resetState<State> (moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void {
+    console.log('moduleInstance.__initialState', moduleInstance.__initialState)
     return this.setState(moduleInstance, moduleInstance.__initialState, callback)
   }
 
