@@ -49,7 +49,7 @@ export class StateWorker {
   private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void | never {
     let flattedStateChanges = null
 
-    if(isType(stateChanges, types.function)) {
+    if (isType(stateChanges, types.function)) {
       throw new Error(`State of ${moduleInstance.moduleName} module can not have the type of function`)
     }
 

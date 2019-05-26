@@ -139,16 +139,17 @@ describe('StonexModule', () => {
       })
 
       test('should async update state', (done) => {
-          testableModule.setState((state) => {
-            return {
-              ...state,
-              foo: 'bar',
-              bar: 'baz'
-            } 
-          }, (state) => {
-            expect(state).toStrictEqual({ foo: 'bar', bar: 'baz' })
-            done()
-          })
+        testableModule.setState((state) => {
+          return {
+            ...state,
+            bar: 'baz',
+            foo: 'bar',
+          }
+
+        }, (state) => {
+          expect(state).toStrictEqual({ foo: 'bar', bar: 'baz' })
+          done()
+        })
       })
     })
 
