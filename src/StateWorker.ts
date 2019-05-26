@@ -43,16 +43,18 @@ export class StateWorker {
   }
 
   public resetState<State> (moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void {
-    console.log('moduleInstance.__initialState', moduleInstance.__initialState)
     return this.setState(moduleInstance, moduleInstance.__initialState, callback)
   }
 
-  private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void {
-    const currentState = this.getState(moduleInstance.moduleName)
+  private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void | never {
     let flattedStateChanges = null
 
+    if(isType(stateChanges, types.function)) {
+      throw new Error(`State of ${moduleInstance.moduleName} module can not have the type of function`)
+    }
+
     if (isType(stateChanges, types.object)) {
-      flattedStateChanges = { ...(isType(currentState, types.object) ? currentState : {}), ...copy(stateChanges) }
+      flattedStateChanges = { ...copy(stateChanges) }
     } else {
       flattedStateChanges = isType(stateChanges, types.array) ? [...copy(stateChanges)] : stateChanges
     }

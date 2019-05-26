@@ -137,6 +137,19 @@ describe('StonexModule', () => {
           done()
         })
       })
+
+      test('should async update state', (done) => {
+          testableModule.setState((state) => {
+            return {
+              ...state,
+              foo: 'bar',
+              bar: 'baz'
+            } 
+          }, (state) => {
+            expect(state).toStrictEqual({ foo: 'bar', bar: 'baz' })
+            done()
+          })
+      })
     })
 
     describe('getState()', () => {
@@ -155,21 +168,19 @@ describe('StonexModule', () => {
 
     describe('resetState()', () => {
 
-      test('should reset state', done => {
+      test('should reset state', () => {
         testableModule.setState({ foo: 'bar' })
-        console.log('testableModule.__initialState', testableModule.__initialState)
         testableModule.resetState()
         expect(testableModule.state).toStrictEqual({})
-        done()
       })
 
-      // test('should call callback function when state has been resetted', done => {
-      //   testableModule.setState({ foo: 'bar' })
-      //   testableModule.resetState((state) => {
-      //     expect(state).toStrictEqual({})
-      //     done()
-      //   })
-      // })
+      test('should call callback function when state has been resetted', done => {
+        testableModule.setState({ foo: 'bar' })
+        testableModule.resetState((state) => {
+          expect(state).toStrictEqual({})
+          done()
+        })
+      })
 
     })
     // describe('createStateSnapshot()', () => {

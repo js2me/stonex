@@ -16,6 +16,10 @@
 ### Added
 - JSDOC documentation
 
+### Fixed
+- Fixed the work of 'resetState()' method
+- Fixed the work of 'setState()' method (merging previous state with current)
+
 
 ## [0.1.3-beta](https://github.com/acacode/stonex/releases/tag/0.1.3-beta)
 
