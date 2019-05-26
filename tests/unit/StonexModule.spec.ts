@@ -100,6 +100,22 @@ describe('StonexModule', () => {
 
     })
 
+    describe('moduleName', () => {
+
+      test('should return name of module', () => {
+        expect(testableModule.moduleName).toBe('specModule')
+      })
+
+    })
+
+    describe('modules', () => {
+
+      test('should be able to get access to another modules', () => {
+        expect(testableModule.modules.specModule).toBe(testableModule)
+      })
+
+    })
+
   })
 
   describe('methods', () => {
