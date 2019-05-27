@@ -1,4 +1,5 @@
 import { StonexStore } from '../../src'
+import { testAllCases } from '../__helpers__'
 import { createSpecStore, StonexModules } from '../__spec__'
 
 describe('StonexStore', () => {
@@ -38,7 +39,7 @@ describe('StonexStore', () => {
   })
 
   describe('properties', () => {
-    const properties = {
+    const properties: any = {
       modules: [
         ['should have access to connected modules', () => {
           expect(Object.keys(testableStore.modules)).toStrictEqual(['specModule', 'specNestedModule'])
@@ -68,21 +69,11 @@ describe('StonexStore', () => {
       ]
     }
 
-    Object.keys(properties).forEach(property => {
-      describe(property, () => {
-        const tests = properties[property]
-        tests.forEach(([nameOfTest, testFunc]: [string, any]) => {
-          test(nameOfTest, testFunc)
-        })
-      })
-    })
+    testAllCases(properties, (property) => property)
   })
 
-  // describe('methods', () => {
-  // })
-
   describe('methods', () => {
-    const methods = {
+    const methods: any = {
       createStateSnapshot: [
         ['should return snapshot of store state', () => {
           testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
@@ -95,14 +86,7 @@ describe('StonexStore', () => {
       ]
     }
 
-    Object.keys(methods).forEach(methodName => {
-      describe(`${methodName}()`, () => {
-        const tests = methods[methodName]
-        tests.forEach(([nameOfTest, testFunc]: [string, any]) => {
-          test(nameOfTest, testFunc)
-        })
-      })
-    })
+    testAllCases(methods, methodName => `${methodName}()`)
   })
 
 })

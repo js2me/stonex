@@ -19,13 +19,12 @@ export function getAllMethodsFromModule (module: object): string[] {
     'toLocaleString',
   ]
 
-  const checkMethodOnExistInList = (value: any, key: string) =>
-    typeof value === 'function' &&
-    reservedMethods.indexOf(key) === -1 &&
-    methods.indexOf(key) === -1
-
   const addMethodToList = (key: string) => {
-    if (checkMethodOnExistInList(module[key], key)) {
+    if (
+      typeof module[key] === 'function' &&
+      reservedMethods.indexOf(key) === -1 &&
+      methods.indexOf(key) === -1
+    ) {
       methods.push(key)
     }
   }
