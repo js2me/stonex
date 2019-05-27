@@ -116,6 +116,15 @@ describe('StonexModule', () => {
 
     })
 
+    describe('__initialState', () => {
+
+      test('should be equals to initial value', () => {
+        testableModule.setState({ foo: 'bar' })
+        expect(testableModule.__initialState).toStrictEqual({})
+      })
+
+    })
+
   })
 
   describe('methods', () => {
@@ -200,14 +209,22 @@ describe('StonexModule', () => {
       })
 
     })
-    // describe('createStateSnapshot()', () => {
+  })
 
-    //   test('module should have ability to create state snapshot', () => {
-    //     expect(testableModule.createStateSnapshot()).toStrictEqual({
-    //       specModule: {},
-    //       specNestedModule: {},
-    //     })
-    //   })
-    // })
+  describe('actions', () => {
+
+    describe('updateSpecState()', () => {
+      test('should update state', () => {
+        testableModule.updateSpecState({ foo: 'bar' })
+        expect(testableModule.state).toStrictEqual({ foo: 'bar' })
+        testableModule.updateSpecState([1,2,3,4,5])
+        expect(testableModule.state).toStrictEqual([1,2,3,4,5])
+        testableModule.updateSpecState(5)
+        expect(testableModule.state).toStrictEqual(5)
+        testableModule.updateSpecState('some string')
+        expect(testableModule.state).toStrictEqual('some string')
+      })
+    })
+
   })
 })
