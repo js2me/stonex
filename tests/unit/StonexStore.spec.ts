@@ -53,7 +53,19 @@ describe('StonexStore', () => {
           expect(exception).toBeFalsy()
         }],
       ],
-      // storeId: () => {},
+      storeId: [
+        ['should return unique key', () => {
+          const countOfUniqIds = 1000
+
+          const storeIds = Array(countOfUniqIds).fill(1).reduce((obj) => {
+            const id = createSpecStore().storeId
+            obj[id] = true
+            return obj
+          }, {})
+
+          expect(Object.keys(storeIds).length).toBe(countOfUniqIds)
+        }]
+      ]
     }
 
     Object.keys(properties).forEach(property => {
@@ -68,4 +80,29 @@ describe('StonexStore', () => {
 
   // describe('methods', () => {
   // })
+
+  describe('methods', () => {
+    const methods = {
+      createStateSnapshot: [
+        ['should return snapshot of store state', () => {
+          testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
+          testableStore.modules.specNestedModule.updateSpecState({ bar: 'baz' })
+          expect(testableStore.createStateSnapshot()).toStrictEqual({
+            specModule: { foo: 'bar' },
+            specNestedModule: { bar: 'baz' }
+          })
+        }]
+      ]
+    }
+
+    Object.keys(methods).forEach(methodName => {
+      describe(`${methodName}()`, () => {
+        const tests = methods[methodName]
+        tests.forEach(([nameOfTest, testFunc]: [string, any]) => {
+          test(nameOfTest, testFunc)
+        })
+      })
+    })
+  })
+
 })
