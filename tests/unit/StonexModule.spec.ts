@@ -1,31 +1,4 @@
-import { StonexModule, StonexStore } from '../../src'
-
-class SpecModule extends StonexModule {
-  public state: any = {}
-
-  public updateSpecState (newData: any): void {
-    this.setState(newData)
-  }
-}
-
-class SpecNestedModule extends SpecModule {
-
-  public updateSpecState (newData: any): void {
-    this.setState(newData)
-  }
-}
-
-interface StonexModules {
-  specModule: SpecModule,
-  specNestedModule: SpecNestedModule,
-}
-
-const createSpecStore = () => {
-  return new StonexStore<StonexModules>({
-    specModule: SpecModule,
-    specNestedModule: SpecNestedModule,
-  })
-}
+import { createSpecStore, SpecModule } from '../__spec__'
 
 describe('StonexModule', () => {
 
@@ -40,29 +13,23 @@ describe('StonexModule', () => {
       expect(testableModule).toBeDefined()
     })
 
-    // specStore.modules.specModule.updateSpecState()
-
-    // test('module should have ability to create state snapshot', () => {
-    //   expect(specStore.createStateSnapshot()).toStrictEqual({
-    //     specModule: {},
-    //     specNestedModule: {},
-    //   })
-    // })
-
-    // test('stonex store should have unique id')
-
     const requiredProperties = [
-      'getState',
-      'moduleName',
-      'modules',
-      'resetState',
-      'setState',
-      'setState',
+      ['getState', 'function'],
+      ['moduleName', 'string'],
+      ['__initialState', 'object'],
+      ['modules', 'object'],
+      ['resetState', 'function'],
+      ['setState', 'function'],
     ]
 
-    requiredProperties.forEach(property => {
-      test(`module should contain require property ${property}`, () => {
-        expect(testableModule).toHaveProperty(property)
+    requiredProperties.forEach(([property, type]) => {
+      describe(`"${property}" property`, () => {
+        test(`module should contain this property`, () => {
+          expect(testableModule).toHaveProperty(property)
+        })
+        test(`this property should have type "${type}"`, () => {
+          expect(typeof testableModule[property]).toBe(type)
+        })
       })
     })
 
