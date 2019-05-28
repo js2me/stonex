@@ -1,15 +1,19 @@
 import { StonexModule } from '.'
 import { copy, isType, noop, types } from './helpers/base'
 
-export class StateWorker {
+declare interface EmptyStateMap {
+  [moduleName: string]: any
+}
 
-  public state = {}
+export class StateWorker<StateMap = EmptyStateMap> {
+
+  public state: StateMap = {} as StateMap
 
   public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
     this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 
-    // @ts-ignore
-    delete moduleInstance.state
+    // TODO: remove it. it could be useless operation
+    // delete moduleInstance.state
 
     Object.defineProperty(moduleInstance, 'state', {
       get: () => moduleInstance.getState(),

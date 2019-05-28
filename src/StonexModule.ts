@@ -3,6 +3,7 @@ import { StonexModules, StoreBinder } from '.'
 // TODO: fix typings here (dynamic keys as methods)
 export declare interface PureStonexModule<State = any> {
   state?: State | any,
+  // [methodName: string]: (this: StonexModule, ...args: any[]) => any
 }
 
 /**

@@ -64,23 +64,13 @@ describe('StateWorker', () => {
       //     })
       //   }],
       // ],
-      // initializeState: [
-      //   ['should be changed when state has been updated via "setState"', () => {
-      //     changeStateOfStateWorker()
-      //     expect(testableStateWorker.state).toStrictEqual({
-      //       specModule: { foo: 'bar' },
-      //       specNestedModule: { bar: 'baz' },
-      //     })
-      //   }],
-      //   ['should be changed when state has been updated via "resetState"', () => {
-      //     changeStateOfStateWorker()
-      //     testableStateWorker.resetState(mockedSecondStonexModule)
-      //     expect(testableStateWorker.state).toStrictEqual({
-      //       specModule: { foo: 'bar' },
-      //       specNestedModule: {},
-      //     })
-      //   }],
-      // ],
+      initializeState: [
+        ['should put initialState value to the state of StateWorker', () => {
+          changeStateOfStateWorker()
+          testableStateWorker.initializeState(mockedSecondStonexModule)
+          expect(testableStateWorker.state.specNestedModule).toStrictEqual({})
+        }]
+      ],
       resetState: [
         ['should reset state of module', () => {
           changeStateOfStateWorker()
