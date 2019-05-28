@@ -1,21 +1,24 @@
 import { StonexStore } from '../../src'
-import { testAllCases } from '../__helpers__'
-import { createSpecStore, StonexModules } from '../__spec__'
+import { testAllCases, testPropertiesOnExist } from './__helpers__'
+import { createSpecStore, StonexModules } from './__spec__'
 
 describe('StonexStore', () => {
-
   let testableStore: StonexStore<StonexModules>
 
-  beforeEach(() => {
+  const initializeSpec = () => {
     testableStore = createSpecStore()
-  })
+  }
+
+  beforeEach(initializeSpec)
 
   describe('primitive specs', () => {
     test('module should be successfully connected to store', () => {
       expect(testableStore).toBeDefined()
     })
 
-    const requiredProperties = [
+    initializeSpec()
+
+    testPropertiesOnExist([
       ['createStateSnapshot', 'function'],
       ['getState', 'function'],
       ['modules', 'object'],
@@ -23,18 +26,7 @@ describe('StonexStore', () => {
       ['setState', 'function'],
       ['storeId', 'number'],
       ['connectModule', 'function'],
-    ]
-
-    requiredProperties.forEach(([property, type]) => {
-      describe(`"${property}" property`, () => {
-        test(`module should contain this property`, () => {
-          expect(testableStore).toHaveProperty(property)
-        })
-        test(`this property should have type "${type}"`, () => {
-          expect(typeof testableStore[property]).toBe(type)
-        })
-      })
-    })
+    ], testableStore)
 
   })
 

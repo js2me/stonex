@@ -5,9 +5,10 @@ export class StateWorker {
 
   public state = {}
 
-  public initializeState (moduleInstance: any): void {
+  public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
     this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 
+    // @ts-ignore
     delete moduleInstance.state
 
     Object.defineProperty(moduleInstance, 'state', {

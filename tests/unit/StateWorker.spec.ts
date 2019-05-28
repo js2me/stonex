@@ -1,92 +1,135 @@
-// import { StateWorker } from '../../src'
-// import { testAllCases } from '../__helpers__'
-// import { createSpecStore, StonexModules } from '../__spec__'
+import { StateWorker } from '../../src'
+import { testAllCases, testPropertiesOnExist } from './__helpers__'
+import { createSpecStore, SpecModule, SpecNestedModule } from './__spec__'
 
-// describe('StateWorker', () => {
+describe('StateWorker', () => {
+  let mockedStonexModule: SpecModule
+  let mockedSecondStonexModule: SpecNestedModule
+  let testableStateWorker: StateWorker
 
-//   let testableStore: StonexStore<StonexModules>
+  const initializeSpec = () => {
+    testableStateWorker = new StateWorker()
+    mockedStonexModule = createSpecStore().modules.specModule
+    mockedSecondStonexModule = createSpecStore().modules.specNestedModule
+  }
 
-//   beforeEach(() => {
-//     testableStore = createSpecStore()
-//   })
+  beforeEach(initializeSpec)
 
-//   describe('primitive specs', () => {
-//     test('module should be successfully connected to store', () => {
-//       expect(testableStore).toBeDefined()
-//     })
+  describe('primitive specs', () => {
+    initializeSpec()
 
-//     const requiredProperties = [
-//       ['createStateSnapshot', 'function'],
-//       ['getState', 'function'],
-//       ['modules', 'object'],
-//       ['resetState', 'function'],
-//       ['setState', 'function'],
-//       ['storeId', 'number'],
-//       ['connectModule', 'function'],
-//     ]
+    testPropertiesOnExist([
+      ['getState', 'function'],
+      ['initializeState', 'function'],
+      ['resetState', 'function'],
+      ['setState', 'function'],
+      ['state', 'object'],
+      ['updateState', 'function'],
+    ], testableStateWorker)
+  })
 
-//     requiredProperties.forEach(([property, type]) => {
-//       describe(`"${property}" property`, () => {
-//         test(`module should contain this property`, () => {
-//           expect(testableStore).toHaveProperty(property)
-//         })
-//         test(`this property should have type "${type}"`, () => {
-//           expect(typeof testableStore[property]).toBe(type)
-//         })
-//       })
-//     })
+  describe('properties', () => {
+    const properties: any = {
+      state: [
+        ['should have initialized value', () => {
+          expect(testableStateWorker.state).toStrictEqual({})
+        }],
+      ]
+    }
 
-//   })
+    testAllCases(properties, propertyName => propertyName)
+  })
 
-//   describe('properties', () => {
-//     const properties: any = {
-//       modules: [
-//         ['should have access to connected modules', () => {
-//           expect(Object.keys(testableStore.modules)).toStrictEqual(['specModule', 'specNestedModule'])
-//         }],
-//         ['should be possible to call method of some connected module', () => {
-//           let exception = ''
-//           try {
-//             testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
-//           } catch (e) {
-//             exception = e
-//           }
-//           expect(exception).toBeFalsy()
-//         }],
-//       ],
-//       storeId: [
-//         ['should return unique key', () => {
-//           const countOfUniqIds = 1000
+  const changeStateOfStateWorker = () => {
+    testableStateWorker.setState(mockedStonexModule, { foo: 'bar' })
+    testableStateWorker.setState(mockedSecondStonexModule, { bar: 'baz' })
+  }
 
-//           const storeIds = Array(countOfUniqIds).fill(1).reduce((obj) => {
-//             const id = createSpecStore().storeId
-//             obj[id] = true
-//             return obj
-//           }, {})
+  describe('methods', () => {
+    const methods: any = {
+      // getState: [
+      //   ['should be changed when state has been updated via "setState"', () => {
+      //     changeStateOfStateWorker()
+      //     expect(testableStateWorker.state).toStrictEqual({
+      //       specModule: { foo: 'bar' },
+      //       specNestedModule: { bar: 'baz' },
+      //     })
+      //   }],
+      //   ['should be changed when state has been updated via "resetState"', () => {
+      //     changeStateOfStateWorker()
+      //     testableStateWorker.resetState(mockedSecondStonexModule)
+      //     expect(testableStateWorker.state).toStrictEqual({
+      //       specModule: { foo: 'bar' },
+      //       specNestedModule: {},
+      //     })
+      //   }],
+      // ],
+      // initializeState: [
+      //   ['should be changed when state has been updated via "setState"', () => {
+      //     changeStateOfStateWorker()
+      //     expect(testableStateWorker.state).toStrictEqual({
+      //       specModule: { foo: 'bar' },
+      //       specNestedModule: { bar: 'baz' },
+      //     })
+      //   }],
+      //   ['should be changed when state has been updated via "resetState"', () => {
+      //     changeStateOfStateWorker()
+      //     testableStateWorker.resetState(mockedSecondStonexModule)
+      //     expect(testableStateWorker.state).toStrictEqual({
+      //       specModule: { foo: 'bar' },
+      //       specNestedModule: {},
+      //     })
+      //   }],
+      // ],
+      resetState: [
+        ['should reset state of module', () => {
+          changeStateOfStateWorker()
+          testableStateWorker.resetState(mockedSecondStonexModule)
+          expect(testableStateWorker.state).toStrictEqual({
+            specModule: { foo: 'bar' },
+            specNestedModule: {},
+          })
+        }],
+        ['should call callback when state has been resetted', (done: any) => {
+          changeStateOfStateWorker()
+          testableStateWorker.resetState(mockedSecondStonexModule, () => {
+            expect(testableStateWorker.state).toStrictEqual({
+              specModule: { foo: 'bar' },
+              specNestedModule: {},
+            })
+            done()
+          })
+        }],
+      ],
+      setState: [
+        ['should change state', () => {
+          changeStateOfStateWorker()
+          expect(testableStateWorker.state).toStrictEqual({
+            specModule: { foo: 'bar' },
+            specNestedModule: { bar: 'baz' },
+          })
+        }],
+        ['should call callback when state has been changed', (done: any) => {
+          changeStateOfStateWorker()
+          testableStateWorker.setState(mockedSecondStonexModule, { example: '1' }, () => {
+            expect(testableStateWorker.state).toStrictEqual({
+              specModule: { foo: 'bar' },
+              specNestedModule: { example: '1' },
+            })
+            done()
+          })
+        }],
+      ],
+    }
 
-//           expect(Object.keys(storeIds).length).toBe(countOfUniqIds)
-//         }]
-//       ]
-//     }
+    testAllCases(methods, methodName => `${methodName}()`)
+  })
 
-//     testAllCases(properties, (property) => property)
-//   })
+  // describe('methods', () => {
+  //   const methods = {
 
-//   describe('methods', () => {
-//     const methods: any = {
-//       createStateSnapshot: [
-//         ['should return snapshot of store state', () => {
-//           testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
-//           testableStore.modules.specNestedModule.updateSpecState({ bar: 'baz' })
-//           expect(testableStore.createStateSnapshot()).toStrictEqual({
-//             specModule: { foo: 'bar' },
-//             specNestedModule: { bar: 'baz' }
-//           })
-//         }]
-//       ]
-//     }
+  //   }
 
-//     testAllCases(methods, methodName => `${methodName}()`)
-//   })
+  // })
 
-// })
+})

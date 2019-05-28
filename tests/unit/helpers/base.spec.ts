@@ -1,5 +1,5 @@
 import { copy, isType, noop, types } from '../../../src/helpers/base'
-import { testAllCases } from '../../__helpers__'
+import { testAllCases } from '../__helpers__'
 
 describe('base helpers', () => {
 

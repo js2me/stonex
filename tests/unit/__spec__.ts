@@ -1,4 +1,4 @@
-import { StonexModule, StonexStore } from '../src'
+import { StonexModule, StonexStore } from '../../src'
 
 export class SpecModule extends StonexModule {
   public state: any = {}

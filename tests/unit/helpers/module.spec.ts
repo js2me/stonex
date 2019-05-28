@@ -1,6 +1,6 @@
 import { StonexModule } from '../../../src'
 import { convertToStandardModule, getAllMethodsFromModule, isPureModule } from '../../../src/helpers/module'
-import { testAllCases } from '../../__helpers__'
+import { testAllCases } from '../__helpers__'
 
 describe('base helpers', () => {
 

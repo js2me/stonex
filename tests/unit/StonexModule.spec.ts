@@ -1,38 +1,30 @@
-import { testAllCases } from '../__helpers__'
-import { createSpecStore, SpecModule } from '../__spec__'
+import { testAllCases, testPropertiesOnExist } from './__helpers__'
+import { createSpecStore, SpecModule } from './__spec__'
 
 describe('StonexModule', () => {
-
   let testableModule: SpecModule
 
-  beforeEach(() => {
+  const initializeSpec = () => {
     testableModule = createSpecStore().modules.specModule
-  })
+  }
+
+  beforeEach(initializeSpec)
 
   describe('primitive specs', () => {
     test('module should be successfully connected to store', () => {
       expect(testableModule).toBeDefined()
     })
 
-    const requiredProperties = [
+    initializeSpec()
+
+    testPropertiesOnExist([
       ['getState', 'function'],
       ['moduleName', 'string'],
       ['__initialState', 'object'],
       ['modules', 'object'],
       ['resetState', 'function'],
       ['setState', 'function'],
-    ]
-
-    requiredProperties.forEach(([property, type]) => {
-      describe(`"${property}" property`, () => {
-        test(`module should contain this property`, () => {
-          expect(testableModule).toHaveProperty(property)
-        })
-        test(`this property should have type "${type}"`, () => {
-          expect(typeof testableModule[property]).toBe(type)
-        })
-      })
-    })
+    ], testableModule)
 
   })
 
