@@ -45,6 +45,11 @@ describe('StonexModule', () => {
           expect(testableModule.__initialState).toStrictEqual({})
         }],
       ],
+      'custom-property/specProp': [
+        ['should be existed', () => {
+          expect(testableModule.specProp).toBeDefined()
+        }]
+      ],
       moduleName: [
         ['should return name of module', () => {
           expect(testableModule.moduleName).toBe('specModule')
@@ -78,7 +83,7 @@ describe('StonexModule', () => {
           testableModule.setState(testableModule.state)
           expect(testableModule.getState()).toStrictEqual({})
         }],
-      ],
+      ]
     }
 
     testAllCases(properties, property => property)
@@ -171,6 +176,18 @@ describe('StonexModule', () => {
           testableModule.updateSpecState(5)
           expect(testableModule.state).toStrictEqual(5)
           testableModule.updateSpecState('some string')
+          expect(testableModule.state).toStrictEqual('some string')
+        }]
+      ],
+      updateSpecState2: [
+        ['should update state', () => {
+          testableModule.updateSpecState2({ foo: 'bar' })
+          expect(testableModule.state).toStrictEqual({ foo: 'bar' })
+          testableModule.updateSpecState2([1,2,3,4,5])
+          expect(testableModule.state).toStrictEqual([1,2,3,4,5])
+          testableModule.updateSpecState2(5)
+          expect(testableModule.state).toStrictEqual(5)
+          testableModule.updateSpecState2('some string')
           expect(testableModule.state).toStrictEqual('some string')
         }]
       ]

@@ -44,9 +44,9 @@ export function isPureModule (module: any): boolean {
   return typeof module !== 'function'
 }
 
-export function convertToStandardModule (pureModule: object): any {
+export function convertToStandardModule<State = any> (pureModule: object): any {
 
-  return class extends StonexModule<any> {
+  return class extends StonexModule<State> {
 
     constructor (storeBinder: any) {
       super(storeBinder)
