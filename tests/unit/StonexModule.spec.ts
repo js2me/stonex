@@ -52,12 +52,12 @@ describe('StonexModule', () => {
           ],
           moduleName: [
             ['should return name of module', () => {
-              expect(testableModule.moduleName).toBe('specModule')
+              expect(testableModule.moduleName).toBe(moduleStoreKey)
             }],
           ],
           modules: [
             ['should be able to get access to another modules', () => {
-              expect(testableModule.modules.specModule).toBe(testableModule)
+              expect(testableModule.modules[moduleStoreKey]).toBe(testableModule)
             }],
           ],
           state: [
