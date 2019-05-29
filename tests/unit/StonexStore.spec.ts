@@ -35,13 +35,16 @@ describe('StonexStore', () => {
       modules: [
         ['should have access to connected modules', () => {
           expect(Object.keys(testableStore.modules)).toStrictEqual([
-            'specModule', 'specNestedModule', 'specNotEmptyModule'
+            'specModule',
+            'specNestedModule',
+            'specNotEmptyModule',
+            'specPureModule'
           ])
         }],
         ['should be possible to call method of some connected module', () => {
           let exception = ''
           try {
-            testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
+            testableStore.modules.specModule.addFoo()
           } catch (e) {
             exception = e
           }
@@ -70,14 +73,18 @@ describe('StonexStore', () => {
     const methods: any = {
       createStateSnapshot: [
         ['should return snapshot of store state', () => {
-          testableStore.modules.specModule.updateSpecState({ foo: 'bar' })
-          testableStore.modules.specNestedModule.updateSpecState({ bar: 'baz' })
+          testableStore.modules.specModule.addFoo()
+          testableStore.modules.specNestedModule.addFoo()
+          testableStore.modules.specPureModule.addBar()
           expect(testableStore.createStateSnapshot()).toStrictEqual({
             specModule: { foo: 'bar' },
-            specNestedModule: { bar: 'baz' },
+            specNestedModule: { foo: 'bar' },
             specNotEmptyModule: {
               bar: 'baz',
-              foo: 'bar',
+              foo: 'bar'
+            },
+            specPureModule: {
+              bar: 'baz'
             }
           })
         }]

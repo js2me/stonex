@@ -1,4 +1,4 @@
-import { StonexModule, StonexStore } from '../../src'
+import { PureStonexModule, StonexModule, StonexStore } from '../../src'
 
 export class SpecModule extends StonexModule {
   public state: any = {}
@@ -15,6 +15,18 @@ export class SpecModule extends StonexModule {
   public updateSpecState2 = (newData: any) => {
     this.setState(newData)
   }
+  public addBar (): any {
+    this.setState({
+      ...this.state,
+      bar: 'baz',
+    })
+  }
+  public addFoo (): any {
+    this.setState({
+      ...this.state,
+      foo: 'bar',
+    })
+  }
 }
 
 export class SpecNestedModule extends SpecModule {
@@ -29,39 +41,55 @@ export class SpecNotEmptyModule extends StonexModule {
     bar: 'baz',
     foo: 'bar',
   }
+  public addBar (): any {
+    this.setState({
+      ...this.state,
+      bar: 'baz',
+    })
+  }
+  public addFoo (): any {
+    this.setState({
+      ...this.state,
+      foo: 'bar',
+    })
+  }
 }
 
-// TODO: Add unit tests for pure module.
-// tslint:disable-next-line:max-line-length
-// Before needs to solve question with: https://stackoverflow.com/questions/56349619/ts2352-declare-object-with-dynamic-properties-and-one-property-with-specific-t
-// const specPureModule = {
-//   state: {},
-//   addBar (): any {
-//     const that = this as StonexModule
-//     that.setState({
-//       ...this.state,
-//       bar: 'baz',
-//     })
-//   },
-//   addFoo (): any {
-//     const that = this as StonexModule
-//     that.setState({
-//       ...this.state,
-//       foo: 'bar',
-//     })
-//   },
-// } as PureStonexModule
+const specPureModule = Object.assign({
+  specProp: {
+    prop1: '1',
+    prop2: '2',
+  },
+  state: {},
+}, {
+  addBar (): any {
+    this.setState({
+      ...this.state,
+      bar: 'baz',
+    })
+  },
+  addFoo (): any {
+    this.setState({
+      ...this.state,
+      foo: 'bar',
+    })
+  },
+  updateSpecState (newData: any): any {
+    this.setState(newData)
+  }
+} as PureStonexModule)
 
-// interface SpecPureModule extends StonexModule {
-//   addBar: any,
-//   addFoo: any,
-// }
+export interface SpecPureModule extends StonexModule<object> {
+  addBar: any,
+  addFoo: any,
+  specProp: object,
+}
 
 export interface StonexModules {
   specModule: SpecModule,
   specNestedModule: SpecNestedModule,
   specNotEmptyModule: SpecNotEmptyModule
-  // specPureModule: SpecPureModule,
+  specPureModule: SpecPureModule,
 }
 
 export const createSpecStore = () => {
@@ -69,6 +97,6 @@ export const createSpecStore = () => {
     specModule: SpecModule,
     specNestedModule: SpecNestedModule,
     specNotEmptyModule: SpecNotEmptyModule,
-    // specPureModule,
+    specPureModule,
   })
 }
