@@ -1,4 +1,4 @@
-import { PureStonexModule, StonexModule, StonexStore } from '../../src'
+import { PureStonexModule, StonexModule, StonexStore, StoreConfiguration } from '../../src'
 
 export class SpecModule extends StonexModule {
   public state: any = {}
@@ -106,11 +106,11 @@ export interface StonexModules {
   specPureModule: SpecPureModule,
 }
 
-export const createSpecStore = () => {
+export const createSpecStore = (storeConfiguration?: StoreConfiguration<StonexModules>) => {
   return new StonexStore<StonexModules>({
     specModule: SpecModule,
     specNestedModule: SpecNestedModule,
     specNotEmptyModule: SpecNotEmptyModule,
     specPureModule,
-  })
+  }, storeConfiguration || {})
 }

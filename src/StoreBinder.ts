@@ -11,11 +11,11 @@ export declare interface StoreBinder<State, MP = any> {
 
 export const createStoreBinder = <MP, State>(
     moduleName: string,
-    engineContext: StonexStore<MP>,
+    store: StonexStore<MP>,
   ): StoreBinder<State, MP> => ({
-    getState: engineContext.getState.bind(engineContext, moduleName),
+    getState: store.getState.bind(store, moduleName),
     moduleName,
-    modules: engineContext.modules,
-    resetState: engineContext.resetState.bind(engineContext, moduleName),
-    setState: engineContext.setState.bind(engineContext, moduleName),
+    modules: store.modules,
+    resetState: store.resetState.bind(store, moduleName),
+    setState: store.setState.bind(store, moduleName),
   })
