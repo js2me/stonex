@@ -14,7 +14,6 @@ store.modules.books.add({
   author: 'Steven King',
   name: 'Black hole',
 })
-console.log(store.modules.books.state)
 
 try {
   store.modules.books.state = []

@@ -12,9 +12,6 @@ export class StateWorker<StateMap = EmptyStateMap> {
   public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
     this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 
-    // TODO: remove it. it could be useless operation
-    // delete moduleInstance.state
-
     Object.defineProperty(moduleInstance, 'state', {
       get: () => moduleInstance.getState(),
       set: () => {
