@@ -54,6 +54,8 @@ export class StateWorker<StateMap = EmptyStateMap> {
   private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void | never {
     let flattedStateChanges = null
 
+    // TODO: here is something work uncorrectly. 'exec' script
+
     if (isType(stateChanges, types.function)) {
       throw new Error(`State of ${moduleInstance.moduleName} module can not have the type of function`)
     }
