@@ -1,13 +1,17 @@
 import { StonexModule } from '../../src'
 import { testAllCases, testPropertiesOnExist } from './__helpers__'
-import { createSpecStore, SpecModule, SpecNestedModule, SpecPureModule } from './__spec__'
+import { createSpecStore, SpecModule, SpecNestedModule, SpecNotEmptyModule, SpecPureModule } from './__spec__'
 
 describe('StonexModule', () => {
 
   const testStonexModule = <ModuleType extends StonexModule>(
     moduleStoreKey: string,
     moduleName: string,
-    { specProp, specTestActions }: { specProp: string, specTestActions: string[] }) => {
+    {
+      specProp,
+      specTestActions,
+      initialState = {}
+    }: { specProp: string, specTestActions: string[], initialState?: object }) => {
     describe(moduleName, () => {
 
       let testableModule: ModuleType
@@ -42,7 +46,7 @@ describe('StonexModule', () => {
           __initialState: [
             ['should be equals to initial value', () => {
               testableModule.setState({ foo: 'bar' })
-              expect(testableModule.__initialState).toStrictEqual({})
+              expect(testableModule.__initialState).toStrictEqual({ ...initialState })
             }],
           ],
           [`custom-property/${specProp}`]: [
@@ -62,7 +66,7 @@ describe('StonexModule', () => {
           ],
           state: [
             ['should have initial value', () => {
-              expect(testableModule.state).toStrictEqual({})
+              expect(testableModule.state).toStrictEqual({ ...initialState })
             }],
             ['should catch an exception when state has been reassigned manually (immutability 1 unit test)', () => {
               let exceptionCatched = false
@@ -73,16 +77,16 @@ describe('StonexModule', () => {
                 exceptionCatched = true
               }
               expect(exceptionCatched).toBeTruthy()
-              expect(testableModule.getState()).toStrictEqual({})
+              expect(testableModule.getState()).toStrictEqual({ ...initialState })
             }],
             ['getState() should return actual state value (immutability 2 unit test)', () => {
               testableModule.state.foo = 'bar'
-              expect(testableModule.getState()).toStrictEqual({})
+              expect(testableModule.getState()).toStrictEqual({ ...initialState })
             }],
             ['getState() should return actual state value (immutability 3 unit test)', () => {
               testableModule.state.foo = 'bar'
               testableModule.setState(testableModule.state)
-              expect(testableModule.getState()).toStrictEqual({})
+              expect(testableModule.getState()).toStrictEqual({ ...initialState })
             }],
           ]
         }
@@ -108,12 +112,12 @@ describe('StonexModule', () => {
             ['should reset state', () => {
               testableModule.setState({ foo: 'bar' })
               testableModule.resetState()
-              expect(testableModule.state).toStrictEqual({})
+              expect(testableModule.state).toStrictEqual({ ...initialState })
             }],
             ['should call callback function when state has been resetted', (done: any) => {
               testableModule.setState({ foo: 'bar' })
               testableModule.resetState((state) => {
-                expect(state).toStrictEqual({})
+                expect(state).toStrictEqual({ ...initialState })
                 done()
               })
             }],
@@ -124,10 +128,10 @@ describe('StonexModule', () => {
               expect(testableModule.state).toStrictEqual({ foo: 'bar' })
             }],
             ['should update state (object -> object) (2)', () => {
-              const newState = { ...testableModule.state }
+              const newState = { ...initialState, ...testableModule.state }
               newState.foo = 'baz'
               testableModule.setState(newState)
-              expect(testableModule.state).toStrictEqual({ foo: 'baz' })
+              expect(testableModule.state).toStrictEqual({ ...initialState, foo: 'baz' })
             }],
             ['should update state (object -> array) (1)', () => {
               testableModule.setState([1])
@@ -212,34 +216,15 @@ describe('StonexModule', () => {
       'updateSpecState'
     ]
   })
+  testStonexModule<SpecNotEmptyModule>('specNotEmptyModule', 'SpecNotEmptyModule', {
+    initialState: {
+      bar: 'baz',
+      foo: 'bar',
+    },
+    specProp: 'specProp',
+    specTestActions: [
+      'updateSpecState',
+      'updateSpecState2'
+    ],
+  })
 })
-
-/*
-
-    let testableModule: SpecModule
-
-    const initializeSpec = () => {
-      testableModule = createSpecStore().modules.specModule
-    }
-
-    beforeEach(initializeSpec)
-
-    describe('primitive specs', () => {
-      test('module should be successfully connected to store', () => {
-        expect(testableModule).toBeDefined()
-      })
-
-      initializeSpec()
-
-      testPropertiesOnExist([
-      ['getState', 'function'],
-      ['moduleName', 'string'],
-      ['__initialState', 'object'],
-      ['modules', 'object'],
-      ['resetState', 'function'],
-      ['setState', 'function'],
-      ], testableModule)
-
-    })
-
-*/

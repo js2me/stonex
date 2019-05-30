@@ -37,10 +37,17 @@ export class SpecNestedModule extends SpecModule {
 }
 
 export class SpecNotEmptyModule extends StonexModule {
+
   public state: any = {
     bar: 'baz',
     foo: 'bar',
   }
+
+  public specProp: object = {
+    prop1: '1',
+    prop2: '2',
+  }
+
   public addBar (): any {
     this.setState({
       ...this.state,
@@ -52,6 +59,14 @@ export class SpecNotEmptyModule extends StonexModule {
       ...this.state,
       foo: 'bar',
     })
+  }
+
+  public updateSpecState (newData: any): void {
+    this.setState(newData)
+  }
+
+  public updateSpecState2 = (newData: any) => {
+    this.setState(newData)
   }
 }
 
