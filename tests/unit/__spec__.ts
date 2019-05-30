@@ -55,13 +55,12 @@ export class SpecNotEmptyModule extends StonexModule {
   }
 }
 
-const specPureModule = Object.assign({
+const specPureModule = {
   specProp: {
     prop1: '1',
     prop2: '2',
   },
   state: {},
-}, {
   addBar (): any {
     this.setState({
       ...this.state,
@@ -77,7 +76,7 @@ const specPureModule = Object.assign({
   updateSpecState (newData: any): any {
     this.setState(newData)
   }
-} as PureStonexModule)
+} as PureStonexModule<{foo?: string, bar?: string}>
 
 export interface SpecPureModule extends StonexModule<object> {
   addBar: any,

@@ -1,14 +1,9 @@
 import { StonexModules, StoreBinder } from '.'
 
-declare interface PureStonexModuleMethods<State> {
-  [methodName: string]: (this: StonexModule<State>, ...args: any[]) => any
-}
-declare interface PureStonexModuleState<State> {
+export declare interface PureStonexModule<State = any> {
+  [property: string]: ((this: StonexModule<State>, ...args: any[]) => any) | State | any,
   state?: State,
 }
-
-export declare type PureStonexModule<State = any> = PureStonexModuleMethods<State> & PureStonexModuleState<State>
-
 /**
  *
  * @export
