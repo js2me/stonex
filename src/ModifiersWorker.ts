@@ -8,6 +8,11 @@ export declare type ActionModifier = (args: any[], moduleName: string, methodNam
 
 export declare type Modifier<MP> = StoreModifier<MP>
 
+/**
+ * Internal class which usings only in StonexStore code
+ * Allows to convert outer modifiers to Action/Module/Store specific modifiers
+ * 
+ */
 export class ModifiersWorker {
 
   public static getModuleModifiers<MP> (modifiers: Array<Modifier<MP>>, storeInstance: Store<MP>): ModuleModifier[] {

@@ -16,10 +16,17 @@ export * from './StateWorker'
 export * from './StonexStore'
 export * from './ModifiersWorker'
 
+
+/**
+ * Map of Module creators
+ */
 export declare type ModuleCreatorsMap<M> = {
   [K in keyof M]: ModuleCreator<any, M[K]>
 }
 
+/**
+ * Describes what kind of Stonex Module you can attach to Stonex store
+ */
 export declare type ModuleCreator<State, MI> =
   PureStonexModule<State> | (new (storeBinder: StoreBinder<State>) => MI) | ModuleConfiguration<any, MI>
 
@@ -40,10 +47,17 @@ export declare interface ModuleConfiguration<State = any, M = any> {
   storeBinder?: StoreBinder<State>
 }
 
+/**
+ * Stonex Modules class map declaration
+ */
 export declare type StonexModules<M> = {
   [K in keyof M]: M[K]
 }
 
+/**
+ * Object where key is name of connect to store module
+ * and value state snapshot of store module
+ */
 export declare type StateSnapshot<M> = {
   [K in keyof M]: M[K] extends StonexModule<any> ? M[K]['state'] : null
 }

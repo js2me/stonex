@@ -36,7 +36,8 @@ export declare interface StoreConfiguration<MP> {
 }
 
 /**
- *
+ * Creates a new stonex store.
+ * Combining all your stonex modules together and allows to use them in your application.
  *
  * @class StonexStore
  * @implements {Store<MP>}

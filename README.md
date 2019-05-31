@@ -53,7 +53,7 @@ Also currently `Stonex` is supporting integrations with: [ReactJS (react-stonex)
 
 ```
 
-**2.** Create a `StonexModule` which will contain actions and state
+**2.** Create a `StonexModule` which will contains actions and state
 
 `StonexModule` gives methods `setState`, `getState` (the same as `this.state`), `resetState`
 
@@ -118,7 +118,8 @@ Also currently `Stonex` is supporting integrations with: [ReactJS (react-stonex)
 ### `StonexStore`[[Source link]](./src/StonexStore.ts#L33)  
 `import { StonexStore } from 'stonex'`  
 
-Create a new stonex store  
+Creates a new stonex store. Combining all your stonex modules together and allows to use them in your application.  
+
 
 Have two arguments:  
 
@@ -189,7 +190,7 @@ const store = new StonexStore({
 `import { StonexModule } from 'stonex'`  
 
 The important parent class of your stonex modules.  
-Provide linking store information to your stonex module and provides specific methods which allows to work with `state`.  
+Provide linking store information to your stonex module and specific methods which allows to work with `state`.  
 
 
 `StonexModule` provides properties: `this.setState`, `this.getState`, `this.resetState`, `this.moduleName`, `this.modules`
