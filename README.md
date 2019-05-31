@@ -186,7 +186,7 @@ const store = new StonexStore({
 
 
 
-### `StonexModule`[[Source link]](./src/StonexModule.ts#L3)  
+### `StonexModule`[[Source link]](./src/StonexModule.ts#L30)  
 `import { StonexModule } from 'stonex'`  
 
 The important parent class of your stonex modules.  
@@ -235,9 +235,8 @@ export default class AnimalsModule extends StonexModule{
 ```
 
 Besides using `StonexModule` class you can create a simple object, factically it will works as class extended from StonexModule.  
-This simple object `AnimalsModule` (from above code)  
 
-Note: all methods should be not arrow functions.  
+It's [Pure Stonex Module](./src/StonexModule.ts#L3) implementation of above `AnimalsModule` class  
 ```js
 export default {
   /* state */
@@ -258,6 +257,7 @@ export default {
 }
 
 ```
+Note: all methods should be not arrow functions.
 
 
 
@@ -265,7 +265,7 @@ export default {
 
 
 
-### `StateWorker`[[Source link]](./src/StateWorker.ts#L4)  
+### `StateWorker`[[Source link]](./src/StateWorker.ts#L33)  
 `import { StateWorker } from 'stonex'`  
 
 This is a class which do all things linked with state of each module. It provides initializing, updating and reseting state.  
@@ -301,10 +301,10 @@ const store = new StonexStore({
 
 
 
-### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
+### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L21)  
 `import { createStoreBinder } from 'stonex'`  
 
-This function create an `StoreBinder` which needed if you want to change/override behaviour of all things which sends from store and add common methods/properties.  
+This function create an [`StoreBinder`](./src/StoreBinder.ts#L7) which needed if you want to change/override behaviour of all things which sends from store and add common methods/properties.  
 Factically its more needed for creating some middleware.  
 
 Example of usage:
