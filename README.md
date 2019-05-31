@@ -234,9 +234,11 @@ export default class AnimalsModule extends StonexModule{
 
 ```
 
-Besides using `StonexModule` class you can create a simple object, factically it will works as class extended from StonexModule.  
+Besides using `StonexModule` class you can create [Pure Stonex module](./src/StonexModule.ts#L3).  
+It is a simple object, which works the same as class which has been extended from StonexModule.  
 
-It's [Pure Stonex Module](./src/StonexModule.ts#L3) implementation of above `AnimalsModule` class  
+Example:  
+[Pure Stonex Module](./src/StonexModule.ts#L3) implementation of above `AnimalsModule` class  
 ```js
 export default {
   /* state */
