@@ -45,7 +45,7 @@ export class StateWorker<StateMap = EmptyStateMap> {
    * Method which calls when Stonex initializing state inside your module
    *
    * @param {StonexModule<State>} moduleInstance
-   * 
+   *
    * @public
    */
   public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
@@ -64,12 +64,12 @@ export class StateWorker<StateMap = EmptyStateMap> {
 
   /**
    * Preparing new state to update
-   * 
-   * @param {StonexModule<State>} moduleInstance 
-   * @param {Partial<State> | ((state: State) => Partial<State>)} changes 
+   *
+   * @param {StonexModule<State>} moduleInstance
+   * @param {Partial<State> | ((state: State) => Partial<State>)} changes
    * @param {function?} callback
-   * 
-   * @public 
+   *
+   * @public
    */
   public setState<State> (
     moduleInstance: StonexModule<State>,
@@ -90,10 +90,10 @@ export class StateWorker<StateMap = EmptyStateMap> {
 
   /**
    * Returns state of stonex module
-   * 
+   *
    * @param {string} moduleName
-   * 
-   * @public 
+   *
+   * @public
    */
   public getState<State> (moduleName: string): State {
     return copy(this.state[moduleName])
@@ -101,11 +101,11 @@ export class StateWorker<StateMap = EmptyStateMap> {
 
   /**
    * Reset state of stonex module
-   * 
-   * @param {StonexModule<State>} moduleInstance 
+   *
+   * @param {StonexModule<State>} moduleInstance
    * @param {function?} callback
-   * 
-   * @public 
+   *
+   * @public
    */
   public resetState<State> (moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void {
     return this.setState(moduleInstance, moduleInstance.__initialState, callback)
@@ -113,9 +113,9 @@ export class StateWorker<StateMap = EmptyStateMap> {
 
   /**
    * Updating state of stonex module
-   * 
-   * @param {StonexModule<State>} moduleInstance 
-   * @param {Partial<State>} stateChanges 
+   *
+   * @param {StonexModule<State>} moduleInstance
+   * @param {Partial<State>} stateChanges
    */
   private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void | never {
     let flattedStateChanges = null

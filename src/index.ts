@@ -16,7 +16,6 @@ export * from './StateWorker'
 export * from './StonexStore'
 export * from './ModifiersWorker'
 
-
 /**
  * Map of Module creators
  */

@@ -9,8 +9,8 @@ export declare interface PureStonexModule<State = any> {
  * Special class which contains all information/actions linked with specific state.
  * Provide linking store information to your stonex module
  * and specific methods which allows to work with `state`.
- * 
- * 
+ *
+ *
  * @export
  * @class StonexModule
  * @template State

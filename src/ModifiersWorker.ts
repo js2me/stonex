@@ -11,7 +11,7 @@ export declare type Modifier<MP> = StoreModifier<MP>
 /**
  * Internal class which usings only in StonexStore code
  * Allows to convert outer modifiers to Action/Module/Store specific modifiers
- * 
+ *
  */
 export class ModifiersWorker {
 
