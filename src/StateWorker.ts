@@ -1,14 +1,55 @@
 import { StonexModule } from '.'
 import { copy, isType, noop, types } from './helpers/base'
 
-export class StateWorker {
+declare interface EmptyStateMap {
+  [moduleName: string]: any
+}
 
-  public state = {}
+/**
+ * StateWorker it is class which do all work
+ * linked with state inside each Stonex Module connected to the store
+ *
+ * @export
+ * @class StateWorker
+ * @template StateMap
+ *
+ *
+ * @example
+ * import { StateWorker, StonexStore } from '../src'
+ * import modules, { Modules } from './modules'
+ *
+ * class SuperStateWorker extends StateWorker {
+ *
+ *  getState(moduleName: string){
+ *    // own behaviour
+ *    return super.getState(moduleName)
+ *  }
+ * }
+ *
+ * const store = new StonexStore<Modules>(modules,{
+ *  stateWorker: SuperStateWorker
+ * })
+ */
+export class StateWorker<StateMap = EmptyStateMap> {
 
-  public initializeState (moduleInstance: any): void {
-    this.state[moduleInstance.moduleName] = moduleInstance.__initialState
+  /**
+   * Map of stonex module states
+   *
+   * @public
+   * @type {StateMap}
+   * @memberof StateWorker
+   */
+  public state: StateMap = {} as StateMap
 
-    delete moduleInstance.state
+  /**
+   * Method which calls when Stonex initializing state inside your module
+   *
+   * @param {StonexModule<State>} moduleInstance
+   *
+   * @public
+   */
+  public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
+    this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 
     Object.defineProperty(moduleInstance, 'state', {
       get: () => moduleInstance.getState(),
@@ -21,6 +62,15 @@ export class StateWorker {
     })
   }
 
+  /**
+   * Preparing new state to update
+   *
+   * @param {StonexModule<State>} moduleInstance
+   * @param {Partial<State> | ((state: State) => Partial<State>)} changes
+   * @param {function?} callback
+   *
+   * @public
+   */
   public setState<State> (
     moduleInstance: StonexModule<State>,
     changes: Partial<State> | ((state: State) => Partial<State>),
@@ -38,20 +88,44 @@ export class StateWorker {
     }
   }
 
+  /**
+   * Returns state of stonex module
+   *
+   * @param {string} moduleName
+   *
+   * @public
+   */
   public getState<State> (moduleName: string): State {
     return copy(this.state[moduleName])
   }
 
+  /**
+   * Reset state of stonex module
+   *
+   * @param {StonexModule<State>} moduleInstance
+   * @param {function?} callback
+   *
+   * @public
+   */
   public resetState<State> (moduleInstance: StonexModule<State>, callback: (state: any) => any = noop): void {
     return this.setState(moduleInstance, moduleInstance.__initialState, callback)
   }
 
-  private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void {
-    const currentState = this.getState(moduleInstance.moduleName)
+  /**
+   * Updating state of stonex module
+   *
+   * @param {StonexModule<State>} moduleInstance
+   * @param {Partial<State>} stateChanges
+   */
+  private updateState<State> (moduleInstance: StonexModule<State>, stateChanges: Partial<State>): void | never {
     let flattedStateChanges = null
 
+    if (isType(stateChanges, types.function)) {
+      throw new Error(`State of ${moduleInstance.moduleName} module can not have the type of function`)
+    }
+
     if (isType(stateChanges, types.object)) {
-      flattedStateChanges = { ...(isType(currentState, types.object) ? currentState : {}), ...copy(stateChanges) }
+      flattedStateChanges = { ...copy(stateChanges) }
     } else {
       flattedStateChanges = isType(stateChanges, types.array) ? [...copy(stateChanges)] : stateChanges
     }

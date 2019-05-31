@@ -4,6 +4,9 @@
 		"tslint:recommended",
 		"tslint-config-standard"
 	],
+    "linterOptions": {
+        "exclude": []
+    },
 	"rules":{
 		"trailing-comma":true,
 		"typedef": [

@@ -5,7 +5,6 @@
   [![](https://img.shields.io/badge/license-MIT-red.svg)](./LICENSE)
   [![](https://img.shields.io/npm/v/stonex.svg)](https://www.npmjs.com/package/stonex)
   [![](https://img.shields.io/travis/acacode/stonex.svg)](https://travis-ci.org/acacode/stonex)
-  [![](https://www.codefactor.io/repository/github/acacode/stonex/badge/master)](https://www.codefactor.io/repository/github/acacode/stonex/overview/master)
   [![](https://img.shields.io/npm/dm/stonex.svg)](http://npm-stat.com/charts.html?package=stonex)
   [![](https://badgen.net/bundlephobia/min/stonex)](https://bundlephobia.com/result?p=stonex)
   [![](https://badgen.net/bundlephobia/minzip/stonex)](https://bundlephobia.com/result?p=stonex)
@@ -15,8 +14,19 @@
   </p>
 </div>
 
+#### Table of Contents  
 
-## What is that?
+[What is that ?](#what-is-that)  
+[How to use](#-how-to-use)  
+[Documentation](#-documentation):  
+    - [Stonex Store](#stonexstoresource-link)  
+    - [Stonex Module](#stonexmodulesource-link)  
+    - [StateWorker](#stateworkersource-link)  
+    - [createStoreBinder](#createstorebindersource-link)  
+[License](#-license)  
+
+
+## ❓ What is that ?
 
 This is a simple and easy library for managing/storing data.  
 It allows you to store and manage data correctly, and also combine all business logic into separated `Stonex` modules.
@@ -43,7 +53,7 @@ Also currently `Stonex` is supporting integrations with: [ReactJS (react-stonex)
 
 ```
 
-**2.** Create a `StonexModule` which will contain actions and state
+**2.** Create a `StonexModule` which will contains actions and state
 
 `StonexModule` gives methods `setState`, `getState` (the same as `this.state`), `resetState`
 
@@ -108,7 +118,8 @@ Also currently `Stonex` is supporting integrations with: [ReactJS (react-stonex)
 ### `StonexStore`[[Source link]](./src/StonexStore.ts#L33)  
 `import { StonexStore } from 'stonex'`  
 
-Create a new stonex store  
+Creates a new stonex store. Combining all your stonex modules together and allows to use them in your application.  
+
 
 Have two arguments:  
 
@@ -175,11 +186,11 @@ const store = new StonexStore({
 
 
 
-### `StonexModule`[[Source link]](./src/StonexModule.ts#L3)  
+### `StonexModule`[[Source link]](./src/StonexModule.ts#L30)  
 `import { StonexModule } from 'stonex'`  
 
 The important parent class of your stonex modules.  
-Provide linking store information to your stonex module and provides specific methods which allows to work with `state`.  
+Provide linking store information to your stonex module and specific methods which allows to work with `state`.  
 
 
 `StonexModule` provides properties: `this.setState`, `this.getState`, `this.resetState`, `this.moduleName`, `this.modules`
@@ -223,10 +234,11 @@ export default class AnimalsModule extends StonexModule{
 
 ```
 
-Besides using `StonexModule` class you can create a simple object, factically it will works as class extended from StonexModule.  
-This simple object `AnimalsModule` (from above code)  
+Besides using `StonexModule` class you can create [Pure Stonex module](./src/StonexModule.ts#L3).  
+It is a simple object, which works the same as class which has been extended from StonexModule.  
 
-Note: all methods should be not arrow functions.  
+Example:  
+[Pure Stonex Module](./src/StonexModule.ts#L3) implementation of above `AnimalsModule` class  
 ```js
 export default {
   /* state */
@@ -247,6 +259,7 @@ export default {
 }
 
 ```
+Note: all methods should be not arrow functions.
 
 
 
@@ -254,7 +267,7 @@ export default {
 
 
 
-### `StateWorker`[[Source link]](./src/StateWorker.ts#L4)  
+### `StateWorker`[[Source link]](./src/StateWorker.ts#L33)  
 `import { StateWorker } from 'stonex'`  
 
 This is a class which do all things linked with state of each module. It provides initializing, updating and reseting state.  
@@ -290,10 +303,10 @@ const store = new StonexStore({
 
 
 
-### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L12)  
+### `createStoreBinder`[[Source link]](./src/StoreBinder.ts#L21)  
 `import { createStoreBinder } from 'stonex'`  
 
-This function create an `StoreBinder` which needed if you want to change/override behaviour of all things which sends from store and add common methods/properties.  
+This function create an [`StoreBinder`](./src/StoreBinder.ts#L7) which needed if you want to change/override behaviour of all things which sends from store and add common methods/properties.  
 Factically its more needed for creating some middleware.  
 
 Example of usage:

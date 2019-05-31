@@ -1,21 +1,30 @@
 
 import { StonexModules, StonexStore } from '.'
 
+/**
+ * StoreBinder it is structure which helps Stonex Module to connect with Store
+ */
 export declare interface StoreBinder<State, MP = any> {
   getState: () => State,
   moduleName: string
   modules: StonexModules<MP>
   resetState: (callback?: (state: any) => any) => void
-  setState: (changes: ((() => Partial<State>) | Partial<State>), callback?: (state: State) => any) => any
+  setState: (changes: (((state: State) => Partial<State>) | Partial<State>), callback?: (state: State) => any) => any
 }
 
+/**
+ * Function which creates and returns StoreBinder
+ *
+ * @param {string} moduleName
+ * @param {StonexStore<MP>} store
+ */
 export const createStoreBinder = <MP, State>(
     moduleName: string,
-    engineContext: StonexStore<MP>,
+    store: StonexStore<MP>,
   ): StoreBinder<State, MP> => ({
-    getState: engineContext.getState.bind(engineContext, moduleName),
+    getState: store.getState.bind(store, moduleName),
     moduleName,
-    modules: engineContext.modules,
-    resetState: engineContext.resetState.bind(engineContext, moduleName),
-    setState: engineContext.setState.bind(engineContext, moduleName),
+    modules: store.modules,
+    resetState: store.resetState.bind(store, moduleName),
+    setState: store.setState.bind(store, moduleName),
   })
