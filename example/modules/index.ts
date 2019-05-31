@@ -1,4 +1,3 @@
-import { PureStonexModule } from '../../src'
 import Animals from './Animals'
 import BlackBox from './BlackBox'
 import Books from './Books'
@@ -23,6 +22,7 @@ export default {
   books: Books,
   items: Items,
   things: {
+    state: {},
     addThing (name: any): any {
       // @ts-ignore
       this.setState({
@@ -33,6 +33,5 @@ export default {
         }
       })
     },
-    state: {},
-  } as PureStonexModule<any>,
+  },
 }

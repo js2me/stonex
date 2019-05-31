@@ -14,7 +14,6 @@ store.modules.books.add({
   author: 'Steven King',
   name: 'Black hole',
 })
-console.log(store.modules.books.state)
 
 try {
   store.modules.books.state = []
@@ -37,3 +36,8 @@ store.modules.otherItems.getList().then(() => {
 
 store.modules.animals.createDog('Fluffy')
 console.log('animals state', store.modules.animals.state)
+
+console.log('store.modules.books.__initialState', store.modules.books.__initialState)
+
+store.modules.books.resetState()
+console.log('store.modules.books.state', store.modules.books.state)

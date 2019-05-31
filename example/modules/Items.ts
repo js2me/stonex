@@ -8,16 +8,18 @@ export default class Items extends StonexModule<{ data: number[]; isLoading: boo
   }
 
   public getList = async () => {
-
     console.log('get list called')
 
     if (this.state.data.length) {
       return this.state.data
     }
 
-    this.setState({ isLoading: true })
+    this.setState({ ...this.state, isLoading: true })
     const data = await Promise.resolve([1, 2, 3, 4, 5, 6])
-    this.setState({ data })
+    this.setState({
+      ...this.state,
+      data
+    })
 
     return this.state.data
   }

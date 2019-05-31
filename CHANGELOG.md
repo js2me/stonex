@@ -16,6 +16,15 @@
 ### Added
 - JSDOC documentation
 
+### Fixed
+- Fixed the work of `resetState()` method
+- Fixed the work of `setState()` method (*merging previous state with current*)
+
+### Changed
+- `ModifiersWorker` class in `ModifiersWorker.ts` file at now will exporting as named export
+
+### Removed
+- default export from `ModifiersWorker.ts` file
 
 ## [0.1.3-beta](https://github.com/acacode/stonex/releases/tag/0.1.3-beta)
 

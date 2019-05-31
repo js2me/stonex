@@ -1,0 +1,5 @@
+{
+  "tslint.autoFixOnSave": true,
+  "tslint.enable": true,
+  "files.autoSave": "off"
+}
