@@ -10,11 +10,22 @@ export enum types {
     other = 'other',
 }
 
-export const isType = (data: any, expectedType: types): boolean =>
-  (types[data instanceof Array ? 'array' : typeof data] || types.other) === expectedType
+/**
+ * Returns true if value have expected type otherwise false
+ *
+ * @param {*} value
+ * @param {types} expectedType
+ */
+export const isType = (value: any, expectedType: types): boolean =>
+  (types[value instanceof Array ? 'array' : typeof value] || types.other) === expectedType
 
-export const copy = (data: any) =>
-  isType(data, types.array) ?
-    data.slice() :
-    isType(data, types.object) ?
-      Object.assign({}, data) : data
+/**
+ * Create copy of object/array/other type (1 LEVEL)
+ *
+ * @param {*} value
+ */
+export const copy = (value: any) =>
+  isType(value, types.array) ?
+    value.slice() :
+    isType(value, types.object) ?
+      Object.assign({}, value) : value

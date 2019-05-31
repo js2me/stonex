@@ -2,11 +2,11 @@ import { getAllMethodsFromModule } from './helpers/module'
 import { StonexModule } from './StonexModule'
 import { Store } from './StonexStore'
 
-export declare type StoreModifier<MP, D = any> = (store: Store<MP> | null) => (void | D)
-export declare type ModuleModifier<D = any> = (module: StonexModule) => (void | D)
+export declare type StoreModifier<MP, D = ModuleModifier> = (store: Store<MP> | null) => (void | D)
+export declare type ModuleModifier<D = ActionModifier> = (module: StonexModule) => (void | D)
 export declare type ActionModifier = (args: any[], moduleName: string, methodName: string) => false | any
 
-export declare type Modifier<MP> = StoreModifier<MP, ModuleModifier<ActionModifier>>
+export declare type Modifier<MP> = StoreModifier<MP>
 
 export class ModifiersWorker {
 

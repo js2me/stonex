@@ -5,10 +5,39 @@ declare interface EmptyStateMap {
   [moduleName: string]: any
 }
 
+/**
+ * StateWorker it class which do all work linked with state inside each Stonex Module connected to store
+ *
+ * @export
+ * @class StateWorker
+ * @template StateMap
+ *
+ *
+ * @example
+ * import { StateWorker, StonexStore } from '../src'
+ * import modules, { Modules } from './modules'
+ *
+ * class SuperStateWorker extends StateWorker {
+ *
+ *  getState(moduleName: string){
+ *    // own behaviour
+ *    return super.getState(moduleName)
+ *  }
+ * }
+ *
+ * const store = new StonexStore<Modules>(modules,{
+ *  stateWorker: SuperStateWorker
+ * })
+ */
 export class StateWorker<StateMap = EmptyStateMap> {
 
   public state: StateMap = {} as StateMap
 
+  /**
+   * Method which calls when Stonex initializing state inside your module
+   *
+   * @param {StonexModule<State>} moduleInstance
+   */
   public initializeState<State = any> (moduleInstance: StonexModule<State>): void {
     this.state[moduleInstance.moduleName] = copy(moduleInstance.__initialState)
 

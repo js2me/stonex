@@ -10,6 +10,10 @@ import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
 import { createStoreBinder } from './StoreBinder'
 
+/**
+ * @typedef {Object} MP - Map of Stonex Modules class references
+ */
+
 export declare interface Store<MP> {
   modules: StonexModules<MP>
   getState: <State>(moduleName: string) => State
@@ -30,11 +34,6 @@ export declare interface StoreConfiguration<MP> {
   stateWorker?: new (...args: any[]) => StateWorker,
   modifiers?: Array<Modifier<MP>>
 }
-
-/**
- * Map of Stonex Modules class references
- * @typedef {Object} MP
- */
 
 /**
  *
@@ -74,7 +73,7 @@ class StonexStore<MP> implements Store<MP> {
 
   /**
    * Unique identificator of store.
-   * Usings inside library. Don't change it!
+   * Usings inside Stonex Store. Don't change it!
    *
    * @type {number}
    * @memberof StonexStore
@@ -82,7 +81,7 @@ class StonexStore<MP> implements Store<MP> {
   public storeId: number = Math.round(Math.random() * Number.MAX_SAFE_INTEGER - Date.now())
 
   /**
-   * Map of modules
+   * Map of the Stonex modules
    *
    * @type {StonexModules<MP>}
    * @memberof StonexStore
@@ -92,7 +91,9 @@ class StonexStore<MP> implements Store<MP> {
   /**
    * Set of methods which needed to work with module's state (updating, initializing, etc)
    *
-   * Its can be overriden via StonexStore constructor ( new StonexStore(modules, { stateWorker: OwnStateWorker }) )
+   * Its can be overriden via StonexStore constructor:
+   * @example
+   * new StonexStore(modules, { stateWorker: OwnStateWorker })
    *
    * @private
    * @type {StateWorker}
@@ -102,6 +103,7 @@ class StonexStore<MP> implements Store<MP> {
 
   /**
    * Creates an instance of StonexStore.
+   *
    * @param {Partial<ModuleCreatorsMap<MP>>} modulesMap
    * @param {StoreConfiguration<MP>} storeConfiguration - have keys 'stateWorker', 'modifiers'
    * @memberof StonexStore
@@ -186,6 +188,7 @@ class StonexStore<MP> implements Store<MP> {
   }
 
   /**
+   * Update Stonex module state
    *
    * @param {string} moduleName - name of module
    * @param {*} changes - changes which need to apply to state of module
@@ -202,7 +205,7 @@ class StonexStore<MP> implements Store<MP> {
     this.stateWorker.setState(this.getModuleByName(moduleName), changes, callback)
 
   /**
-   * Returns module state
+   * Returns Stonex module state
    *
    * @param {string} moduleName
    *
@@ -213,7 +216,7 @@ class StonexStore<MP> implements Store<MP> {
     this.stateWorker.getState(moduleName)
 
   /**
-   * Set state to initial value (first value of module state)
+   * Reset state of the Stonex module to initial value (first value of module state)
    *
    * @param {string} moduleName - name of module
    * @param {function} callback - function which will been called when state has been cleared
@@ -225,7 +228,7 @@ class StonexStore<MP> implements Store<MP> {
     this.stateWorker.resetState(this.getModuleByName(moduleName), callback)
 
   /**
-   * Find module in stonex store by name
+   * Find module in Stonex store by name
    *
    * @private
    * @memberof StonexStore

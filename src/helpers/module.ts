@@ -1,4 +1,5 @@
-import { StonexModule } from '../StonexModule'
+import { StoreBinder } from 'src/StoreBinder'
+import { PureStonexModule, StonexModule } from '../StonexModule'
 
 export function getAllMethodsFromModule (module: object): string[] {
   const methods: string[] = []
@@ -44,11 +45,16 @@ export function isPureModule (module: any): boolean {
   return typeof module !== 'function'
 }
 
-export function convertToStandardModule<State = any> (pureModule: object): any {
-
+/**
+ *
+ * @param {PureStonexModule<State>} pureModule
+ */
+export function convertToStandardModule<State = any, MP = any> (
+  pureModule: PureStonexModule<State>
+): any {
   return class extends StonexModule<State> {
 
-    constructor (storeBinder: any) {
+    constructor (storeBinder: StoreBinder<State, MP>) {
       super(storeBinder)
 
       const keys = Object.keys(pureModule)

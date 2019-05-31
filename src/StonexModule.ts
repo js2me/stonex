@@ -4,24 +4,24 @@ export declare interface PureStonexModule<State = any> {
   state?: State,
   [property: string]: ((this: StonexModule<State>, ...args: any[]) => any) | State | any,
 }
+
 /**
  *
  * @export
  * @class StonexModule
  * @template State
- * @template
  *
  *
  * @example
- * class YourModule extends StonexModule {
+ * class SM extends StonexModule {
  *    state = {}
  *    getData = (key) => this.state[key]
  *    setData = (data) => this.setState(data)
  *    clear = () => this.resetState()
  * }
  *
- * yourStore.connectModule('yourModule', YourModule)
- * yourStore.modules.yourModule.setData({ foo: 'bar' })
+ * yourStore.connectModule('sm', SM)
+ * yourStore.modules.sm.setData({ foo: 'bar' })
  */
 export class StonexModule<State = any, MP = any> {
   public readonly __STONEXMODULE__ = true
@@ -36,7 +36,7 @@ export class StonexModule<State = any, MP = any> {
   public readonly state: State = null
 
   /**
-   * Using inside stonex store. Don't change it
+   * Using inside Stonex store. You shouldn't change it!
    *
    * @type {string}
    * @memberof StonexModule
@@ -56,6 +56,14 @@ export class StonexModule<State = any, MP = any> {
   public __initialState: State
   /* tslint:enable:variable-name */
 
+  /**
+   * This property is usings inside Stonex as bridge between module and store
+   *
+   * *Fake property* - this property more needed for declarations and hints for TS
+   *
+   * @type {StonexModules<MP>}
+   * @memberof StonexModule
+   */
   private storeBinder: StoreBinder<State, MP>
 
   /**

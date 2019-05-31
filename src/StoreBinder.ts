@@ -1,6 +1,9 @@
 
 import { StonexModules, StonexStore } from '.'
 
+/**
+ * StoreBinder it is structure which helps Stonex Module to connect with Store
+ */
 export declare interface StoreBinder<State, MP = any> {
   getState: () => State,
   moduleName: string
@@ -9,6 +12,12 @@ export declare interface StoreBinder<State, MP = any> {
   setState: (changes: (((state: State) => Partial<State>) | Partial<State>), callback?: (state: State) => any) => any
 }
 
+/**
+ * Function which creates and returns StoreBinder
+ *
+ * @param {string} moduleName
+ * @param {StonexStore<MP>} store
+ */
 export const createStoreBinder = <MP, State>(
     moduleName: string,
     store: StonexStore<MP>,
