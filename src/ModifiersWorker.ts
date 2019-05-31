@@ -8,7 +8,7 @@ export declare type ActionModifier = (args: any[], moduleName: string, methodNam
 
 export declare type Modifier<MP> = StoreModifier<MP, ModuleModifier<ActionModifier>>
 
-export default class ModifiersWorker {
+export class ModifiersWorker {
 
   public static getModuleModifiers<MP> (modifiers: Array<Modifier<MP>>, storeInstance: Store<MP>): ModuleModifier[] {
     return modifiers.reduce((moduleModifiers: ModuleModifier[], modifier) => {

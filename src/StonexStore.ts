@@ -5,7 +5,7 @@ import {
 } from '.'
 import { copy, isType, noop, types } from './helpers/base'
 import { convertToStandardModule, isPureModule } from './helpers/module'
-import ModifiersWorker, { ActionModifier, Modifier, ModuleModifier } from './ModifiersWorker'
+import { ActionModifier, Modifier, ModifiersWorker, ModuleModifier } from './ModifiersWorker'
 import { StateWorker } from './StateWorker'
 import { StonexModule } from './StonexModule'
 import { createStoreBinder } from './StoreBinder'
